@@ -5,6 +5,15 @@ require_once __DIR__ . '/../config/conexao.php';
 $titulo_pagina = 'Pontos de Coleta';
 require __DIR__ . '/../includes/header.php';
 
+// Foto ilustrativa conforme o tipo de ponto
+function foto_ponto($nome) {
+    $n = mb_strtolower((string) $nome, 'UTF-8');
+    if (mb_strpos($n, 'eletr') !== false) {
+        return BASE_URL . 'img/fotos/eletronicos.jpg';
+    }
+    return BASE_URL . 'img/fotos/coleta.jpg';
+}
+
 // Buscar todos os pontos de coleta com os resíduos aceitos
 $sql = "SELECT p.*, GROUP_CONCAT(r.nome SEPARATOR ', ') AS residuos_aceitos
         FROM ponto_coleta p
@@ -16,42 +25,50 @@ $stmt = $pdo->query($sql);
 $pontos = $stmt->fetchAll();
 ?>
 
-<div class="d-flex justify-content-between align-items-center mb-4">
-    <h1 class="mb-0">Pontos de Coleta</h1>
-    <span class="badge bg-success fs-6"><?php echo count($pontos); ?> local(is)</span>
-</div>
-
-<p class="text-muted mb-4">
-    Encontre locais para descartar corretamente seus resíduos.
-    Verifique endereço, horário de funcionamento e tipos de materiais aceitos.
-</p>
+<section class="band reveal">
+    <img class="band-bg" src="<?php echo BASE_URL; ?>img/fotos/montanhas.jpg" alt="Paisagem verde de montanhas ao amanhecer">
+    <span class="crumb">Descarte no lugar certo</span>
+    <h1 class="mt-2">Pontos de Coleta</h1>
+    <p class="mt-2">
+        Encontre locais para descartar corretamente seus resíduos. Verifique endereço,
+        horário de funcionamento e tipos de materiais aceitos.
+    </p>
+</section>
 
 <?php if (count($pontos) === 0): ?>
-    <div class="alert alert-info">Nenhum ponto de coleta cadastrado no momento.</div>
+    <div class="alert alert-info mt-4">Nenhum ponto de coleta cadastrado no momento.</div>
 <?php else: ?>
-    <div class="row g-4">
+    <p class="text-muted small mt-4 mb-0">
+        <i class="bi bi-geo-alt"></i>
+        <?php echo count($pontos); ?> local(is) disponível(is) para consulta.
+    </p>
+    <div class="row g-4 mt-2 reveal">
         <?php foreach ($pontos as $ponto): ?>
             <div class="col-md-6 col-lg-4">
-                <div class="card card-residuo shadow-sm h-100">
+                <div class="card card-residuo point-card">
+                    <div class="photo">
+                        <img src="<?php echo foto_ponto($ponto['nome']); ?>" alt="Foto ilustrativa do ponto de coleta">
+                    </div>
                     <div class="card-body">
-                        <h5 class="card-title text-success"><?php echo htmlspecialchars($ponto['nome']); ?></h5>
+                        <h5 class="card-title"><?php echo htmlspecialchars($ponto['nome']); ?></h5>
 
                         <?php if ($ponto['endereco']): ?>
-                            <p class="card-text small mb-1">
-                                <strong>Endereço:</strong><br>
+                            <p class="small mb-1">
+                                <i class="bi bi-geo-alt me-1" style="color: var(--rhe-600);"></i>
                                 <?php echo htmlspecialchars($ponto['endereco']); ?>
                             </p>
                         <?php endif; ?>
 
                         <?php if ($ponto['telefone']): ?>
-                            <p class="card-text small mb-1">
-                                <strong>Telefone:</strong> <?php echo htmlspecialchars($ponto['telefone']); ?>
+                            <p class="small mb-1">
+                                <i class="bi bi-telephone me-1" style="color: var(--rhe-600);"></i>
+                                <?php echo htmlspecialchars($ponto['telefone']); ?>
                             </p>
                         <?php endif; ?>
 
                         <?php if ($ponto['horario_funcionamento']): ?>
-                            <p class="card-text small mb-2">
-                                <strong>Horário:</strong><br>
+                            <p class="small mb-2">
+                                <i class="bi bi-clock me-1" style="color: var(--rhe-600);"></i>
                                 <?php echo htmlspecialchars($ponto['horario_funcionamento']); ?>
                             </p>
                         <?php endif; ?>
@@ -60,15 +77,15 @@ $pontos = $stmt->fetchAll();
                             <div class="mb-2">
                                 <strong class="small">Aceita:</strong><br>
                                 <?php foreach (explode(', ', $ponto['residuos_aceitos']) as $res_nome): ?>
-                                    <span class="badge bg-light text-dark me-1"><?php echo htmlspecialchars($res_nome); ?></span>
+                                    <span class="badge-soft me-1 mt-1" style="font-size: .8rem;"><?php echo htmlspecialchars($res_nome); ?></span>
                                 <?php endforeach; ?>
                             </div>
                         <?php endif; ?>
 
                         <?php if ($ponto['latitude'] && $ponto['longitude']): ?>
                             <a href="https://www.openstreetmap.org/?mlat=<?php echo $ponto['latitude']; ?>&mlon=<?php echo $ponto['longitude']; ?>&zoom=18"
-                               target="_blank" class="btn btn-sm btn-outline-success mt-2">
-                                Ver no mapa &rarr;
+                               target="_blank" class="link-arrow small">
+                                Ver no mapa <i class="bi bi-arrow-up-right"></i>
                             </a>
                         <?php endif; ?>
                     </div>

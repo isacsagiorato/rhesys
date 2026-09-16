@@ -64,7 +64,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $id_quiz > 0 && !empty($respostas))
 
     <div class="card shadow-sm mb-4">
         <div class="card-body text-center p-5">
-            <h1 class="display-4 fw-bold text-success"><?php echo $pontuacao; ?>%</h1>
+            <div class="score-big mb-2"><?php echo $pontuacao; ?>%</div>
             <p class="fs-4">
                 Você acertou <strong><?php echo $acertos; ?></strong> de <strong><?php echo $total; ?></strong> perguntas
             </p>
@@ -164,21 +164,21 @@ if ($id_quiz > 0) {
             <?php else: ?>
                 <form method="POST" action="quiz.php?id=<?php echo $id_quiz; ?>">
                     <?php foreach ($perguntas as $index => $p): ?>
-                        <div class="card mb-4 border-light">
-                            <div class="card-body">
-                                <h5 class="mb-3">
-                                    <span class="badge bg-success me-2"><?php echo $index + 1; ?></span>
-                                    <?php echo htmlspecialchars($p['enunciado']); ?>
-                                </h5>
+                        <div class="info-card mb-4">
+                            <div class="card-body p-4">
+                                <div class="d-flex align-items-center gap-3 mb-3">
+                                    <div class="q-num"><?php echo $index + 1; ?></div>
+                                    <h5 class="mb-0"><?php echo htmlspecialchars($p['enunciado']); ?></h5>
+                                </div>
                                 <div class="ms-4">
                                     <?php foreach (['a', 'b', 'c', 'd'] as $alt): ?>
-                                        <div class="form-check mb-2">
+                                        <div class="form-check mb-2 quiz-option">
                                             <input class="form-check-input" type="radio"
                                                    name="respostas[<?php echo $p['id_pergunta']; ?>]"
                                                    id="p<?php echo $p['id_pergunta']; ?>_<?php echo $alt; ?>"
                                                    value="<?php echo $alt; ?>" required>
                                             <label class="form-check-label" for="p<?php echo $p['id_pergunta']; ?>_<?php echo $alt; ?>">
-                                                <strong><?php echo strtoupper($alt); })</strong>
+                                                <strong><?php echo strtoupper($alt); ?></strong>
                                                 <?php echo htmlspecialchars($p['alternativa_' . $alt]); ?>
                                             </label>
                                         </div>
@@ -213,35 +213,41 @@ $stmt = $pdo->query($sql);
 $quizzes = $stmt->fetchAll();
 ?>
 
-<div class="d-flex justify-content-between align-items-center mb-4">
-    <h1 class="mb-0">Quizzes Educativos</h1>
-    <span class="badge bg-success fs-6"><?php echo count($quizzes); ?> quiz(zes)</span>
-</div>
+<section class="band reveal">
+    <img class="band-bg" src="<?php echo BASE_URL; ?>img/fotos/arvore.jpg" alt="Árvore com a luz do sol entre as folhas">
+    <span class="crumb">Aprenda brincando</span>
+    <h1 class="mt-2">Quizzes educativos</h1>
+    <p class="mt-2">
+        Teste seus conhecimentos sobre gestão de resíduos sólidos, classificação,
+        descarte correto e sustentabilidade.
+    </p>
+</section>
 
-<p class="text-muted mb-4">
-    Teste seus conhecimentos sobre gestão de resíduos sólidos, classificação,
-    descarte correto e sustentabilidade.
+<p class="text-muted small mt-4 mb-0">
+    <i class="bi bi-patch-check"></i>
+    <?php echo count($quizzes); ?> quiz(zes) disponível(is).
 </p>
 
 <?php if (count($quizzes) === 0): ?>
-    <div class="alert alert-info">Nenhum quiz disponível no momento.</div>
+    <div class="alert alert-info mt-4">Nenhum quiz disponível no momento.</div>
 <?php else: ?>
-    <div class="row g-4">
+    <div class="row g-4 mt-2 reveal">
         <?php foreach ($quizzes as $quiz): ?>
             <div class="col-md-6 col-lg-4">
-                <div class="card card-residuo shadow-sm h-100">
+                <div class="card card-residuo">
+                    <div class="photo" style="height: 120px;">
+                        <img src="<?php echo BASE_URL; ?>img/fotos/reciclaveis.jpg" alt="Recicláveis">
+                    </div>
                     <div class="card-body d-flex flex-column">
-                        <h5 class="card-title text-success"><?php echo htmlspecialchars($quiz['titulo']); ?></h5>
+                        <h5 class="card-title"><?php echo htmlspecialchars($quiz['titulo']); ?></h5>
                         <p class="card-text text-muted small flex-grow-1">
                             <?php echo htmlspecialchars($quiz['descricao']); ?>
                         </p>
                         <div class="d-flex justify-content-between align-items-center mt-3">
-                            <span class="badge bg-light text-dark">
-                                <?php echo $quiz['total_perguntas']; ?> pergunta(s)
-                            </span>
+                            <span class="badge-soft"><?php echo $quiz['total_perguntas']; ?> pergunta(s)</span>
                             <?php if ($quiz['total_perguntas'] > 0): ?>
                                 <a href="quiz.php?id=<?php echo $quiz['id_quiz']; ?>" class="btn btn-sm btn-success">
-                                    Iniciar &rarr;
+                                    Iniciar <i class="bi bi-arrow-right"></i>
                                 </a>
                             <?php else: ?>
                                 <span class="text-muted small">Em breve</span>
