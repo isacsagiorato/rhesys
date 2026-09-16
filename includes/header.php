@@ -47,6 +47,7 @@
                     'compartilhamentos.php' => ['Compartilhamentos', 'pages/compartilhamentos.php'],
                     'quiz.php'              => ['Quizzes', 'pages/quiz.php'],
                     'pontos_coleta.php'     => ['Pontos de Coleta', 'pages/pontos_coleta.php'],
+                    'cadastro.php'          => ['Cadastro', 'pages/cadastro.php'],
                 ];
                 foreach ($links as $arquivo => $item):
                     $classe = ($pagina_atual === $arquivo) ? ' active' : '';

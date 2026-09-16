@@ -9,4 +9,4 @@ if (session_status() === PHP_SESSION_NONE) {
 }
 
 define('NOME_SITE', 'Rhesys');
-define('BASE_URL', '/rhesys/'); // ajuste conforme a pasta do seu servidor local
+define('BASE_URL', '/'); // '/' para php -S localhost:8000 na raiz do projeto; use '/rhesys/' se rodar via XAMPP (htdocs/rhesys)
