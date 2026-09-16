@@ -15,7 +15,10 @@
 
 <nav class="navbar navbar-expand-lg navbar-dark bg-success">
     <div class="container">
-        <a class="navbar-brand" href="<?php echo BASE_URL; ?>index.php">Rhesys</a>
+        <a class="navbar-brand d-flex align-items-center gap-2" href="<?php echo BASE_URL; ?>index.php">
+            <img src="<?php echo BASE_URL; ?>img/logo-icon.svg" alt="Rhesys" width="32" height="32">
+            <span class="fw-bold">Rhe<span class="text-info">sys</span></span>
+        </a>
 
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#menuPrincipal">
             <span class="navbar-toggler-icon"></span>
