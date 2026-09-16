@@ -1,0 +1,25 @@
+/* Estilos próprios do Rhesys, complementares ao Bootstrap (RNF03) */
+
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+main {
+    flex: 1;
+}
+
+.navbar-brand {
+    font-weight: bold;
+    font-size: 1.4rem;
+}
+
+.card-residuo {
+    height: 100%;
+    transition: transform 0.15s ease-in-out;
+}
+
+.card-residuo:hover {
+    transform: translateY(-3px);
+}
