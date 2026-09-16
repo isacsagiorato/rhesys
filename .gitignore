@@ -1,0 +1,27 @@
+# Dependências
+/vendor/
+node_modules/
+
+# Arquivos de configuração local (não versionar credenciais)
+config/conexao_local.php
+
+# Arquivos de log
+*.log
+
+# Arquivos temporários
+/tmp/
+*.tmp
+
+# Configurações de IDE
+/.vscode/
+/.idea/
+*.swp
+*.swo
+
+# Sistema operacional
+.DS_Store
+Thumbs.db
+
+# Arquivos de backup
+*.bak
+*~
