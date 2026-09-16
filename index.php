@@ -6,7 +6,7 @@ require __DIR__ . '/includes/header.php';
 ?>
 
 <div class="p-5 mb-4 bg-light rounded-3 text-center">
-    <h1 class="display-5 fw-bold">Rhesys</h1>
+    <img src="<?php echo BASE_URL; ?>img/logo.svg" alt="Rhesys - Sustentabilidade e Tecnologia" class="img-fluid mb-3" style="max-width: 320px;">
     <p class="col-lg-8 mx-auto fs-5">
         Conscientização e orientação sobre o descarte correto de resíduos sólidos.
         Pesquise materiais, aprenda a descartá-los corretamente, compartilhe itens
