@@ -47,7 +47,6 @@
                     'compartilhamentos.php' => ['Compartilhamentos', 'pages/compartilhamentos.php'],
                     'quiz.php'              => ['Quizzes', 'pages/quiz.php'],
                     'pontos_coleta.php'     => ['Pontos de Coleta', 'pages/pontos_coleta.php'],
-                    'cadastro.php'          => ['Cadastro', 'pages/cadastro.php'],
                 ];
                 foreach ($links as $arquivo => $item):
                     $classe = ($pagina_atual === $arquivo) ? ' active' : '';
@@ -58,6 +57,26 @@
                     </a>
                 </li>
                 <?php endforeach; ?>
+
+                <!-- Acesso do usuário: Entrar/Cadastrar (deslogado) ou nome + Sair (logado) -->
+                <?php if (isset($_SESSION['id_usuario'])): ?>
+                <li class="nav-item">
+                    <span class="nav-link">
+                        <i class="bi bi-person-circle"></i>
+                        Olá, <?php echo htmlspecialchars($_SESSION['nome_usuario']); ?>
+                    </span>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="<?php echo BASE_URL; ?>pages/logout.php">Sair</a>
+                </li>
+                <?php else: ?>
+                <li class="nav-item">
+                    <a class="nav-link" href="<?php echo BASE_URL; ?>pages/login.php">Entrar</a>
+                </li>
+                <li class="nav-item ms-lg-2">
+                    <a class="btn btn-success btn-sm px-3 my-1" href="<?php echo BASE_URL; ?>pages/cadastro.php">Cadastrar</a>
+                </li>
+                <?php endif; ?>
             </ul>
         </div>
     </div>
