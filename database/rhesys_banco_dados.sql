@@ -247,10 +247,12 @@ INSERT INTO classificacao (nome, descricao) VALUES
 
 -- ------------------------------------------------------------
 -- Usuário administrador de teste (senha: admin123)
--- Senha em hash bcrypt (gerado com password_hash do PHP)
+-- RF11: a senha é armazenada APENAS como hash bcrypt, nunca em
+-- texto puro. Hash gerado com password_hash('admin123', PASSWORD_DEFAULT)
+-- no PHP e verificado no login com password_verify().
 -- ------------------------------------------------------------
 INSERT INTO usuario (nome, email, senha, tipo_usuario) VALUES
-('Administrador', 'admin@rhesys.com', '$2y$10$N9qo8uLOickgx2ZMRZoMy.MQDq/1JqFJZpV6gZJxZxZxZxZxZxZx', 'admin');
+('Administrador', 'admin@rhesys.com', '$2y$10$tHJdxxXrKO8OwGAQjUQ2x.3kFNrTGHvWqCYKPJwiqwmlUT9f6sN4G', 'admin');
 
 -- ------------------------------------------------------------
 -- Resíduos de exemplo

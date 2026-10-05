@@ -21,11 +21,23 @@ rhesys/
 │   ├── residuos.php      -> RF03/04/05/06/07/08 (placeholder)
 │   ├── compartilhamentos.php -> compartilhamento entre usuários (placeholder)
 │   ├── quiz.php           -> RF10/11/12 (placeholder)
-│   └── pontos_coleta.php  -> pontos de coleta no mapa (placeholder)
+│   ├── pontos_coleta.php  -> pontos de coleta no mapa (placeholder)
+│   ├── cadastro.php       -> criação de conta (RF11: senha salva com password_hash)
+│   ├── login.php          -> autenticação (password_verify contra o hash salvo)
+│   └── logout.php         -> encerra a sessão
 ├── database/
 │   └── rhesys_banco_dados.sql -> script de criação das 11 tabelas
 └── index.php             -> RF01, página inicial (pronta)
 ```
+
+## Cadastro e login (RF11)
+
+- Em `pages/cadastro.php`, a senha **nunca** é salva em texto puro: o sistema grava
+  apenas o hash gerado por `password_hash($senha, PASSWORD_DEFAULT)` (bcrypt).
+- Em `pages/login.php`, a senha informada é conferida com `password_verify()`
+  contra o hash armazenado na tabela `usuario`.
+- Usuário admin de teste criado pelo SQL: `admin@rhesys.com` / senha `admin123`
+  (também armazenada como hash bcrypt no script do banco).
 
 ## Como rodar localmente
 
@@ -42,4 +54,5 @@ rhesys/
 - Implementar `pages/quiz.php`: listar quizzes, exibir perguntas, calcular pontuação (RF10/11/12).
 - Implementar `pages/compartilhamentos.php`: listar itens ofertados, permitir demonstrar interesse.
 - Implementar `pages/pontos_coleta.php`: listar pontos e (opcional) integrar com mapa via coordenadas.
-- Criar sistema de cadastro/login de usuário (necessário para compartilhamento e quiz salvarem `id_usuario`).
+- Sistema de cadastro/login já implementado (`pages/cadastro.php`, `pages/login.php`,
+  `pages/logout.php`) com hash de senha via `password_hash()` conforme RF11.

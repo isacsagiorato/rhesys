@@ -1,166 +1,132 @@
 <?php
 /**
- * RF13 — Cadastro de usuário
- * Cria uma conta com nome, e-mail e senha (armazenada como hash bcrypt).
+ * Cadastro de usuário (RF11).
+ *
+ * RF11 — Hash de senha: a senha NUNCA é salva em texto puro.
+ * Antes de gravar no banco, ela passa por password_hash(), que gera
+ * um hash bcrypt seguro. O texto puro é descartado ao fim da requisição.
  */
-
 require_once __DIR__ . '/../config/config.php';
 require_once __DIR__ . '/../config/conexao.php';
+
+$titulo_pagina = 'Criar conta';
 
 $erros = [];
 $nome  = '';
 $email = '';
 
-// Token CSRF para proteger o envio do formulário
-if (empty($_SESSION['csrf_cadastro'])) {
-    $_SESSION['csrf_cadastro'] = bin2hex(random_bytes(32));
-}
-$csrf_token = $_SESSION['csrf_cadastro'];
-
-// Cadastro concluído (redirecionado após o POST — padrão Post/Redirect/Get)
-$cadastrou = ($_GET['sucesso'] ?? '') === '1';
-
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // 1. Valida o token CSRF
-    if (!hash_equals($_SESSION['csrf_cadastro'], $_POST['csrf'] ?? '')) {
-        $erros[] = 'Sessão expirada. Recarregue a página e tente novamente.';
+    $nome      = trim($_POST['nome'] ?? '');
+    $email     = trim($_POST['email'] ?? '');
+    $senha     = $_POST['senha'] ?? '';
+    $confirmar = $_POST['confirmar_senha'] ?? '';
+
+    // Validação dos campos
+    if (mb_strlen($nome) < 3) {
+        $erros[] = 'Informe seu nome completo (mínimo de 3 caracteres).';
     }
-
-    // 2. Recebe e limpa os dados
-    $nome  = trim($_POST['nome'] ?? '');
-    $email = trim($_POST['email'] ?? '');
-    $senha = $_POST['senha'] ?? '';
-    $conf  = $_POST['confirmar_senha'] ?? '';
-
-    // 3. Valida os campos
-    if ($nome === '') {
-        $erros[] = 'Informe seu nome.';
-    } elseif (mb_strlen($nome) > 150) {
-        $erros[] = 'O nome deve ter no máximo 150 caracteres.';
-    }
-
-    if ($email === '') {
-        $erros[] = 'Informe seu e-mail.';
-    } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
         $erros[] = 'Informe um e-mail válido.';
-    } elseif (mb_strlen($email) > 150) {
-        $erros[] = 'O e-mail deve ter no máximo 150 caracteres.';
     }
-
-    if (strlen($senha) < 8) {
-        $erros[] = 'A senha deve ter pelo menos 8 caracteres.';
+    if (strlen($senha) < 6) {
+        $erros[] = 'A senha deve ter pelo menos 6 caracteres.';
     }
-
-    if ($senha !== $conf) {
+    if ($senha !== $confirmar) {
         $erros[] = 'A confirmação de senha não confere.';
     }
 
-    // 4. Verifica e-mail duplicado (coluna UNIQUE)
-    if (!$erros) {
-        $stmt = $pdo->prepare('SELECT COUNT(*) FROM usuario WHERE email = ?');
-        $stmt->execute([$email]);
-        if ((int) $stmt->fetchColumn() > 0) {
-            $erros[] = 'Este e-mail já está cadastrado.';
+    // O e-mail deve ser único na tabela usuario
+    if (empty($erros)) {
+        $stmt = $pdo->prepare('SELECT id_usuario FROM usuario WHERE email = :email');
+        $stmt->bindValue(':email', $email);
+        $stmt->execute();
+        if ($stmt->fetch()) {
+            $erros[] = 'Este e-mail já está cadastrado. Use a página de login.';
         }
     }
 
-    // 5. Grava o novo usuário e redireciona
-    if (!$erros) {
-        $stmt = $pdo->prepare(
-            'INSERT INTO usuario (nome, email, senha, tipo_usuario) VALUES (?, ?, ?, ?)'
-        );
-        $stmt->execute([
-            $nome,
-            $email,
-            password_hash($senha, PASSWORD_DEFAULT),
-            'comum',
-        ]);
+    // Cadastro efetivo
+    if (empty($erros)) {
+        // RF11: gera o hash bcrypt da senha (nunca grava o texto puro)
+        $hash = password_hash($senha, PASSWORD_DEFAULT);
 
-        unset($_SESSION['csrf_cadastro']);
+        $sql = 'INSERT INTO usuario (nome, email, senha, tipo_usuario)
+                VALUES (:nome, :email, :senha, :tipo)';
+        $stmt = $pdo->prepare($sql);
+        $stmt->bindValue(':nome', $nome);
+        $stmt->bindValue(':email', $email);
+        $stmt->bindValue(':senha', $hash);
+        $stmt->bindValue(':tipo', 'comum');
+        $stmt->execute();
+
+        // Já deixa o usuário autenticado
         session_regenerate_id(true);
+        $_SESSION['id_usuario']   = (int)$pdo->lastInsertId();
+        $_SESSION['nome_usuario'] = $nome;
+        $_SESSION['tipo_usuario'] = 'comum';
 
-        header('Location: cadastro.php?sucesso=1');
+        header('Location: ' . BASE_URL . 'index.php');
         exit;
     }
 }
 
-$titulo_pagina = 'Cadastro';
 require __DIR__ . '/../includes/header.php';
 ?>
 
 <section class="band reveal">
+    <img class="band-bg" src="<?php echo BASE_URL; ?>img/fotos/reaproveitar.jpg" alt="Materiais reaproveitáveis">
     <span class="crumb">Sua conta</span>
-    <h1 class="mt-2">Crie sua conta no Rhesys</h1>
+    <h1 class="mt-2">Criar conta</h1>
     <p class="mt-2">
-        Com uma conta você pode compartilhar itens com outras pessoas e
-        acompanhar seus resultados nos quizzes educativos.
+        Cadastre-se para compartilhar materiais e salvar seus resultados nos quizzes.
     </p>
 </section>
 
-
 <div class="row justify-content-center mt-5 reveal">
-    <div class="col-lg-7">
-        <div class="info-card p-4 p-lg-5">
-            <?php if ($cadastrou): ?>
-                <div class="alert alert-success d-flex align-items-center gap-3" role="alert">
-                    <i class="bi bi-check-circle-fill" style="font-size: 1.6rem;"></i>
-                    <div>
-                        <strong>Conta criada com sucesso!</strong>
-                        <div class="small mt-1">
-                            Agora você pode <a href="compartilhamentos.php">compartilhar itens</a> ou
-                            <a href="quiz.php">testar seus conhecimentos</a>.
-                        </div>
-                    </div>
-                </div>
-            <?php else: ?>
+    <div class="col-md-8 col-lg-6">
+        <div class="card shadow-sm">
+            <div class="card-body p-4 p-lg-5">
+                <h4 class="card-title mb-4"><i class="bi bi-person-plus me-2"></i>Dados do cadastro</h4>
 
-                <?php if ($erros): ?>
-                    <div class="alert alert-danger" role="alert">
-                        <strong>Corrija os itens abaixo:</strong>
-                        <ul class="mb-0 mt-2 ps-3">
+                <?php if (!empty($erros)): ?>
+                    <div class="alert alert-danger">
+                        <ul class="mb-0">
                             <?php foreach ($erros as $erro): ?>
-                                <li><?php echo htmlspecialchars($erro, ENT_QUOTES, 'UTF-8'); ?></li>
+                                <li><?php echo htmlspecialchars($erro); ?></li>
                             <?php endforeach; ?>
                         </ul>
                     </div>
                 <?php endif; ?>
 
                 <form method="post" action="cadastro.php">
-                    <input type="hidden" name="csrf" value="<?php echo $csrf_token; ?>">
-
                     <div class="mb-3">
-                        <label for="nome" class="form-label fw-semibold">Nome completo</label>
-                        <input type="text" class="form-control form-control-lg" id="nome" name="nome"
-                               maxlength="150" placeholder="Ex.: Maria da Silva"
-                               value="<?php echo htmlspecialchars($nome, ENT_QUOTES, 'UTF-8'); ?>" required autofocus>
+                        <label for="nome" class="form-label">Nome completo</label>
+                        <input type="text" class="form-control" id="nome" name="nome"
+                               value="<?php echo htmlspecialchars($nome); ?>" required minlength="3">
                     </div>
-
                     <div class="mb-3">
-                        <label for="email" class="form-label fw-semibold">E-mail</label>
-                        <input type="email" class="form-control form-control-lg" id="email" name="email"
-                               maxlength="150" placeholder="voce@exemplo.com"
-                               value="<?php echo htmlspecialchars($email, ENT_QUOTES, 'UTF-8'); ?>" required>
+                        <label for="email" class="form-label">E-mail</label>
+                        <input type="email" class="form-control" id="email" name="email"
+                               value="<?php echo htmlspecialchars($email); ?>" required>
                     </div>
-
-                    <div class="row g-3 mb-4">
-                        <div class="col-md-6">
-                            <label for="senha" class="form-label fw-semibold">Senha</label>
-                            <input type="password" class="form-control form-control-lg" id="senha" name="senha"
-                                   minlength="8" placeholder="Mínimo de 8 caracteres" required>
-                            <div class="form-text">Use pelo menos 8 caracteres.</div>
-                        </div>
-                        <div class="col-md-6">
-                            <label for="confirmar_senha" class="form-label fw-semibold">Confirmar senha</label>
-                            <input type="password" class="form-control form-control-lg" id="confirmar_senha"
-                                   name="confirmar_senha" placeholder="Repita a senha" required>
-                        </div>
+                    <div class="mb-3">
+                        <label for="senha" class="form-label">Senha</label>
+                        <input type="password" class="form-control" id="senha" name="senha"
+                               required minlength="6" autocomplete="new-password">
+                        <div class="form-text">Mínimo de 6 caracteres. É armazenada apenas como hash bcrypt.</div>
                     </div>
-
-                    <button type="submit" class="btn btn-success btn-lg w-100">
-                        <i class="bi bi-person-plus me-2"></i>Criar conta
-                    </button>
+                    <div class="mb-4">
+                        <label for="confirmar_senha" class="form-label">Confirmar senha</label>
+                        <input type="password" class="form-control" id="confirmar_senha" name="confirmar_senha"
+                               required minlength="6" autocomplete="new-password">
+                    </div>
+                    <button type="submit" class="btn btn-success w-100">Criar minha conta</button>
                 </form>
-            <?php endif; ?>
+
+                <p class="text-center text-muted small mt-4 mb-0">
+                    Já tem conta? <a href="login.php">Entrar</a>
+                </p>
+            </div>
         </div>
     </div>
 </div>
