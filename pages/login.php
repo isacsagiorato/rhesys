@@ -20,9 +20,14 @@ $erros = [];
 $email = '';
 
 // Se já está logado, vai direto para a home
-if (isset($_SESSION['id_usuario'])) {
+if (usuario_logado()) {
     header('Location: ' . BASE_URL . 'index.php');
     exit;
+}
+
+// Chegou aqui porque a sessão expirou (inatividade ou tempo máximo)
+if (isset($_GET['expirada'])) {
+    $erros[] = 'Sua sessão expirou por inatividade. Entre novamente para continuar.';
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -55,6 +60,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $_SESSION['id_usuario']   = (int)$usuario['id_usuario'];
                 $_SESSION['nome_usuario'] = $usuario['nome'];
                 $_SESSION['tipo_usuario'] = $usuario['tipo_usuario'];
+                // Controle de sessão: marca o início para o cálculo
+                // de expiração (SESSAO_TEMPO_MAXIMO) e de inatividade
+                $_SESSION['sessao_iniciada'] = time();
+                $_SESSION['ultimo_acesso']   = time();
 
                 header('Location: ' . BASE_URL . 'index.php');
                 exit;

@@ -56,6 +56,23 @@ rhesys/
   virar bolinhas (pré-visualização); se o usuário clicar no olho, a
   escolha manual trava o estado até ele clicar de novo.
 
+## Controle de sessão ($_SESSION)
+
+- `config/config.php` inicia a sessão em **todas** as páginas e centraliza
+  o controle; helpers `usuario_logado()`, `exige_login()` e `encerrar_login()`.
+- No login/cadastro são gravados `id_usuario`, `nome_usuario`, `tipo_usuario`,
+  `sessao_iniciada` e `ultimo_acesso`; o `header.php` exibe "Olá, {nome}"
+  enquanto houver sessão — o usuário permanece logado ao navegar.
+- **Expiração**: 8 h sem visitar nenhuma página (`SESSAO_INATIVIDADE`) ou
+  24 h após o login (`SESSAO_TEMPO_MAXIMO`); ao expirar, o GET é redirecionado
+  para `login.php?expirada=1` com aviso. Cada página visitada renova o relógio
+  de inatividade.
+- **Cookies endurecidos**: `HttpOnly`, `SameSite=Lax`, `use_strict_mode`,
+  `use_only_cookies` (ID nunca aparece na URL) e `session_regenerate_id(true)`
+  no login (anti fixation).
+- Páginas restritas: chamar `exige_login()` logo após o require de `config.php`.
+- Logout total em `pages/logout.php` (limpa a sessão e o cookie).
+
 ## Como rodar localmente
 
 1. Suba um servidor PHP local (XAMPP, Laragon, ou `php -S localhost:8000` na raiz do projeto).

@@ -59,7 +59,7 @@
                 <?php endforeach; ?>
 
                 <!-- Acesso do usuário: Entrar/Cadastrar (deslogado) ou nome + Sair (logado) -->
-                <?php if (isset($_SESSION['id_usuario'])): ?>
+                <?php if (usuario_logado()): ?>
                 <li class="nav-item">
                     <span class="nav-link">
                         <i class="bi bi-person-circle"></i>
