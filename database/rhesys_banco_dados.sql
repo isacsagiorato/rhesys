@@ -28,6 +28,7 @@ USE rhesys;
 -- Limpa tabelas existentes (ordem reversa de dependência)
 -- ------------------------------------------------------------
 SET FOREIGN_KEY_CHECKS = 0;
+DROP TABLE IF EXISTS tentativa_login;
 DROP TABLE IF EXISTS resultado_quiz;
 DROP TABLE IF EXISTS pergunta;
 DROP TABLE IF EXISTS quiz;
@@ -228,6 +229,20 @@ CREATE TABLE resultado_quiz (
         ON DELETE CASCADE ON UPDATE CASCADE,
     CONSTRAINT chk_pontuacao
         CHECK (pontuacao >= 0)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- ------------------------------------------------------------
+-- Tabela: TENTATIVA_LOGIN
+-- Controle de tentativas de login (rate limiting).
+-- A chave é um hash SHA-256 de IP + e-mail (nada sensível em texto puro).
+-- Após LOGIN_MAX_TENTATIVAS falhas, bloqueado_ate é preenchido e o
+-- acesso é recusado até essa data/hora (15 minutos).
+-- ------------------------------------------------------------
+CREATE TABLE tentativa_login (
+    chave_tentativa VARCHAR(64) NOT NULL PRIMARY KEY,
+    tentativas INT NOT NULL DEFAULT 0,
+    bloqueado_ate DATETIME DEFAULT NULL,
+    atualizado_em DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ============================================================

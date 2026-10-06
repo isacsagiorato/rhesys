@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__ . '/../config/config.php';
 require_once __DIR__ . '/../config/conexao.php';
+require_once __DIR__ . '/../config/seguranca.php';
 
 $titulo_pagina = 'Quizzes';
 require __DIR__ . '/../includes/header.php';
@@ -13,6 +14,14 @@ $respostas = isset($_POST['respostas']) ? $_POST['respostas'] : [];
 // ETAPA 3: Resultado do quiz (formulário enviado)
 // ============================================================
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && $id_quiz > 0 && !empty($respostas)) {
+    // CSRF: recusa requisição forjada (token ausente ou de outra sessão)
+    if (!verificar_csrf()) {
+        echo '<div class="alert alert-danger">Sessão expirada ou formulário inválido. '
+            . '<a href="quiz.php?id=' . $id_quiz . '">Recarregue a página</a> e tente novamente.</div>';
+        require __DIR__ . '/../includes/footer.php';
+        exit;
+    }
+
     // Buscar o quiz
     $sql_quiz = "SELECT * FROM quiz WHERE id_quiz = :id";
     $stmt_quiz = $pdo->prepare($sql_quiz);
@@ -163,6 +172,7 @@ if ($id_quiz > 0) {
                 <div class="alert alert-info">Este quiz ainda não possui perguntas cadastradas.</div>
             <?php else: ?>
                 <form method="POST" action="quiz.php?id=<?php echo $id_quiz; ?>">
+                    <?php echo csrf_field(); ?>
                     <?php foreach ($perguntas as $index => $p): ?>
                         <div class="info-card mb-4">
                             <div class="card-body p-4">

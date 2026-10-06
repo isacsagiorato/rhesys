@@ -19,8 +19,8 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
 
-    <!-- CSS próprio -->
-    <link rel="stylesheet" href="<?php echo BASE_URL; ?>css/style.css">
+    <!-- CSS próprio (?v=2 força o navegador a baixar a versão nova e não usar cache) -->
+    <link rel="stylesheet" href="<?php echo BASE_URL; ?>css/style.css?v=2">
 </head>
 <body>
 

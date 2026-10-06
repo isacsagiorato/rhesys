@@ -8,7 +8,8 @@ Estrutura inicial do sistema, em PHP puro + MySQL + Bootstrap (conforme RNF01, R
 rhesys/
 ├── config/
 │   ├── conexao.php      -> conexão PDO com o banco (ajuste usuário/senha do MySQL)
-│   └── config.php       -> configurações gerais (nome do site, sessão, BASE_URL)
+│   ├── config.php       -> configurações gerais (nome do site, sessão, BASE_URL)
+│   └── seguranca.php     -> CSRF (token por sessão) + rate limiting de login
 ├── includes/
 │   ├── header.php       -> topo + menu de navegação, incluído em toda página
 │   └── footer.php       -> rodapé, incluído em toda página
@@ -26,7 +27,7 @@ rhesys/
 │   ├── login.php          -> autenticação (password_verify contra o hash salvo)
 │   └── logout.php         -> encerra a sessão
 ├── database/
-│   └── rhesys_banco_dados.sql -> script de criação das 11 tabelas
+│   └── rhesys_banco_dados.sql -> script de criação das 12 tabelas
 └── index.php             -> RF01, página inicial (pronta)
 ```
 
@@ -38,6 +39,22 @@ rhesys/
   contra o hash armazenado na tabela `usuario`.
 - Usuário admin de teste criado pelo SQL: `admin@rhesys.com` / senha `admin123`
   (também armazenada como hash bcrypt no script do banco).
+
+## Segurança (config/seguranca.php)
+
+- **CSRF**: todo formulário POST (login, cadastro e quiz) envia um token
+  gerado por sessão (`csrf_field()`); o servidor confere com `hash_equals()`
+  em `verificar_csrf()` e recusa a requisição se o token for inválido.
+- **Rate limiting de login**: após 5 tentativas falhas (chave = hash
+  SHA-256 de IP + e-mail), o acesso é bloqueado por 15 minutos
+  (tabela `tentativa_login`). Um login bem-sucedido zera o contador.
+  Constantes `LOGIN_MAX_TENTATIVAS` e `LOGIN_BLOQUEIO_MINUTOS` em
+  `config/seguranca.php`.
+- **Mostrar/ocultar senha**: botão com ícone nos campos de senha de
+  `login.php` e `cadastro.php` (JS em `js/script.js`, sem bibliotecas).
+  Ao **digitar**, os caracteres ficam visíveis por 1,5 s e voltam a
+  virar bolinhas (pré-visualização); se o usuário clicar no olho, a
+  escolha manual trava o estado até ele clicar de novo.
 
 ## Como rodar localmente
 

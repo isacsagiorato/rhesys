@@ -450,6 +450,29 @@ a:hover { color: var(--rhe-700); }
 }
 .form-check-input:checked { background-color: var(--rhe-600); border-color: var(--rhe-600); }
 
+/* Botão mostrar/ocultar senha (input-group) */
+.btn-toggle-senha {
+    border: 1px solid #d7e8de;
+    border-left: 0;
+    background: #fff;
+    color: var(--rhe-600);
+    border-radius: 0 .85rem .85rem 0;
+    padding-inline: 1rem;
+}
+.btn-toggle-senha:hover, .btn-toggle-senha:focus {
+    background: #f3fbf7;
+    color: var(--rhe-700);
+    border-color: var(--rhe-400);
+}
+.input-group > .form-control { border-radius: .85rem 0 0 .85rem; }
+
+/* Micro-animação do ícone do olho */
+.btn-toggle-senha i {
+    display: inline-block;
+    transition: transform .2s ease;
+}
+.btn-toggle-senha:active i { transform: scale(.8); }
+
 /* ---------- ANIMAÇÕES ---------- */
 .reveal { opacity: 0; transform: translateY(18px); transition: opacity .6s ease, transform .6s ease; }
 .reveal.visible { opacity: 1; transform: none; }

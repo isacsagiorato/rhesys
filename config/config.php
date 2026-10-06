@@ -9,4 +9,18 @@ if (session_status() === PHP_SESSION_NONE) {
 }
 
 define('NOME_SITE', 'Rhesys');
-define('BASE_URL', '/'); // '/' para php -S localhost:8000 na raiz do projeto; use '/rhesys/' se rodar via XAMPP (htdocs/rhesys)
+
+// BASE_URL detectada automaticamente a partir do DOCUMENT_ROOT:
+// - XAMPP (C:/xampp/htdocs/rhesys)  -> '/rhesys/'
+// - php -S localhost:8000 na raiz   -> '/'
+// Assim nunca mais é preciso editar este valor ao copiar o projeto.
+$raizProjeto = str_replace('\\', '/', dirname(__DIR__));
+$raizServidor = str_replace('\\', '/', (string) ($_SERVER['DOCUMENT_ROOT'] ?? ''));
+$baseUrl = '/';
+if ($raizServidor !== ''
+    && strlen($raizProjeto) > strlen($raizServidor)
+    && stripos($raizProjeto, $raizServidor) === 0
+) {
+    $baseUrl = substr($raizProjeto, strlen($raizServidor)) . '/';
+}
+define('BASE_URL', $baseUrl);
