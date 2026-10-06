@@ -5,9 +5,13 @@
  * RF11 — Hash de senha: a senha NUNCA é salva em texto puro.
  * Antes de gravar no banco, ela passa por password_hash(), que gera
  * um hash bcrypt seguro. O texto puro é descartado ao fim da requisição.
+ *
+ * Segurança: o POST só é processado com token CSRF válido
+ * (ver config/seguranca.php).
  */
 require_once __DIR__ . '/../config/config.php';
 require_once __DIR__ . '/../config/conexao.php';
+require_once __DIR__ . '/../config/seguranca.php';
 
 $titulo_pagina = 'Criar conta';
 
@@ -20,6 +24,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $email     = trim($_POST['email'] ?? '');
     $senha     = $_POST['senha'] ?? '';
     $confirmar = $_POST['confirmar_senha'] ?? '';
+
+    // CSRF: recusa requisição forjada antes de qualquer validação
+    if (!verificar_csrf()) {
+        $erros[] = 'Sessão expirada ou formulário inválido. Recarregue a página e tente novamente.';
+    }
 
     // Validação dos campos
     if (mb_strlen($nome) < 3) {
@@ -99,6 +108,7 @@ require __DIR__ . '/../includes/header.php';
                 <?php endif; ?>
 
                 <form method="post" action="cadastro.php">
+                    <?php echo csrf_field(); ?>
                     <div class="mb-3">
                         <label for="nome" class="form-label">Nome completo</label>
                         <input type="text" class="form-control" id="nome" name="nome"
@@ -111,14 +121,28 @@ require __DIR__ . '/../includes/header.php';
                     </div>
                     <div class="mb-3">
                         <label for="senha" class="form-label">Senha</label>
-                        <input type="password" class="form-control" id="senha" name="senha"
-                               required minlength="6" autocomplete="new-password">
+                        <div class="input-group">
+                            <input type="password" class="form-control" id="senha" name="senha"
+                                   required minlength="6" autocomplete="new-password">
+                            <button class="btn btn-toggle-senha" type="button"
+                                    data-toggle-senha="#senha"
+                                    aria-label="Mostrar senha" title="Mostrar senha">
+                                <i class="bi bi-eye"></i>
+                            </button>
+                        </div>
                         <div class="form-text">Mínimo de 6 caracteres. É armazenada apenas como hash bcrypt.</div>
                     </div>
                     <div class="mb-4">
                         <label for="confirmar_senha" class="form-label">Confirmar senha</label>
-                        <input type="password" class="form-control" id="confirmar_senha" name="confirmar_senha"
-                               required minlength="6" autocomplete="new-password">
+                        <div class="input-group">
+                            <input type="password" class="form-control" id="confirmar_senha" name="confirmar_senha"
+                                   required minlength="6" autocomplete="new-password">
+                            <button class="btn btn-toggle-senha" type="button"
+                                    data-toggle-senha="#confirmar_senha"
+                                    aria-label="Mostrar senha" title="Mostrar senha">
+                                <i class="bi bi-eye"></i>
+                            </button>
+                        </div>
                     </div>
                     <button type="submit" class="btn btn-success w-100">Criar minha conta</button>
                 </form>
