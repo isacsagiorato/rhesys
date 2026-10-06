@@ -73,6 +73,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $_SESSION['id_usuario']   = (int)$pdo->lastInsertId();
         $_SESSION['nome_usuario'] = $nome;
         $_SESSION['tipo_usuario'] = 'comum';
+        // Controle de sessão: marcas de expiração (ver config/config.php)
+        $_SESSION['sessao_iniciada'] = time();
+        $_SESSION['ultimo_acesso']   = time();
 
         header('Location: ' . BASE_URL . 'index.php');
         exit;

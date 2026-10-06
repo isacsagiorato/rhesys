@@ -58,7 +58,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $id_quiz > 0 && !empty($respostas))
     $pontuacao = $total > 0 ? round(($acertos / $total) * 100) : 0;
 
     // Salvar resultado se o usuário estiver logado
-    if (isset($_SESSION['id_usuario'])) {
+    if (usuario_logado()) {
         $sql_resultado = "INSERT INTO resultado_quiz (id_usuario, id_quiz, pontuacao)
                           VALUES (:id_usuario, :id_quiz, :pontuacao)";
         $stmt_resultado = $pdo->prepare($sql_resultado);
