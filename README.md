@@ -19,8 +19,10 @@ rhesys/
 │   └── script.js        -> scripts próprios
 ├── pages/
 │   ├── sobre.php         -> RF02 (pronta)
-│   ├── residuos.php      -> RF03/04/05/06/07/08 (placeholder)
-│   ├── compartilhamentos.php -> compartilhamento entre usuários (placeholder)
+│   ├── residuos.php      -> RF03/04/05/06/07/08 (listagem + busca LIKE + detalhes)
+│   ├── cadastro_residuo.php -> RF13 (formulário de cadastro de resíduo, exige login)
+│   ├── cadastro_classificacao.php -> cadastro de classificações (Classe I/II A/II B, exige login)
+│   ├── compartilhamentos.php -> compartilhamento entre usuários (placeholder, exige login)
 │   ├── quiz.php           -> RF10/11/12 (placeholder)
 │   ├── pontos_coleta.php  -> pontos de coleta no mapa (placeholder)
 │   ├── cadastro.php       -> criação de conta (RF11: senha salva com password_hash)
@@ -71,7 +73,24 @@ rhesys/
   `use_only_cookies` (ID nunca aparece na URL) e `session_regenerate_id(true)`
   no login (anti fixation).
 - Páginas restritas: chamar `exige_login()` logo após o require de `config.php`.
+  **Proteção ativa** em `pages/compartilhamentos.php` e no **resultado do quiz**
+  (`pages/quiz.php`): sem login, o POST que gera o resultado redireciona para o login.
 - Logout total em `pages/logout.php` (limpa a sessão e o cookie).
+
+## Resíduos (Sprint 2 — consulta e cadastro)
+
+- `pages/residuos.php`: listagem de todos os resíduos, busca com `LIKE` em
+  `nome`, `palavras_chave` e `descricao` (RF03) e página de detalhes com
+  classificação, descarte, reciclagem e logística reversa (RF04–RF08).
+- `pages/cadastro_residuo.php` (RF13): formulário com nome, descrição, forma
+  de descarte, reciclagem, palavras-chave e checkbox de logística reversa;
+  select de classificação vindo do banco. Exige login e CSRF. Após gravar,
+  redireciona para a página de detalhes do resíduo criado.
+- `pages/cadastro_classificacao.php`: tela simples para cadastrar as classes
+  (Classe I - Perigosos, Classe II A - Não Inertes, Classe II B - Inertes).
+  Exige login e CSRF; lista as classes já cadastradas com a contagem de resíduos.
+- Lote inicial de dados: `database/rhesys_banco_dados.sql` já insere as
+  3 classificações e 5 resíduos de exemplo (RF13).
 
 ## Como rodar localmente
 

@@ -3,6 +3,19 @@ require_once __DIR__ . '/../config/config.php';
 require_once __DIR__ . '/../config/conexao.php';
 require_once __DIR__ . '/../config/seguranca.php';
 
+// RNF11 — Proteção de rotas: o RESULTADO do quiz só pode ser visto por
+// usuário logado. O teste é feito ANTES do require do header (que já
+// imprime HTML), permitindo o redirect com header('Location: ...').
+// O POST do formulário de respostas cai aqui mesmo: ele gera o resultado.
+if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST'
+    && (int) ($_GET['id'] ?? 0) > 0
+    && !empty($_POST['respostas'])
+    && !usuario_logado()
+) {
+    header('Location: ' . BASE_URL . 'pages/login.php');
+    exit;
+}
+
 $titulo_pagina = 'Quizzes';
 require __DIR__ . '/../includes/header.php';
 
@@ -57,16 +70,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $id_quiz > 0 && !empty($respostas))
 
     $pontuacao = $total > 0 ? round(($acertos / $total) * 100) : 0;
 
-    // Salvar resultado se o usuário estiver logado
-    if (usuario_logado()) {
-        $sql_resultado = "INSERT INTO resultado_quiz (id_usuario, id_quiz, pontuacao)
-                          VALUES (:id_usuario, :id_quiz, :pontuacao)";
-        $stmt_resultado = $pdo->prepare($sql_resultado);
-        $stmt_resultado->bindValue(':id_usuario', $_SESSION['id_usuario'], PDO::PARAM_INT);
-        $stmt_resultado->bindValue(':id_quiz', $id_quiz, PDO::PARAM_INT);
-        $stmt_resultado->bindValue(':pontuacao', $pontuacao, PDO::PARAM_INT);
-        $stmt_resultado->execute();
-    }
+    // RNF11: login já é exigido pela proteção no topo deste arquivo,
+    // então o resultado é gravado sempre (tabela resultado_quiz).
+    $sql_resultado = "INSERT INTO resultado_quiz (id_usuario, id_quiz, pontuacao)
+                      VALUES (:id_usuario, :id_quiz, :pontuacao)";
+    $stmt_resultado = $pdo->prepare($sql_resultado);
+    $stmt_resultado->bindValue(':id_usuario', $_SESSION['id_usuario'], PDO::PARAM_INT);
+    $stmt_resultado->bindValue(':id_quiz', $id_quiz, PDO::PARAM_INT);
+    $stmt_resultado->bindValue(':pontuacao', $pontuacao, PDO::PARAM_INT);
+    $stmt_resultado->execute();
     ?>
 
     <a href="quiz.php" class="btn btn-outline-success mb-3">&larr; Voltar aos quizzes</a>

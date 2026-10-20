@@ -1,6 +1,9 @@
 <?php
 require_once __DIR__ . '/../config/config.php';
 
+// RNF11 — Proteção de rotas: a área de compartilhar exige usuário logado.
+exige_login();
+
 $titulo_pagina = 'Compartilhamentos';
 require __DIR__ . '/../includes/header.php';
 ?>

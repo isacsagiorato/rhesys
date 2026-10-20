@@ -201,6 +201,17 @@ $residuos = $stmt->fetchAll();
         <?php echo count($residuos); ?> resultado(s) encontrado(s)<?php if ($busca !== ''): ?> para
         “<strong><?php echo htmlspecialchars($busca); ?></strong>”<?php endif; ?>.
     </p>
+    <?php if (usuario_logado()): ?>
+        <!-- Área de gestão (somente logado): cadastros do Sprint 2 -->
+        <div class="d-flex flex-wrap gap-2 mt-3">
+            <a href="cadastro_residuo.php" class="btn btn-success btn-sm">
+                <i class="bi bi-plus-circle me-1"></i>Cadastrar resíduo
+            </a>
+            <a href="cadastro_classificacao.php" class="btn btn-outline-success btn-sm">
+                <i class="bi bi-tags me-1"></i>Cadastrar classificação
+            </a>
+        </div>
+    <?php endif; ?>
 </div>
 
 <?php if (count($residuos) === 0): ?>
