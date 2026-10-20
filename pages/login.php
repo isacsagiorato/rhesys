@@ -30,6 +30,14 @@ if (isset($_GET['expirada'])) {
     $erros[] = 'Sua sessão expirou por inatividade. Entre novamente para continuar.';
 }
 
+// Mensagem exibida quando o usuário tentou ver o resultado do quiz sem login
+// (proteção de rotas em pages/quiz.php redireciona para cá com ?aviso=resultado_quiz)
+if (($_GET['aviso'] ?? '') === 'resultado_quiz') {
+    $erros[] = 'É necessário fazer login para ter o resultado do quiz. '
+        . 'Entre na sua conta (ou crie uma) e responda o quiz novamente — '
+        . 'assim a pontuação fica salva no seu perfil.';
+}
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $email = trim($_POST['email'] ?? '');
     $senha = $_POST['senha'] ?? '';

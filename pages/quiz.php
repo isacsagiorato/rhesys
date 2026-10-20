@@ -7,12 +7,14 @@ require_once __DIR__ . '/../config/seguranca.php';
 // usuário logado. O teste é feito ANTES do require do header (que já
 // imprime HTML), permitindo o redirect com header('Location: ...').
 // O POST do formulário de respostas cai aqui mesmo: ele gera o resultado.
+// O parâmetro ?aviso=resultado_quiz faz o login.php exibir a mensagem
+// "é necessário fazer login para ver o resultado do quiz".
 if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST'
     && (int) ($_GET['id'] ?? 0) > 0
     && !empty($_POST['respostas'])
     && !usuario_logado()
 ) {
-    header('Location: ' . BASE_URL . 'pages/login.php');
+    header('Location: ' . BASE_URL . 'pages/login.php?aviso=resultado_quiz');
     exit;
 }
 
@@ -179,6 +181,18 @@ if ($id_quiz > 0) {
             <h1 class="card-title text-success"><?php echo htmlspecialchars($quiz['titulo']); ?></h1>
             <p class="text-muted"><?php echo htmlspecialchars($quiz['descricao']); ?></p>
             <p class="badge bg-light text-dark mb-4"><?php echo count($perguntas); ?> perguntas</p>
+
+            <?php if (!usuario_logado()): ?>
+                <!-- Aviso prévio: sem login o resultado do quiz não é exibido -->
+                <div class="alert alert-warning d-flex align-items-start gap-2">
+                    <i class="bi bi-exclamation-triangle fs-5 mt-1"></i>
+                    <div>
+                        <strong>Atenção:</strong> é necessário fazer login para ter o resultado do quiz.
+                        <a href="login.php">Entrar</a> ou <a href="cadastro.php">criar conta</a> antes de responder —
+                        se responder sem login, você será levado à tela de login e precisará responder novamente.
+                    </div>
+                </div>
+            <?php endif; ?>
 
             <?php if (count($perguntas) === 0): ?>
                 <div class="alert alert-info">Este quiz ainda não possui perguntas cadastradas.</div>
