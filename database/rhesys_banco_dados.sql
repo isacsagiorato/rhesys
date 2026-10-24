@@ -51,6 +51,11 @@ CREATE TABLE usuario (
     nome VARCHAR(150) NOT NULL,
     email VARCHAR(150) NOT NULL UNIQUE,
     senha VARCHAR(255) NOT NULL,
+    -- Login com Google (OAuth 2.0): id da conta Google, e-mail já
+    -- confirmado pelo Google e foto de perfil (nullable p/ conta local)
+    google_id VARCHAR(255) NULL UNIQUE,
+    email_verificado TINYINT(1) NOT NULL DEFAULT 0,
+    avatar VARCHAR(500) NULL,
     tipo_usuario VARCHAR(50) NOT NULL DEFAULT 'comum',
     created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

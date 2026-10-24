@@ -42,6 +42,42 @@ rhesys/
 - Usuário admin de teste criado pelo SQL: `admin@rhesys.com` / senha `admin123`
   (também armazenada como hash bcrypt no script do banco).
 
+## Cadastro somente com e-mail existente
+
+- O cadastro (`pages/cadastro.php`) valida o e-mail em três camadas
+  (`config/validacao_email.php`):
+  1. **Formato** — `filter_var(..., FILTER_VALIDATE_EMAIL)`;
+  2. **Não descartável** — bloqueia provedores temporários
+     (10minutemail, mailinator etc. — lista em `DOMINIOS_DESCARTAVEIS`);
+  3. **Domínio existente** — consulta o DNS do domínio (`checkdnsrr`):
+     precisa ter registro **MX** (servidores de e-mail) ou A/AAAA.
+     Endereços com domínio inexistente (digitados/inventados) são recusados.
+- Limitação: a consulta DNS prova que o **domínio** existe e aceita e-mail,
+  mas não que a **caixa** específica existe — para isso seria necessário
+  enviar um e-mail de confirmação (SMTP), o que exige um servidor de e-mail.
+
+## Login com Google (OAuth 2.0)
+
+- Botões **"Entrar com Google"** / **"Criar conta com Google"** em
+  `pages/login.php` e `pages/cadastro.php` (fluxo em PHP puro, sem
+  bibliotecas — `config/google.php`, `pages/google_login.php`,
+  `pages/google_callback.php`).
+- Contas Google têm o **e-mail sempre verificado** pelo Google, o que
+  complementa a validação de e-mail existente acima: a conta é criada
+  automaticamente (tipo `comum`) na primeira vez que o usuário entra.
+- Se o e-mail já foi cadastrado pelo fluxo tradicional, a conta Google é
+  **vinculada** ao usuário existente (coluna `google_id`).
+- Segurança do fluxo: `state` (CSRF do OAuth) gerado por sessão e conferido
+  com `hash_equals()` no callback + `session_regenerate_id(true)` ao entrar.
+- **Como ativar**: criar credenciais OAuth no
+  [Google Cloud Console](https://console.cloud.google.com/apis/credentials)
+  (tipo "Aplicativo da Web", URI de redirecionamento
+  `http://localhost:8000/pages/google_callback.php`) e preencher
+  `GOOGLE_CLIENT_ID` e `GOOGLE_CLIENT_SECRET` em `config/google.php`.
+  Instruções detalhadas estão no comentário do próprio arquivo.
+- Bancos já existentes: executar `database/migracao_google.sql` **uma vez**
+  (adiciona `google_id`, `email_verificado` e `avatar` à tabela `usuario`).
+
 ## Segurança (config/seguranca.php)
 
 - **CSRF**: todo formulário POST (login, cadastro e quiz) envia um token
