@@ -4,6 +4,7 @@ node_modules/
 
 # Arquivos de configuração local (não versionar credenciais)
 config/conexao_local.php
+config/google_local.php
 
 # Arquivos de log
 *.log
