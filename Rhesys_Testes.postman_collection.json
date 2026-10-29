@@ -1,0 +1,192 @@
+{
+  "info": {
+    "name": "Rhesys — Testes HTTP (RF03–RF08, RF13)",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": "Testes do sistema Rhesys rodando local. Pré-requisitos: 1) MySQL do XAMPP ativo com o banco rhesys criado (database/rhesys_banco_dados.sql + database/residuos_lote2.sql); 2) servidor PHP ativo: 'php -S localhost:8000' dentro da pasta rhesys-main. IMPORTANTE: rode as requisições EM ORDEM (Collection Runner), pois os testes T10 dependem do login anterior (cookies de sessão e token CSRF são extraídos automaticamente)."
+  },
+  "variable": [
+    { "key": "base_url", "value": "http://localhost:8000" },
+    { "key": "csrf_token", "value": "" },
+    { "key": "novo_id", "value": "" }
+  ],
+  "item": [
+    {
+      "name": "T1 — Listagem de resíduos (RF03)",
+      "request": { "method": "GET", "url": "{{base_url}}/pages/residuos.php" },
+      "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": [
+        "pm.test('HTTP 200', () => pm.response.to.have.status(200));",
+        "pm.test('Exibe a contagem de resultados', () => pm.expect(pm.response.text()).to.include('resultado(s) encontrado(s)'));",
+        "pm.test('Lista contém Pilha e Lâmpada fluorescente', () => { const b = pm.response.text(); pm.expect(b).to.include('Pilha'); pm.expect(b).to.include('Lâmpada fluorescente'); });"
+      ] } }]
+    },
+    {
+      "name": "T2 — Busca por nome: pilha (RF03)",
+      "request": { "method": "GET", "url": "{{base_url}}/pages/residuos.php?busca=pilha" },
+      "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": [
+        "pm.test('Encontrou 1 resultado (Pilha)', () => { const b = pm.response.text(); pm.expect(b).to.include('1 resultado(s) encontrado'); pm.expect(b).to.include('>Pilha<'); pm.expect(b).to.not.include('Garrafa PET'); });"
+      ] } }]
+    },
+    {
+      "name": "T3 — Busca por descrição: vapor de (RF03)",
+      "request": { "method": "GET", "url": "{{base_url}}/pages/residuos.php?busca=vapor de" },
+      "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": [
+        "pm.test('Achou Lâmpada fluorescente pela descrição', () => { const b = pm.response.text(); pm.expect(b).to.include('Lâmpada fluorescente'); pm.expect(b).to.not.include('>Pilha<'); });"
+      ] } }]
+    },
+    {
+      "name": "T4 — Busca por palavra-chave: rerrefinado (RF03)",
+      "request": { "method": "GET", "url": "{{base_url}}/pages/residuos.php?busca=rerrefinado" },
+      "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": [
+        "pm.test('Achou Óleo lubrificante usado', () => pm.expect(pm.response.text()).to.include('Óleo lubrificante'));"
+      ] } }]
+    },
+    {
+      "name": "T5 — Busca com curinga % (deve tratar como texto)",
+      "request": { "method": "GET", "url": "{{base_url}}/pages/residuos.php?busca=%" },
+      "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": [
+        "pm.test('Curinga % não casou tudo (0 resultados)', () => { const b = pm.response.text(); const ok = b.includes('0 resultado(s) encontrado') || b.includes('Nenhum resíduo encontrado'); pm.expect(ok).to.be.true; });"
+      ] } }]
+    },
+    {
+      "name": "T6 — Busca por termo inexistente",
+      "request": { "method": "GET", "url": "{{base_url}}/pages/residuos.php?busca=zzzzinexistente" },
+      "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": [
+        "pm.test('Exibe Nenhum resíduo encontrado', () => pm.expect(pm.response.text()).to.include('Nenhum resíduo encontrado'));"
+      ] } }]
+    },
+    {
+      "name": "T7 — Página de detalhes id=6 (RF04–RF08)",
+      "request": { "method": "GET", "url": "{{base_url}}/pages/residuos.php?id=6" },
+      "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": [
+        "pm.test('Exibe classificação, descarte, reciclagem e logística reversa', () => { const b = pm.response.text(); pm.expect(b).to.include('Lâmpada fluorescente'); pm.expect(b).to.include('Classe I'); pm.expect(b).to.include('Forma de Descarte'); pm.expect(b).to.include('Reciclagem'); pm.expect(b).to.include('Logística Reversa'); });"
+      ] } }]
+    },
+    {
+      "name": "T8 — Detalhe de id inexistente",
+      "request": { "method": "GET", "url": "{{base_url}}/pages/residuos.php?id=99999" },
+      "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": [
+        "pm.test('Exibe Resíduo não encontrado', () => pm.expect(pm.response.text()).to.include('Resíduo não encontrado'));"
+      ] } }]
+    },
+    {
+      "name": "T9 — Cadastro sem login (deve redirecionar)",
+      "request": { "method": "GET", "url": "{{base_url}}/pages/cadastro_residuo.php" },
+      "protocolProfileBehavior": { "disableFollowRedirects": true },
+      "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": [
+        "pm.test('Sem login: 302 para login.php', () => { pm.response.to.have.status(302); pm.expect(pm.response.headers.get('Location')).to.include('/pages/login.php'); });"
+      ] } }]
+    },
+    {
+      "name": "T10.1 — GET login (obter token CSRF)",
+      "request": { "method": "GET", "url": "{{base_url}}/pages/login.php" },
+      "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": [
+        "const m = pm.response.text().match(/name=\"csrf_token\" value=\"([0-9a-f]+)\"/);",
+        "if (m) { pm.collectionVariables.set('csrf_token', m[1]); }",
+        "pm.test('Token CSRF extraído e salvo na variável csrf_token', () => pm.expect(m).to.not.be.null);"
+      ] } }]
+    },
+    {
+      "name": "T10.2 — POST login (admin@rhesys.com)",
+      "request": {
+        "method": "POST",
+        "url": "{{base_url}}/pages/login.php",
+        "body": { "mode": "urlencoded", "urlencoded": [
+          { "key": "email", "value": "admin@rhesys.com", "type": "text" },
+          { "key": "senha", "value": "admin123", "type": "text" },
+          { "key": "csrf_token", "value": "{{csrf_token}}", "type": "text" }
+        ] }
+      },
+      "protocolProfileBehavior": { "disableFollowRedirects": true },
+      "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": [
+        "pm.test('Login OK: 302 para index.php', () => { pm.response.to.have.status(302); pm.expect(pm.response.headers.get('Location')).to.include('/index.php'); });"
+      ] } }]
+    },
+    {
+      "name": "T10.3 — GET formulário de cadastro (logado)",
+      "request": { "method": "GET", "url": "{{base_url}}/pages/cadastro_residuo.php" },
+      "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": [
+        "const m = pm.response.text().match(/name=\"csrf_token\" value=\"([0-9a-f]+)\"/);",
+        "if (m) { pm.collectionVariables.set('csrf_token', m[1]); }",
+        "pm.test('Formulário acessível logado + token atualizado', () => { pm.expect(pm.response.text()).to.include('Dados do resíduo'); pm.expect(m).to.not.be.null; });"
+      ] } }]
+    },
+    {
+      "name": "T10.4 — POST cadastro com CSRF inválido (deve recusar)",
+      "request": {
+        "method": "POST",
+        "url": "{{base_url}}/pages/cadastro_residuo.php",
+        "body": { "mode": "urlencoded", "urlencoded": [
+          { "key": "nome", "value": "Teste CSRF", "type": "text" },
+          { "key": "descricao", "value": "descarte teste automatizado", "type": "text" },
+          { "key": "forma_descarte", "value": "descarte teste automatizado", "type": "text" },
+          { "key": "reciclagem", "value": "reciclagem teste automatizado", "type": "text" },
+          { "key": "id_classificacao", "value": "2", "type": "text" },
+          { "key": "csrf_token", "value": "invalido", "type": "text" }
+        ] }
+      },
+      "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": [
+        "pm.test('POST sem CSRF válido foi recusado', () => pm.expect(pm.response.text()).to.include('Sessão expirada ou formulário inválido'));"
+      ] } }]
+    },
+    {
+      "name": "T10.5 — POST cadastro válido (RF13)",
+      "request": {
+        "method": "POST",
+        "url": "{{base_url}}/pages/cadastro_residuo.php",
+        "body": { "mode": "urlencoded", "urlencoded": [
+          { "key": "nome", "value": "Resíduo de Teste Automatizado", "type": "text" },
+          { "key": "descricao", "value": "Item incluído pelo teste automatizado para validar o cadastro RF13.", "type": "text" },
+          { "key": "forma_descarte", "value": "Entregar em ecoponto de teste após a validação do sistema.", "type": "text" },
+          { "key": "reciclagem", "value": "Material de validação, reutilizável em testes futuros.", "type": "text" },
+          { "key": "palavras_chave", "value": "teste, automatizado, validacao", "type": "text" },
+          { "key": "id_classificacao", "value": "2", "type": "text" },
+          { "key": "possui_logistica_reversa", "value": "1", "type": "text" },
+          { "key": "csrf_token", "value": "{{csrf_token}}", "type": "text" }
+        ] }
+      },
+      "protocolProfileBehavior": { "disableFollowRedirects": true },
+      "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": [
+        "pm.test('Cadastro criado: 302 para a página de detalhes', () => { pm.response.to.have.status(302); pm.expect(pm.response.headers.get('Location')).to.include('/pages/residuos.php?id='); });",
+        "const loc = pm.response.headers.get('Location') || '';",
+        "const m = loc.match(/id=(\\d+)/);",
+        "if (m) { pm.collectionVariables.set('novo_id', m[1]); }",
+        "pm.test('ID do novo resíduo salvo em novo_id', () => pm.expect(m).to.not.be.null);"
+      ] } }]
+    },
+    {
+      "name": "T10.6 — Detalhes do resíduo criado",
+      "request": { "method": "GET", "url": "{{base_url}}/pages/residuos.php?id={{novo_id}}" },
+      "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": [
+        "pm.test('Detalhes exibem o item criado com logística reversa', () => { const b = pm.response.text(); pm.expect(b).to.include('Resíduo de Teste Automatizado'); pm.expect(b).to.include('Logística Reversa'); pm.expect(b).to.include('Classe II'); });"
+      ] } }]
+    },
+    {
+      "name": "T10.7 — Cadastro duplicado (deve recusar)",
+      "request": {
+        "method": "POST",
+        "url": "{{base_url}}/pages/cadastro_residuo.php",
+        "body": { "mode": "urlencoded", "urlencoded": [
+          { "key": "nome", "value": "Resíduo de Teste Automatizado", "type": "text" },
+          { "key": "descricao", "value": "Item incluído pelo teste automatizado para validar o cadastro RF13.", "type": "text" },
+          { "key": "forma_descarte", "value": "Entregar em ecoponto de teste após a validação do sistema.", "type": "text" },
+          { "key": "reciclagem", "value": "Material de validação, reutilizável em testes futuros.", "type": "text" },
+          { "key": "palavras_chave", "value": "teste, automatizado, validacao", "type": "text" },
+          { "key": "id_classificacao", "value": "2", "type": "text" },
+          { "key": "possui_logistica_reversa", "value": "1", "type": "text" },
+          { "key": "csrf_token", "value": "{{csrf_token}}", "type": "text" }
+        ] }
+      },
+      "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": [
+        "pm.test('Nome duplicado recusado', () => pm.expect(pm.response.text()).to.include('Já existe um resíduo cadastrado com este nome'));"
+      ] } }]
+    },
+    {
+      "name": "T11 — Listagem após cadastro (agora 41 itens)",
+      "request": { "method": "GET", "url": "{{base_url}}/pages/residuos.php" },
+      "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": [
+        "pm.test('Novo item aparece na listagem (41 resultados)', () => pm.expect(pm.response.text()).to.include('41 resultado(s) encontrado'));"
+      ] } }]
+    }
+
+  ]
+}

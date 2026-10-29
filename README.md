@@ -127,6 +127,10 @@ rhesys/
   Exige login e CSRF; lista as classes já cadastradas com a contagem de resíduos.
 - Lote inicial de dados: `database/rhesys_banco_dados.sql` já insere as
   3 classificações e 5 resíduos de exemplo (RF13).
+- Lote 2 (popular o banco): `database/residuos_lote2.sql` insere mais 35
+  resíduos comuns do dia a dia (Classe I, II A e II B), elevando o total para
+  40 itens. Execute-o **depois** do script principal:
+  `mysql -u root -p < database/residuos_lote2.sql`.
 
 ## Como rodar localmente
 
@@ -136,6 +140,18 @@ rhesys/
 4. Ajuste `BASE_URL` em `config/config.php` conforme a pasta onde o projeto está hospedado
    (ex: se acessar via `http://localhost/rhesys/`, deixe `BASE_URL` como `/rhesys/`).
 5. Acesse `index.php` no navegador.
+
+## Testes HTTP com Postman
+
+- Coleção pronta em `Rhesys_Testes.postman_collection.json` (na raiz do projeto):
+  17 requisições que testam listagem, busca LIKE (nome, descrição, palavra-chave,
+  curinga `%`), página de detalhes, proteção de rota, login com CSRF e o cadastro
+  de resíduo (RF13), incluindo casos negativos (CSRF inválido e nome duplicado).
+- Importe o arquivo no Postman (Import → File) e rode com **Collection Runner**,
+  **em ordem**: os testes T10 extraem automaticamente o token CSRF e o cookie de
+  sessão das respostas anteriores.
+- Variável `base_url` (padrão `http://localhost:8000`) pode ser ajustada em
+  Collection → Variables se o servidor estiver em outra porta/pasta.
 
 ## Próximos passos sugeridos
 
