@@ -157,7 +157,9 @@ if ($busca !== '') {
                OR r.palavras_chave LIKE :busca2
                OR r.descricao LIKE :busca3
             ORDER BY r.nome";
-    $termo = "%$busca%";
+    // Escapa os curingas do LIKE (% e _) digitados pelo usuário,
+    // para que sejam tratados como texto literal na busca
+    $termo = '%' . addcslashes($busca, '%_\\') . '%';
     $stmt = $pdo->prepare($sql);
     $stmt->bindValue(':busca1', $termo, PDO::PARAM_STR);
     $stmt->bindValue(':busca2', $termo, PDO::PARAM_STR);
