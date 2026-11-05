@@ -8,7 +8,7 @@ O Rhesys é uma aplicação web em PHP 8, MySQL/MariaDB, Bootstrap 5 e JavaScrip
 
 - **RF01 — Página inicial:** apresenta o sistema e os acessos às funcionalidades.
 - **RF02 — Sobre:** descreve objetivos, público e orientações do projeto.
-- **RF03 — Consulta de resíduos:** lista e pesquisa por nome, descrição e palavras-chave com prepared statements e escape dos curingas do `LIKE`.
+- **RF03 — Consulta de resíduos:** lista e pesquisa por nome, descrição e palavras-chave com prepared statements e escape dos curingas do `LIKE`. A seção de orgânicos inclui explicação, imagem e filtros rápidos para alimentos e materiais de jardinagem.
 - **RF04–RF08 — Orientação de descarte:** apresenta classificação, descrição, descarte, reciclagem, logística reversa e pontos de coleta compatíveis.
 - **RF09 — Educação ambiental:** lista e detalha conteúdos; usuários autenticados cadastram título, texto, imagem, fonte e data.
 - **RF10–RF12 — Quiz:** cadastro de quiz e perguntas, apresentação das alternativas, cálculo da pontuação, revisão e gravação do resultado vinculado ao usuário autenticado.
@@ -47,7 +47,7 @@ A numeração abaixo deve ser adequada ao relatório do TCC, pois o plano de des
 
 ## 5. Evidências de validação
 
-A suíte `tests/integracao.php` executa 46 verificações HTTP e no banco, em um banco isolado recriado a cada execução. Abrange o fluxo cadastro → busca → oferta → interesse → aceite → conclusão, além de cancelamentos, CSRF, XSS, autorização, N:N, filtros, upload, cadastro de quiz/pergunta e pontuação.
+A suíte `tests/integracao.php` executa 50 verificações HTTP e no banco, em um banco isolado recriado a cada execução. Abrange o fluxo cadastro → busca → oferta → interesse → aceite → conclusão, além de filtros orgânicos, cancelamentos, CSRF, XSS, autorização, N:N, upload, cadastro de quiz/pergunta e pontuação.
 
 A interface também deve ser conferida nas larguras de 390 px, 768 px e 1440 px. O checklist de apresentação contém a verificação final em um celular físico, que não pode ser automatizada pelo repositório.
 

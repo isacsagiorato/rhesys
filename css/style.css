@@ -469,6 +469,32 @@ a:hover { color: var(--rhe-700); }
     background: rgba(163, 230, 53, .18);
 }
 
+/* ---------- RESÍDUOS ORGÂNICOS ---------- */
+.organic-guide {
+    background: #fff;
+    border-radius: var(--rhe-radius);
+    overflow: hidden;
+    box-shadow: var(--rhe-shadow);
+}
+.organic-guide .organic-content { padding: 2rem; }
+.organic-guide .organic-photo { width: 100%; height: 420px; object-fit: cover; object-position: center 55%; display: block; }
+.organic-filters { display: flex; flex-wrap: wrap; gap: .55rem; }
+.organic-filter {
+    display: inline-flex;
+    align-items: center;
+    border: 1px solid var(--rhe-200);
+    border-radius: 999px;
+    padding: .45rem .85rem;
+    background: var(--rhe-50);
+    color: var(--rhe-800);
+    font-size: .84rem;
+    font-weight: 600;
+    text-decoration: none;
+}
+.organic-filter:hover, .organic-filter.active { background: var(--rhe-600); border-color: var(--rhe-600); color: #fff; }
+@media (max-width: 991px) { .organic-guide .organic-photo { height: 320px; } }
+@media (max-width: 575px) { .organic-guide .organic-content { padding: 1.35rem; } }
+
 .form-control { border-radius: .85rem; border-color: #d7e8de; }
 .form-control:focus {
     border-color: var(--rhe-400);

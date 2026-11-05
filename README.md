@@ -120,9 +120,12 @@ rhesys/
   Exige login e CSRF; lista as classes já cadastradas com a contagem de resíduos.
 - Lote inicial de dados: `database/rhesys_banco_dados.sql` já insere as
   3 classificações e 5 resíduos de exemplo (RF13).
+- Lote orgânico: `database/residuos_organicos.sql` insere 10 resíduos com
+  orientações de compostagem e palavras-chave para os filtros. É idempotente
+  e também pode ser executado em um banco existente.
 - Lote 2 (popular o banco): `database/residuos_lote2.sql` insere mais 35
-  resíduos comuns do dia a dia (Classe I, II A e II B), elevando o total para
-  40 itens. Execute-o **depois** do script principal:
+  resíduos comuns do dia a dia (Classe I, II A e II B). Com os dados iniciais
+  e o lote orgânico, o total é 50 itens. Execute-o **depois** do script principal:
   `mysql -u root -p < database/residuos_lote2.sql`.
 
 ## Compartilhamentos (Sprint 3)
@@ -151,7 +154,7 @@ rhesys/
 1. Instale XAMPP/Laragon com PHP 8+ e MySQL/MariaDB, ou use `php -S localhost:8000` na raiz.
 2. Crie o banco executando `database/rhesys_banco_dados.sql`. **Atenção:** esse script recria as tabelas e deve ser usado em uma instalação nova.
 3. Em um banco antigo, preserve os dados e execute apenas as migrações necessárias: `database/migracao_google.sql` (uma vez, se ainda não tiver as colunas do Google) e `database/migracao_sprints_3_a_6.sql` (idempotente).
-4. Opcionalmente, execute `database/residuos_lote2.sql` depois do principal para chegar a 40 resíduos.
+4. Execute `database/residuos_organicos.sql` para incluir os 10 orgânicos (script idempotente, também indicado para bancos existentes) e, opcionalmente, `database/residuos_lote2.sql` para acrescentar mais 35 itens. Com todos os lotes, a base fica com 50 resíduos.
 5. A conexão usa `root` sem senha e banco `rhesys` por padrão. Ajuste `config/conexao.php` ou defina `RHESYS_DB_HOST`, `RHESYS_DB_PORT`, `RHESYS_DB_NAME`, `RHESYS_DB_USER` e `RHESYS_DB_PASSWORD`.
 6. `BASE_URL` é detectada automaticamente. Acesse `index.php`; com o comando acima, use `http://localhost:8000`.
 
@@ -171,7 +174,7 @@ rhesys/
 
 Execute `php tests/integracao.php` (no XAMPP Windows, use `C:\xampp\php\php.exe tests\integracao.php`).
 
-A suíte cria um banco isolado, inicia um servidor PHP em porta livre e realiza **46 verificações** de cadastro, login, busca, compartilhamento, autorização, coleta, conteúdo e quiz. **O banco `rhesys_test` é apagado e recriado a cada execução**; o banco principal não é usado. É possível trocar esse nome por `RHESYS_TEST_DB_NAME`, sempre com sufixo `_test`. As credenciais usam as mesmas variáveis de ambiente da aplicação.
+A suíte cria um banco isolado, inicia um servidor PHP em porta livre e realiza **50 verificações** de cadastro, login, busca, filtros orgânicos, compartilhamento, autorização, coleta, conteúdo e quiz. **O banco `rhesys_test` é apagado e recriado a cada execução**; o banco principal não é usado. É possível trocar esse nome por `RHESYS_TEST_DB_NAME`, sempre com sufixo `_test`. As credenciais usam as mesmas variáveis de ambiente da aplicação.
 
 ## Documentação final e apresentação
 

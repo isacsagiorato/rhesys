@@ -177,7 +177,7 @@ INSERT INTO residuo (id_classificacao, nome, descricao, forma_descarte, reciclag
  'Areia de gato, terra de vasos e restos de jardinagem são resíduos inertes de baixo risco.',
  'Descarte no lixo comum em saco fechado; grandes volumes de jardinagem podem ir a ecopontos de entulho.',
  'Terra e matéria orgânica podem virar composteira quando misturados a resíduos verdes.',
- 'areia, terra, gato, vaso, jardinagem, orgânico', FALSE),
+ 'areia, terra, gato, vaso, jardinagem', FALSE),
 (3, 'Pedra e mármore (resíduo de reforma)',
  'Restos de mármore, granito e pedras de reforma são inertes e pesados, exigindo destinação adequada.',
  'Entregue em ecopontos de entulho ou contrate caçamba de resíduos da construção civil.',

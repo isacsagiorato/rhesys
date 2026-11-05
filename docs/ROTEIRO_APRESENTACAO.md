@@ -2,8 +2,8 @@
 
 ## Preparação
 
-1. Execute o SQL principal e, se desejar a demonstração mais completa, `database/residuos_lote2.sql`.
-2. Confirme que há 40 resíduos e que o servidor abre `http://localhost:8000`.
+1. Execute o SQL principal, `database/residuos_organicos.sql` e, se desejar a demonstração mais completa, `database/residuos_lote2.sql`.
+2. Confirme que há 50 resíduos e que o servidor abre `http://localhost:8000`.
 3. Abra duas janelas de navegador (uma normal e uma anônima). Entre como ofertante em uma e como interessado na outra.
 4. Deixe o usuário administrador `admin@rhesys.com` disponível para os cadastros. Em ambiente de demonstração, sua senha inicial é `admin123`; troque-a fora desse ambiente.
 5. Rode `php tests/integracao.php` antes da apresentação.
@@ -48,7 +48,7 @@
 
 ### 6. Fechamento técnico (1 minuto)
 
-- Mostre o relatório dos 46 testes automatizados.
+- Mostre o relatório dos 50 testes automatizados.
 - Cite prepared statements, CSRF, XSS, hash de senha, sessão, autorização e transações.
 - Reduza a janela ou use a ferramenta de dispositivo para mostrar os layouts de tablet e celular.
 
