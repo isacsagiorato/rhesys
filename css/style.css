@@ -130,7 +130,10 @@ a:hover { color: var(--rhe-700); }
     background: linear-gradient(135deg, var(--rhe-300), var(--rhe-400));
     font-weight: 700;
 }
-.navbar-rhe .navbar-toggler { border-color: rgba(255, 255, 255, .25); }
+.navbar-rhe .navbar-toggler { border-color: rgba(255, 255, 255, .35); }
+.navbar-rhe .navbar-toggler-icon {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%28255, 255, 255, 0.9%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+}
 .navbar-rhe .navbar-toggler:focus { box-shadow: 0 0 0 3px rgba(110, 231, 183, .35); }
 
 /* ---------- HERO (página inicial) ---------- */
@@ -385,6 +388,29 @@ a:hover { color: var(--rhe-700); }
 /* ---------- PONTOS DE COLETA ---------- */
 .point-card .photo { height: 130px; overflow: hidden; position: relative; }
 .point-card .photo img { width: 100%; height: 100%; object-fit: cover; }
+.mapa-pontos {
+    height: 28rem;
+    width: 100%;
+    border-radius: var(--rhe-radius);
+    box-shadow: var(--rhe-shadow);
+    z-index: 1;
+    background: #e6f4ec;
+    padding: 1rem;
+}
+.content-cover {
+    width: 100%;
+    max-height: 420px;
+    object-fit: cover;
+    border-radius: var(--rhe-radius);
+    box-shadow: var(--rhe-shadow);
+}
+.form-select { border-radius: .85rem; border-color: #d7e8de; min-height: 46px; }
+.form-select:focus { border-color: var(--rhe-400); box-shadow: 0 0 0 .22rem rgba(16, 185, 129, .18); }
+@media (max-width: 575px) {
+    .mapa-pontos { height: 20rem; }
+    .band { padding: 2.8rem 1.25rem; }
+    main.container { padding-inline: 1rem; }
+}
 
 /* ---------- UTILITÁRIOS ---------- */
 .card { border: none; border-radius: var(--rhe-radius); }

@@ -160,6 +160,7 @@ CREATE TABLE interesse_compartilhamento (
     status VARCHAR(50) NOT NULL DEFAULT 'pendente',
     INDEX idx_interesse_compartilhamento (id_compartilhamento),
     INDEX idx_interesse_usuario (id_usuario),
+    UNIQUE KEY uq_interesse_oferta_usuario (id_compartilhamento, id_usuario),
     CONSTRAINT fk_interesse_compartilhamento
         FOREIGN KEY (id_compartilhamento) REFERENCES compartilhamento_residuo(id_compartilhamento)
         ON DELETE CASCADE ON UPDATE CASCADE,
