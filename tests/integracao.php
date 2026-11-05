@@ -28,6 +28,17 @@ do {
     if (!$mysqli->more_results()) break;
     if (!$mysqli->next_result()) throw new RuntimeException('Falha no SQL de testes: ' . $mysqli->error);
 } while (true);
+$sqlOrganicos = file_get_contents($root . '/database/residuos_organicos.sql');
+$sqlOrganicos = str_replace('USE rhesys;', "USE `$dbName`;", $sqlOrganicos, $organicosReplaced);
+if ($organicosReplaced !== 1 || strpos($sqlOrganicos, 'USE rhesys;') !== false) {
+    throw new RuntimeException('Não foi possível isolar os resíduos orgânicos no banco de testes.');
+}
+if (!$mysqli->multi_query($sqlOrganicos)) throw new RuntimeException('Falha ao inserir orgânicos no banco de testes: ' . $mysqli->error);
+do {
+    if ($result = $mysqli->store_result()) $result->free();
+    if (!$mysqli->more_results()) break;
+    if (!$mysqli->next_result()) throw new RuntimeException('Falha no SQL de orgânicos: ' . $mysqli->error);
+} while (true);
 $mysqli->close();
 $pdo = new PDO("mysql:host=$dbHost;port=$dbPort;dbname=$dbName;charset=utf8mb4", $dbUser, $dbPassword, $options);
 
@@ -128,6 +139,14 @@ try {
     verify($response['status'] === 302, 'login do ofertante concluído');
     $response = request($base, $clients['publico'], 'GET', '/pages/residuos.php?busca=pilha');
     contains('Pilha', $response, 'busca de resíduo retorna o item esperado');
+    $response = request($base, $clients['publico'], 'GET', '/pages/residuos.php');
+    verify(strpos($response['body'], 'Resíduos orgânicos') !== false && strpos($response['body'], 'img/fotos/lixo-organico.jpg') !== false, 'seção de orgânicos e foto são exibidas');
+    $response = request($base, $clients['publico'], 'GET', '/pages/residuos.php?busca=banana');
+    contains('Casca de banana', $response, 'filtro de banana encontra resíduo orgânico');
+    $response = request($base, $clients['publico'], 'GET', '/pages/residuos.php?busca=queijo');
+    contains('Queijo e laticínios', $response, 'filtro de queijo encontra resíduo orgânico');
+    $response = request($base, $clients['publico'], 'GET', '/pages/residuos.php?busca=resto%20de%20comida');
+    contains('Restos de comida', $response, 'filtro de restos de comida encontra orientações');
 
     $response = request($base, $clients['admin'], 'GET', '/pages/cadastro_compartilhamento.php');
     $tokenAdmin = csrf($response);

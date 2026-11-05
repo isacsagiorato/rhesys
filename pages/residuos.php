@@ -3,7 +3,11 @@ require_once __DIR__ . '/../config/config.php';
 require_once __DIR__ . '/../config/conexao.php';
 
 // Foto ilustrativa conforme a classificação (ABNT NBR 10004)
-function imagem_residuo($nome_classificacao) {
+function imagem_residuo($nome_classificacao, $nome_residuo = '', $palavras_chave = '') {
+    $termos = mb_strtolower($nome_residuo . ' ' . $palavras_chave, 'UTF-8');
+    if (mb_strpos($termos, 'orgânico') !== false || mb_strpos($termos, 'organico') !== false) {
+        return BASE_URL . 'img/fotos/lixo-organico.jpg';
+    }
     $n = mb_strtolower((string) $nome_classificacao, 'UTF-8');
     if (mb_strpos($n, 'perigoso') !== false) {
         return BASE_URL . 'img/fotos/eletronicos.jpg';   // Classe I - Perigosos
@@ -46,7 +50,7 @@ if ($id_residuo > 0) {
     <a href="residuos.php" class="btn btn-outline-success mb-3">&larr; Voltar à lista</a>
 
     <div class="detail-photo mb-4">
-        <img src="<?php echo imagem_residuo($residuo['classificacao_nome']); ?>" alt="Foto ilustrativa: <?php echo htmlspecialchars($residuo['classificacao_nome']); ?>">
+        <img src="<?php echo imagem_residuo($residuo['classificacao_nome'], $residuo['nome'], $residuo['palavras_chave']); ?>" alt="Foto ilustrativa: <?php echo htmlspecialchars($residuo['classificacao_nome']); ?>">
     </div>
 
     <div class="info-card">
@@ -179,6 +183,18 @@ if ($busca !== '') {
     $stmt = $pdo->query($sql);
 }
 $residuos = $stmt->fetchAll();
+$filtros_organicos = [
+    'orgânico' => 'Todos os orgânicos',
+    'banana' => 'Banana',
+    'casca' => 'Cascas',
+    'cenoura' => 'Cenoura',
+    'queijo' => 'Queijo',
+    'resto de comida' => 'Restos de comida',
+    'mato' => 'Mato e podas',
+    'borra' => 'Borra de café',
+    'ovo' => 'Cascas de ovo',
+    'folhas' => 'Folhas secas',
+];
 ?>
 
 <section class="band reveal">
@@ -191,7 +207,34 @@ $residuos = $stmt->fetchAll();
     </p>
 </section>
 
-<div class="search-wrap mt-4 reveal">
+<section class="organic-guide mt-4 reveal" aria-labelledby="titulo-organicos">
+    <div class="row g-0 align-items-stretch">
+        <div class="col-lg-7">
+            <div class="organic-content">
+                <span class="badge-lr"><i class="bi bi-flower1 me-1"></i>Compostagem e reaproveitamento</span>
+                <h2 id="titulo-organicos" class="mt-3">Resíduos orgânicos</h2>
+                <p class="text-muted mb-0">
+                    Lixo orgânico, também chamado de resíduo orgânico, é basicamente todo o material
+                    que descartamos que tem origem animal ou vegetal (além dos fungos) e seus derivados.
+                    Dentro de nossas residências, a maior parte é o que sobra das nossas refeições.
+                </p>
+                <h3 class="h6 mt-4">Filtre os resíduos orgânicos</h3>
+                <div class="organic-filters" aria-label="Filtros de resíduos orgânicos">
+                    <?php foreach ($filtros_organicos as $termo => $rotulo): ?>
+                        <a class="organic-filter<?php echo $busca === $termo ? ' active' : ''; ?>"
+                           href="residuos.php?busca=<?php echo rawurlencode($termo); ?>#resultados"
+                           <?php echo $busca === $termo ? 'aria-current="true"' : ''; ?>><?php echo htmlspecialchars($rotulo); ?></a>
+                    <?php endforeach; ?>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-5">
+            <img class="organic-photo" src="<?php echo BASE_URL; ?>img/fotos/lixo-organico.jpg" alt="Cascas de banana, ovos e restos de alimentos em uma composteira">
+        </div>
+    </div>
+</section>
+
+<div class="search-wrap mt-4 reveal" id="resultados">
     <form method="GET">
         <div class="search-pill">
             <i class="bi bi-search"></i>
@@ -233,7 +276,7 @@ $residuos = $stmt->fetchAll();
                 <a href="residuos.php?id=<?php echo $res['id_residuo']; ?>" class="text-decoration-none text-dark">
                     <div class="card card-residuo">
                         <div class="photo">
-                            <img src="<?php echo imagem_residuo($res['classificacao_nome']); ?>" alt="Foto ilustrativa: <?php echo htmlspecialchars($res['nome']); ?>">
+                            <img src="<?php echo imagem_residuo($res['classificacao_nome'], $res['nome'], $res['palavras_chave']); ?>" alt="Foto ilustrativa: <?php echo htmlspecialchars($res['nome']); ?>">
                         </div>
                         <div class="card-body">
                             <div class="d-flex justify-content-between align-items-start gap-2">
