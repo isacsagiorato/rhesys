@@ -19,6 +19,11 @@ config/google_local.php
 *.swp
 *.swo
 
+# Uploads locais (manter apenas os arquivos de configuração/versionamento)
+/img/uploads/*
+!/img/uploads/.gitkeep
+!/img/uploads/.htaccess
+
 # Sistema operacional
 .DS_Store
 Thumbs.db

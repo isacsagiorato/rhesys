@@ -135,10 +135,16 @@ if ($id_residuo > 0) {
                                 <?php if ($ponto['horario_funcionamento']): ?>
                                     <br><span class="text-muted">Horário: <?php echo htmlspecialchars($ponto['horario_funcionamento']); ?></span>
                                 <?php endif; ?>
+                                <?php if ($ponto['latitude'] && $ponto['longitude']): ?>
+                                    <br><a href="https://www.openstreetmap.org/?mlat=<?php echo $ponto['latitude']; ?>&mlon=<?php echo $ponto['longitude']; ?>&zoom=18" target="_blank" rel="noopener noreferrer" class="small">Ver no mapa</a>
+                                <?php endif; ?>
                             </li>
                         <?php endforeach; ?>
                     </ul>
+                    <a href="pontos_coleta.php?id_residuo=<?php echo $id_residuo; ?>" class="link-arrow small mt-3">Ver estes pontos no mapa <i class="bi bi-arrow-right"></i></a>
                 </div>
+            <?php else: ?>
+                <div class="alert alert-info mt-4 mb-0">Nenhum ponto de coleta vinculado a este resíduo até o momento.</div>
             <?php endif; ?>
         </div>
     </div>

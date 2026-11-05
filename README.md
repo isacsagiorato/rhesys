@@ -6,32 +6,25 @@ Estrutura inicial do sistema, em PHP puro + MySQL + Bootstrap (conforme RNF01, R
 
 ```
 rhesys/
-├── config/
-│   ├── conexao.php      -> conexão PDO com o banco (ajuste usuário/senha do MySQL)
-│   ├── config.php       -> configurações gerais (nome do site, sessão, BASE_URL)
-│   └── seguranca.php     -> CSRF (token por sessão) + rate limiting de login
-├── includes/
-│   ├── header.php       -> topo + menu de navegação, incluído em toda página
-│   └── footer.php       -> rodapé, incluído em toda página
-├── css/
-│   └── style.css        -> estilos próprios, complementares ao Bootstrap
-├── js/
-│   └── script.js        -> scripts próprios
-├── pages/
-│   ├── sobre.php         -> RF02 (pronta)
-│   ├── residuos.php      -> RF03/04/05/06/07/08 (listagem + busca LIKE + detalhes)
-│   ├── cadastro_residuo.php -> RF13 (formulário de cadastro de resíduo, exige login)
-│   ├── cadastro_classificacao.php -> cadastro de classificações (Classe I/II A/II B, exige login)
-│   ├── compartilhamentos.php -> compartilhamento entre usuários (placeholder, exige login)
-│   ├── quiz.php           -> RF10/11/12 (placeholder)
-│   ├── pontos_coleta.php  -> pontos de coleta no mapa (placeholder)
-│   ├── cadastro.php       -> criação de conta (RF11: senha salva com password_hash)
-│   ├── login.php          -> autenticação (password_verify contra o hash salvo)
-│   └── logout.php         -> encerra a sessão
-├── database/
-│   └── rhesys_banco_dados.sql -> script de criação das 12 tabelas
-└── index.php             -> RF01, página inicial (pronta)
+├── config/       -> conexão PDO, sessão, OAuth, CSRF e validações
+├── includes/     -> header/footer reutilizáveis com Bootstrap
+├── css/          -> identidade visual e layouts responsivos
+├── js/           -> interações gerais e mapa Leaflet/OpenStreetMap
+├── pages/        -> telas públicas, autenticação e gestão dos módulos
+├── database/     -> modelo completo, migrações e lotes de resíduos
+├── docs/         -> escopo final para o TCC e roteiro de apresentação
+├── tests/        -> suíte automatizada HTTP + banco de dados
+└── index.php     -> página inicial
 ```
+
+### Módulos implementados
+
+- Cadastro/login tradicional e Google, sessão, logout e proteção de rotas.
+- Resíduos e classificações: cadastro, listagem, busca e detalhes (RF03–RF08/RF13).
+- Compartilhamentos: oferta, filtro, interesse, painel do ofertante, aceite, conclusão e cancelamentos.
+- Pontos de coleta: cadastro/edição, vínculos N:N, filtro, mapa e integração com o resíduo.
+- Conteúdos educativos: cadastro com imagem, listagem e detalhe (RF09).
+- Quizzes: cadastro de quiz/perguntas, respostas, revisão e pontuação salva (RF10–RF12).
 
 ## Cadastro e login (RF11)
 
@@ -132,14 +125,35 @@ rhesys/
   40 itens. Execute-o **depois** do script principal:
   `mysql -u root -p < database/residuos_lote2.sql`.
 
+## Compartilhamentos (Sprint 3)
+
+- `pages/cadastro_compartilhamento.php`: publica uma oferta vinculada a um resíduo.
+- `pages/compartilhamentos.php`: filtra ofertas e registra/cancela interesses sem duplicidade ou auto-interesse.
+- `pages/meus_compartilhamentos.php`: mostra os interessados ao ofertante e permite aceitar, concluir ou tornar a oferta indisponível.
+- Aceitar um interesse reserva a oferta e recusa os demais pendentes; concluir exige um interessado aceito. As alterações usam transações e `FOR UPDATE`.
+
+## Pontos de coleta (Sprint 4)
+
+- `pages/cadastro_ponto_coleta.php`: cadastra/edita endereço, coordenadas, contato, horário e resíduos aceitos em uma única transação.
+- `pages/pontos_coleta.php`: lista e filtra por resíduo, exibe mapa Leaflet/OpenStreetMap e mantém links externos como fallback.
+- `pages/residuos.php?id=N`: apresenta somente os pontos que aceitam o resíduo aberto.
+- `js/mapa.js`: cria marcadores e popups usando nós DOM, sem injetar HTML dos dados.
+
+## Educação e quizzes (Sprint 5)
+
+- `pages/conteudos.php` e `pages/cadastro_conteudo.php`: listagem/detalhe públicos e cadastro autenticado com imagem de até 5 MB (JPG, PNG, WEBP ou GIF), fonte e data.
+- `pages/cadastro_quiz.php`: cria quizzes e acessa o banco de perguntas.
+- `pages/cadastro_pergunta.php`: cadastra enunciado, quatro alternativas distintas e gabarito.
+- `pages/quiz.php`: executa o quiz, revisa respostas e grava a pontuação de usuários autenticados. Alternativas inválidas são tratadas como não respondidas, sem warnings.
+
 ## Como rodar localmente
 
-1. Suba um servidor PHP local (XAMPP, Laragon, ou `php -S localhost:8000` na raiz do projeto).
-2. Crie o banco executando `database/rhesys_banco_dados.sql` no MySQL.
-3. Ajuste `config/conexao.php` com o usuário/senha do seu MySQL local.
-4. Ajuste `BASE_URL` em `config/config.php` conforme a pasta onde o projeto está hospedado
-   (ex: se acessar via `http://localhost/rhesys/`, deixe `BASE_URL` como `/rhesys/`).
-5. Acesse `index.php` no navegador.
+1. Instale XAMPP/Laragon com PHP 8+ e MySQL/MariaDB, ou use `php -S localhost:8000` na raiz.
+2. Crie o banco executando `database/rhesys_banco_dados.sql`. **Atenção:** esse script recria as tabelas e deve ser usado em uma instalação nova.
+3. Em um banco antigo, preserve os dados e execute apenas as migrações necessárias: `database/migracao_google.sql` (uma vez, se ainda não tiver as colunas do Google) e `database/migracao_sprints_3_a_6.sql` (idempotente).
+4. Opcionalmente, execute `database/residuos_lote2.sql` depois do principal para chegar a 40 resíduos.
+5. A conexão usa `root` sem senha e banco `rhesys` por padrão. Ajuste `config/conexao.php` ou defina `RHESYS_DB_HOST`, `RHESYS_DB_PORT`, `RHESYS_DB_NAME`, `RHESYS_DB_USER` e `RHESYS_DB_PASSWORD`.
+6. `BASE_URL` é detectada automaticamente. Acesse `index.php`; com o comando acima, use `http://localhost:8000`.
 
 ## Testes HTTP com Postman
 
@@ -153,11 +167,14 @@ rhesys/
 - Variável `base_url` (padrão `http://localhost:8000`) pode ser ajustada em
   Collection → Variables se o servidor estiver em outra porta/pasta.
 
-## Próximos passos sugeridos
+## Testes automatizados de integração
 
-- Implementar `pages/residuos.php`: listagem + busca (RF03/04) usando `nome LIKE` e `descricao LIKE`.
-- Implementar `pages/quiz.php`: listar quizzes, exibir perguntas, calcular pontuação (RF10/11/12).
-- Implementar `pages/compartilhamentos.php`: listar itens ofertados, permitir demonstrar interesse.
-- Implementar `pages/pontos_coleta.php`: listar pontos e (opcional) integrar com mapa via coordenadas.
-- Sistema de cadastro/login já implementado (`pages/cadastro.php`, `pages/login.php`,
-  `pages/logout.php`) com hash de senha via `password_hash()` conforme RF11.
+Execute `php tests/integracao.php` (no XAMPP Windows, use `C:\xampp\php\php.exe tests\integracao.php`).
+
+A suíte cria um banco isolado, inicia um servidor PHP em porta livre e realiza **46 verificações** de cadastro, login, busca, compartilhamento, autorização, coleta, conteúdo e quiz. **O banco `rhesys_test` é apagado e recriado a cada execução**; o banco principal não é usado. É possível trocar esse nome por `RHESYS_TEST_DB_NAME`, sempre com sufixo `_test`. As credenciais usam as mesmas variáveis de ambiente da aplicação.
+
+## Documentação final e apresentação
+
+- `docs/DOCUMENTACAO_TCC.md`: escopo final, requisitos complementares, regras de negócio, segurança e evidências.
+- `docs/ROTEIRO_APRESENTACAO.md`: roteiro de demonstração e checklist para celular físico.
+- A validação visual automatizada usa 390 px, 768 px e 1440 px; a confirmação em um aparelho físico permanece como checklist manual da apresentação.

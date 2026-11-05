@@ -11,7 +11,6 @@ require_once __DIR__ . '/../config/seguranca.php';
 // "é necessário fazer login para ver o resultado do quiz".
 if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST'
     && (int) ($_GET['id'] ?? 0) > 0
-    && !empty($_POST['respostas'])
     && !usuario_logado()
 ) {
     header('Location: ' . BASE_URL . 'pages/login.php?aviso=resultado_quiz');
@@ -23,12 +22,12 @@ require __DIR__ . '/../includes/header.php';
 
 // Parâmetros
 $id_quiz = isset($_GET['id']) ? (int)$_GET['id'] : 0;
-$respostas = isset($_POST['respostas']) ? $_POST['respostas'] : [];
+$respostas = isset($_POST['respostas']) && is_array($_POST['respostas']) ? $_POST['respostas'] : [];
 
 // ============================================================
 // ETAPA 3: Resultado do quiz (formulário enviado)
 // ============================================================
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && $id_quiz > 0 && !empty($respostas)) {
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && $id_quiz > 0) {
     // CSRF: recusa requisição forjada (token ausente ou de outra sessão)
     if (!verificar_csrf()) {
         echo '<div class="alert alert-danger">Sessão expirada ou formulário inválido. '
@@ -64,7 +63,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $id_quiz > 0 && !empty($respostas))
 
     foreach ($perguntas as $p) {
         $id_pergunta = $p['id_pergunta'];
-        $resposta_usuario = isset($respostas[$id_pergunta]) ? $respostas[$id_pergunta] : null;
+        $resposta_usuario = $respostas[$id_pergunta] ?? null;
+        if (!is_string($resposta_usuario) || !in_array($resposta_usuario, ['a', 'b', 'c', 'd'], true)) {
+            $resposta_usuario = null;
+        }
+        $respostas[$id_pergunta] = $resposta_usuario;
         if ($resposta_usuario === $p['resposta_correta']) {
             $acertos++;
         }
@@ -258,6 +261,10 @@ $quizzes = $stmt->fetchAll();
         descarte correto e sustentabilidade.
     </p>
 </section>
+
+<?php if (usuario_logado()): ?>
+    <div class="mt-4"><a href="cadastro_quiz.php" class="btn btn-success"><i class="bi bi-plus-circle me-1"></i>Cadastrar quiz e perguntas</a></div>
+<?php endif; ?>
 
 <p class="text-muted small mt-4 mb-0">
     <i class="bi bi-patch-check"></i>

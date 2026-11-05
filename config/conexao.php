@@ -4,13 +4,14 @@
  * Este arquivo é incluído em todas as páginas que precisam acessar o banco.
  */
 
-$host = 'localhost';
-$dbname = 'rhesys';
-$usuario_db = 'root';       // altere conforme seu ambiente
-$senha_db = '';             // altere conforme seu ambiente
+$host = getenv('RHESYS_DB_HOST') ?: 'localhost';
+$port = getenv('RHESYS_DB_PORT') ?: '3306';
+$dbname = getenv('RHESYS_DB_NAME') ?: 'rhesys';
+$usuario_db = getenv('RHESYS_DB_USER') ?: 'root';
+$senha_db = getenv('RHESYS_DB_PASSWORD') ?: '';
 $charset = 'utf8mb4';
 
-$dsn = "mysql:host=$host;dbname=$dbname;charset=$charset";
+$dsn = "mysql:host=$host;port=$port;dbname=$dbname;charset=$charset";
 
 $opcoes = [
     PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
