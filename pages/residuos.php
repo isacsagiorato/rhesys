@@ -250,7 +250,7 @@ $tipos_residuos = [
 ];
 
 // Painel dinâmico do tipo selecionado: script específico desta página (incluído pelo footer)
-$scripts_extras = [BASE_URL . 'js/tipos_residuos.js?v=1'];
+$scripts_extras = [BASE_URL . 'js/tipos_residuos.js?v=3'];
 ?>
 
 <section class="band reveal">
@@ -302,11 +302,6 @@ $scripts_extras = [BASE_URL . 'js/tipos_residuos.js?v=1'];
             <?php endif; ?>
         </div>
     </form>
-    <p class="text-muted small mt-3 mb-0" id="contagem-resultados">
-        <i class="bi bi-funnel"></i>
-        <?php echo count($residuos); ?> resultado(s) encontrado(s)<?php if ($busca !== ''): ?> para
-        “<strong><?php echo htmlspecialchars($busca); ?></strong>”<?php endif; ?>.
-    </p>
     <?php if (usuario_logado()): ?>
         <!-- Área de gestão (somente logado): cadastros do Sprint 2 -->
         <div class="d-flex flex-wrap gap-2 mt-3">
@@ -320,7 +315,7 @@ $scripts_extras = [BASE_URL . 'js/tipos_residuos.js?v=1'];
     <?php endif; ?>
 </div>
 
-<section class="tipos-residuos mt-5 reveal" aria-labelledby="titulo-tipos">
+<section class="tipos-residuos mt-5 reveal" id="secao-tipos" aria-labelledby="titulo-tipos">
     <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-3">
         <h2 class="h4 mb-0" id="titulo-tipos">Explore por tipo de resíduo</h2>
         <span class="text-muted small"><i class="bi bi-hand-index-thumb me-1"></i>Toque em um card para filtrar a lista</span>
@@ -359,11 +354,29 @@ $scripts_extras = [BASE_URL . 'js/tipos_residuos.js?v=1'];
 <section id="grupo-relacionados" class="mt-5" hidden aria-labelledby="titulo-relacionados">
     <h2 class="h4 mb-3" id="titulo-relacionados">Resíduos Relacionados</h2>
     <div class="row g-4" id="lista-relacionados"></div>
+    <!-- Abas numéricas: 12 resíduos por página (montadas pelo JS) -->
+    <nav id="paginacao-relacionados" class="mt-4" aria-label="Paginação dos resíduos relacionados" hidden>
+        <ul class="pagination pagination-rhe" id="lista-paginas-relacionados"></ul>
+    </nav>
 </section>
 <section id="grupo-outros" class="mt-5" hidden aria-labelledby="titulo-outros">
     <h2 class="h4 mb-3" id="titulo-outros">Outros Tipos de Resíduos</h2>
     <div class="row g-4" id="lista-outros"></div>
+    <!-- Abas numéricas: 12 resíduos por página (montadas pelo JS) -->
+    <nav id="paginacao-outros" class="mt-4" aria-label="Paginação dos outros resíduos" hidden>
+        <ul class="pagination pagination-rhe" id="lista-paginas"></ul>
+    </nav>
 </section>
+
+<!-- Lista completa de resíduos (estado inicial). Quando um tipo é selecionado,
+     o JS distribui estes cards entre #grupo-relacionados e #grupo-outros e
+     oculta esta lista original. -->
+<section id="secao-resultados" class="mt-4">
+    <p class="text-muted small mb-3" id="contagem-resultados">
+        <i class="bi bi-funnel"></i>
+        <?php echo count($residuos); ?> resultado(s) encontrado(s)<?php if ($busca !== ''): ?> para
+        “<strong><?php echo htmlspecialchars($busca); ?></strong>”<?php endif; ?>.
+    </p>
 
 <?php if (count($residuos) === 0): ?>
     <div class="alert alert-info mt-4">
@@ -403,6 +416,7 @@ $scripts_extras = [BASE_URL . 'js/tipos_residuos.js?v=1'];
 <div class="alert alert-info mt-4" id="sem-resultados-js" hidden>
     <i class="bi bi-search me-1"></i> Nenhum resíduo encontrado para o filtro selecionado.
 </div>
+</section><!-- /#secao-resultados -->
 
 <?php
 // Dados dos tipos para o painel dinâmico (consumidos por js/tipos_residuos.js)

@@ -86,7 +86,8 @@ CREATE TABLE residuo (
     possui_logistica_reversa BOOLEAN NOT NULL DEFAULT FALSE,
     created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     INDEX idx_residuo_classificacao (id_classificacao),
-    INDEX idx_residuo_nome (nome),
+    -- O nome é único: impede duplicar o mesmo resíduo em cargas repetidas
+    UNIQUE KEY uq_residuo_nome (nome),
     CONSTRAINT fk_residuo_classificacao
         FOREIGN KEY (id_classificacao) REFERENCES classificacao(id_classificacao)
         ON DELETE RESTRICT ON UPDATE CASCADE

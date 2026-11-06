@@ -7,7 +7,9 @@
 -- ============================================================
 USE rhesys;
 
-INSERT INTO residuo (id_classificacao, nome, descricao, forma_descarte, reciclagem, palavras_chave, possui_logistica_reversa) VALUES
+-- INSERT IGNORE + UNIQUE em residuo.nome: pode ser executado várias vezes
+-- sem duplicar registros (os nomes já existentes são simplesmente ignorados).
+INSERT IGNORE INTO residuo (id_classificacao, nome, descricao, forma_descarte, reciclagem, palavras_chave, possui_logistica_reversa) VALUES
 (1, 'Lâmpada fluorescente',
  'Lâmpadas fluorescentes contêm vapor de mercúrio, altamente tóxico para seres humanos e para o meio ambiente.',
  'Entregue em pontos de coleta de lâmpadas (ecopontos, lojas de material de construção e supermercados participantes). Nunca quebre nem jogue no lixo comum.',

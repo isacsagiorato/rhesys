@@ -19,8 +19,8 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
 
-    <!-- CSS próprio (?v=9 força o navegador a baixar a versão nova e não usar cache) -->
-    <link rel="stylesheet" href="<?php echo BASE_URL; ?>css/style.css?v=9">
+    <!-- CSS próprio (?v=11 força o navegador a baixar a versão nova e não usar cache) -->
+    <link rel="stylesheet" href="<?php echo BASE_URL; ?>css/style.css?v=11">
     <?php foreach (($estilos_extras ?? []) as $stylesheet): ?>
     <link rel="stylesheet" href="<?php echo htmlspecialchars($stylesheet, ENT_QUOTES, 'UTF-8'); ?>">
     <?php endforeach; ?>

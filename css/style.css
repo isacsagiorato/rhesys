@@ -559,8 +559,31 @@ a:hover { color: var(--rhe-700); }
 }
 #spotlight-foto[hidden], #spotlight-icone[hidden],
 #spotlight-filtros[hidden], #spotlight-filtros-titulo[hidden] { display: none !important; }
+#grupo-relacionados.show { animation: spotlightIn .5s ease both; }
+#grupo-relacionados, #grupo-outros { scroll-margin-top: 110px; }
+#lista-residuos[hidden], #grupo-relacionados[hidden], #grupo-outros[hidden] { display: none !important; }
+
+/* ---------- PAGINAÇÃO DOS OUTROS RESÍDUOS ---------- */
+.pagination-rhe { flex-wrap: wrap; gap: .35rem; }
+.pagination-rhe .page-link {
+    border: 1px solid var(--rhe-200);
+    border-radius: .75rem;
+    background: #fff;
+    color: var(--rhe-700);
+    font-weight: 600;
+    padding: .4rem .85rem;
+    transition: background .2s ease, color .2s ease, border-color .2s ease;
+}
+.pagination-rhe .page-link:hover { background: var(--rhe-100); color: var(--rhe-800); }
+.pagination-rhe .page-item.active .page-link {
+    background: var(--rhe-600);
+    border-color: var(--rhe-600);
+    color: #fff;
+}
+.pagination-rhe .page-link:focus { box-shadow: 0 0 0 .2rem rgba(16, 185, 129, .25); }
+#paginacao-outros[hidden], #paginacao-relacionados[hidden] { display: none !important; }
 @media (prefers-reduced-motion: reduce) {
-    .tipo-spotlight.show { animation: none; }
+    .tipo-spotlight.show, #secao-resultados.show { animation: none; }
 }
 
 /* ---------- GRUPOS DE RESULTADOS (relacionados x outros tipos) ---------- */
