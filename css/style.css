@@ -321,6 +321,32 @@ a:hover { color: var(--rhe-700); }
     overflow: hidden;
 }
 
+/* ---------- CARDS DE TIPOS DE RESÍDUO (atalhos por material) ---------- */
+.card-tipo {
+    height: 100%;
+    border: none;
+    border-radius: var(--rhe-radius);
+    overflow: hidden;
+    background: #fff;
+    box-shadow: var(--rhe-shadow);
+    outline: 2px solid transparent;
+    transition: transform .22s ease, box-shadow .22s ease, outline-color .22s ease;
+}
+.card-tipo:hover { transform: translateY(-5px); box-shadow: var(--rhe-shadow-lg); }
+.card-tipo.active { outline-color: var(--rhe-500); }
+.card-tipo .photo { height: 150px; overflow: hidden; position: relative; }
+.card-tipo .photo img { width: 100%; height: 100%; object-fit: cover; transition: transform .5s ease; }
+.card-tipo:hover .photo img { transform: scale(1.07); }
+.card-tipo .tipo-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, var(--rhe-100), var(--rhe-200));
+    color: var(--rhe-700);
+    font-size: 3rem;
+}
+.card-tipo .card-title { margin-bottom: .35rem; }
+
 /* ---------- PÁGINA DE DETALHE ---------- */
 .detail-photo {
     border-radius: var(--rhe-radius);
@@ -494,6 +520,54 @@ a:hover { color: var(--rhe-700); }
 .organic-filter:hover, .organic-filter.active { background: var(--rhe-600); border-color: var(--rhe-600); color: #fff; }
 @media (max-width: 991px) { .organic-guide .organic-photo { height: 320px; } }
 @media (max-width: 575px) { .organic-guide .organic-content { padding: 1.35rem; } }
+
+/* ---------- PAINEL DINÂMICO DO TIPO DE RESÍDUO (spotlight) ---------- */
+.tipo-spotlight { position: relative; scroll-margin-top: 110px; }
+.tipo-spotlight[hidden] { display: none !important; }
+.tipo-spotlight.show { animation: spotlightIn .55s cubic-bezier(.22, .68, .35, 1.05) both; }
+@keyframes spotlightIn {
+    from { opacity: 0; transform: translateY(26px) scale(.97); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+}
+.spotlight-close {
+    position: absolute;
+    top: .9rem;
+    right: .9rem;
+    z-index: 2;
+    width: 38px;
+    height: 38px;
+    border: none;
+    border-radius: 50%;
+    background: rgba(4, 40, 28, .08);
+    color: var(--rhe-800);
+    font-size: 1.05rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background .2s ease, color .2s ease, transform .2s ease;
+}
+.spotlight-close:hover { background: var(--rhe-600); color: #fff; transform: rotate(90deg); }
+.spotlight-icon {
+    height: 100%;
+    min-height: 280px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 5.5rem;
+    color: var(--rhe-700);
+    background: linear-gradient(135deg, var(--rhe-100), var(--rhe-200));
+}
+#spotlight-foto[hidden], #spotlight-icone[hidden],
+#spotlight-filtros[hidden], #spotlight-filtros-titulo[hidden] { display: none !important; }
+@media (prefers-reduced-motion: reduce) {
+    .tipo-spotlight.show { animation: none; }
+}
+
+/* ---------- GRUPOS DE RESULTADOS (relacionados x outros tipos) ---------- */
+#lista-residuos[hidden],
+#grupo-relacionados[hidden],
+#grupo-outros[hidden] { display: none !important; }
+#grupo-relacionados, #grupo-outros { scroll-margin-top: 110px; }
 
 .form-control { border-radius: .85rem; border-color: #d7e8de; }
 .form-control:focus {
