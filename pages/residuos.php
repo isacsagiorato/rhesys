@@ -195,6 +195,62 @@ $filtros_organicos = [
     'ovo' => 'Cascas de ovo',
     'folhas' => 'Folhas secas',
 ];
+
+// Cards de tipos de resíduos: atalhos que filtram a lista pelo material.
+// Cada card usa o mesmo mecanismo da busca (LIKE em nome, palavras-chave e descrição).
+$tipos_residuos = [
+    [
+        'rotulo' => 'Metais',
+        'termo' => 'metal',
+        'foto' => 'img/fotos/metais.jpg',
+        'alt' => 'Latinhas de alumínio prensadas para reciclagem',
+        'icone' => null,
+        'descricao' => 'Latas de alumínio e aço, panelas, fios, ferramentas e sucatas.',
+    ],
+    [
+        'rotulo' => 'Plásticos',
+        'termo' => 'plastico',
+        'foto' => null,
+        'alt' => '',
+        'icone' => 'bi-cup-straw',
+        'descricao' => 'Garrafas PET, embalagens, potes, sacolas e utensílios.',
+    ],
+    [
+        'rotulo' => 'Papel e Papelão',
+        'termo' => 'papel',
+        'foto' => null,
+        'alt' => '',
+        'icone' => 'bi-newspaper',
+        'descricao' => 'Jornais, revistas, caixas, folhas de sulfite e cadernos.',
+    ],
+    [
+        'rotulo' => 'Vidros',
+        'termo' => 'vidro',
+        'foto' => null,
+        'alt' => '',
+        'icone' => 'bi-cup',
+        'descricao' => 'Garrafas, potes, frascos, copos e vidros planos.',
+    ],
+    [
+        'rotulo' => 'Orgânicos',
+        'termo' => 'orgânico',
+        'foto' => 'img/fotos/lixo-organico.jpg',
+        'alt' => 'Restos de alimentos e cascas em uma composteira',
+        'icone' => null,
+        'descricao' => 'Restos de comida, cascas, borra de café, folhas e podas.',
+    ],
+    [
+        'rotulo' => 'Eletrônicos',
+        'termo' => 'eletronico',
+        'foto' => 'img/fotos/eletronicos.jpg',
+        'alt' => 'Equipamentos eletrônicos descartados',
+        'icone' => null,
+        'descricao' => 'Celulares, computadores, cabos, pilhas e eletroeletrônicos.',
+    ],
+];
+
+// Painel dinâmico do tipo selecionado: script específico desta página (incluído pelo footer)
+$scripts_extras = [BASE_URL . 'js/tipos_residuos.js?v=1'];
 ?>
 
 <section class="band reveal">
@@ -207,29 +263,28 @@ $filtros_organicos = [
     </p>
 </section>
 
-<section class="organic-guide mt-4 reveal" aria-labelledby="titulo-organicos">
+<!-- Painel dinâmico do tipo de resíduo: fica oculto ao abrir a página e só
+     aparece, com animação, quando um card de tipo é clicado (js/tipos_residuos.js) -->
+<section id="tipo-spotlight" class="organic-guide tipo-spotlight mt-4" hidden aria-live="polite" aria-labelledby="spotlight-titulo">
+    <button type="button" id="spotlight-fechar" class="spotlight-close" aria-label="Fechar painel e limpar filtro" title="Fechar e limpar filtro">
+        <i class="bi bi-x-lg"></i>
+    </button>
     <div class="row g-0 align-items-stretch">
         <div class="col-lg-7">
             <div class="organic-content">
-                <span class="badge-lr"><i class="bi bi-flower1 me-1"></i>Compostagem e reaproveitamento</span>
-                <h2 id="titulo-organicos" class="mt-3">Resíduos orgânicos</h2>
-                <p class="text-muted mb-0">
-                    Lixo orgânico, também chamado de resíduo orgânico, é basicamente todo o material
-                    que descartamos que tem origem animal ou vegetal (além dos fungos) e seus derivados.
-                    Dentro de nossas residências, a maior parte é o que sobra das nossas refeições.
+                <span class="badge-lr"><i class="bi bi-recycle me-1"></i>Tipo selecionado</span>
+                <h2 id="spotlight-titulo" class="mt-3"></h2>
+                <p class="text-muted mb-0" id="spotlight-descricao"></p>
+                <h3 class="h6 mt-4" id="spotlight-filtros-titulo" hidden>Filtre os resíduos orgânicos</h3>
+                <div class="organic-filters mt-3" id="spotlight-filtros" hidden></div>
+                <p class="text-muted small mt-4 mb-0">
+                    <i class="bi bi-arrow-down-circle me-1"></i>A lista de resíduos abaixo já está filtrada por este tipo.
                 </p>
-                <h3 class="h6 mt-4">Filtre os resíduos orgânicos</h3>
-                <div class="organic-filters" aria-label="Filtros de resíduos orgânicos">
-                    <?php foreach ($filtros_organicos as $termo => $rotulo): ?>
-                        <a class="organic-filter<?php echo $busca === $termo ? ' active' : ''; ?>"
-                           href="residuos.php?busca=<?php echo rawurlencode($termo); ?>#resultados"
-                           <?php echo $busca === $termo ? 'aria-current="true"' : ''; ?>><?php echo htmlspecialchars($rotulo); ?></a>
-                    <?php endforeach; ?>
-                </div>
             </div>
         </div>
         <div class="col-lg-5">
-            <img class="organic-photo" src="<?php echo BASE_URL; ?>img/fotos/lixo-organico.jpg" alt="Cascas de banana, ovos e restos de alimentos em uma composteira">
+            <img id="spotlight-foto" class="organic-photo" alt="" hidden>
+            <div id="spotlight-icone" class="spotlight-icon" hidden aria-hidden="true"><i class="bi"></i></div>
         </div>
     </div>
 </section>
@@ -247,7 +302,7 @@ $filtros_organicos = [
             <?php endif; ?>
         </div>
     </form>
-    <p class="text-muted small mt-3 mb-0">
+    <p class="text-muted small mt-3 mb-0" id="contagem-resultados">
         <i class="bi bi-funnel"></i>
         <?php echo count($residuos); ?> resultado(s) encontrado(s)<?php if ($busca !== ''): ?> para
         “<strong><?php echo htmlspecialchars($busca); ?></strong>”<?php endif; ?>.
@@ -265,14 +320,60 @@ $filtros_organicos = [
     <?php endif; ?>
 </div>
 
+<section class="tipos-residuos mt-5 reveal" aria-labelledby="titulo-tipos">
+    <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-3">
+        <h2 class="h4 mb-0" id="titulo-tipos">Explore por tipo de resíduo</h2>
+        <span class="text-muted small"><i class="bi bi-hand-index-thumb me-1"></i>Toque em um card para filtrar a lista</span>
+    </div>
+    <div class="row g-4">
+        <?php foreach ($tipos_residuos as $tipo): ?>
+            <div class="col-sm-6 col-lg-4">
+                <a href="residuos.php?busca=<?php echo rawurlencode($tipo['termo']); ?>#resultados"
+                   class="text-decoration-none text-dark"
+                   data-tipo="<?php echo htmlspecialchars($tipo['termo']); ?>"
+                   <?php echo $busca === $tipo['termo'] ? 'aria-current="true"' : ''; ?>>
+                    <div class="card card-tipo<?php echo $busca === $tipo['termo'] ? ' active' : ''; ?>">
+                        <?php if ($tipo['foto'] !== null): ?>
+                            <div class="photo">
+                                <img src="<?php echo BASE_URL . $tipo['foto']; ?>"
+                                     alt="<?php echo htmlspecialchars($tipo['alt']); ?>"
+                                     onerror="this.onerror=null;this.src='<?php echo BASE_URL; ?>img/fotos/reciclaveis.jpg';">
+                            </div>
+                        <?php else: ?>
+                            <div class="photo tipo-icon" aria-hidden="true"><i class="bi <?php echo $tipo['icone']; ?>"></i></div>
+                        <?php endif; ?>
+                        <div class="card-body">
+                            <h3 class="h5 card-title"><?php echo htmlspecialchars($tipo['rotulo']); ?></h3>
+                            <p class="card-text text-muted small mb-2"><?php echo htmlspecialchars($tipo['descricao']); ?></p>
+                            <span class="link-arrow small">Ver resíduos <i class="bi bi-arrow-right"></i></span>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        <?php endforeach; ?>
+    </div>
+</section>
+
+<!-- Agrupamentos montados pelo JS quando um card de tipo é clicado:
+     relacionados ao tipo primeiro e, no final, os demais resíduos -->
+<section id="grupo-relacionados" class="mt-5" hidden aria-labelledby="titulo-relacionados">
+    <h2 class="h4 mb-3" id="titulo-relacionados">Resíduos Relacionados</h2>
+    <div class="row g-4" id="lista-relacionados"></div>
+</section>
+<section id="grupo-outros" class="mt-5" hidden aria-labelledby="titulo-outros">
+    <h2 class="h4 mb-3" id="titulo-outros">Outros Tipos de Resíduos</h2>
+    <div class="row g-4" id="lista-outros"></div>
+</section>
+
 <?php if (count($residuos) === 0): ?>
     <div class="alert alert-info mt-4">
         <i class="bi bi-search me-1"></i> Nenhum resíduo encontrado para "<strong><?php echo htmlspecialchars($busca); ?></strong>".
     </div>
 <?php else: ?>
-    <div class="row g-4 mt-2 reveal">
+    <div class="row g-4 mt-2 reveal" id="lista-residuos">
         <?php foreach ($residuos as $res): ?>
-            <div class="col-md-6 col-lg-4">
+            <?php $texto_filtro = mb_strtolower($res['nome'] . ' ' . $res['classificacao_nome'] . ' ' . $res['descricao'] . ' ' . $res['palavras_chave'], 'UTF-8'); ?>
+            <div class="col-md-6 col-lg-4" data-filtro="<?php echo htmlspecialchars($texto_filtro); ?>">
                 <a href="residuos.php?id=<?php echo $res['id_residuo']; ?>" class="text-decoration-none text-dark">
                     <div class="card card-residuo">
                         <div class="photo">
@@ -297,5 +398,28 @@ $filtros_organicos = [
         <?php endforeach; ?>
     </div>
 <?php endif; ?>
+
+<!-- Exibido pelo JS quando o filtro de um card não encontra nenhum resíduo -->
+<div class="alert alert-info mt-4" id="sem-resultados-js" hidden>
+    <i class="bi bi-search me-1"></i> Nenhum resíduo encontrado para o filtro selecionado.
+</div>
+
+<?php
+// Dados dos tipos para o painel dinâmico (consumidos por js/tipos_residuos.js)
+$tipos_js = [];
+foreach ($tipos_residuos as $tipo) {
+    $tipos_js[$tipo['termo']] = [
+        'rotulo' => $tipo['rotulo'],
+        'descricao' => $tipo['descricao'],
+        'foto' => $tipo['foto'] !== null ? BASE_URL . $tipo['foto'] : null,
+        'alt' => $tipo['alt'],
+        'icone' => $tipo['icone'],
+    ];
+}
+?>
+<script>
+window.RHESYS_TIPOS = <?php echo json_encode($tipos_js, JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT); ?>;
+window.RHESYS_FILTROS_ORGANICOS = <?php echo json_encode($filtros_organicos, JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT); ?>;
+</script>
 
 <?php require __DIR__ . '/../includes/footer.php'; ?>
