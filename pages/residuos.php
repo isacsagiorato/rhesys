@@ -1,3 +1,4 @@
+
 <?php
 require_once __DIR__ . '/../config/config.php';
 require_once __DIR__ . '/../config/conexao.php';
@@ -210,25 +211,25 @@ $tipos_residuos = [
     [
         'rotulo' => 'Plásticos',
         'termo' => 'plastico',
-        'foto' => null,
-        'alt' => '',
-        'icone' => 'bi-cup-straw',
+        'foto' => 'img/fotos/plasticos.jpg',
+        'alt' => 'Garrafas e embalagens plásticas coloridas para reciclagem',
+        'icone' => null,
         'descricao' => 'Garrafas PET, embalagens, potes, sacolas e utensílios.',
     ],
     [
         'rotulo' => 'Papel e Papelão',
         'termo' => 'papel',
-        'foto' => null,
-        'alt' => '',
-        'icone' => 'bi-newspaper',
+        'foto' => 'img/fotos/papel.jpg',
+        'alt' => 'Caixas de papelão achatadas para reciclagem',
+        'icone' => null,
         'descricao' => 'Jornais, revistas, caixas, folhas de sulfite e cadernos.',
     ],
     [
         'rotulo' => 'Vidros',
         'termo' => 'vidro',
-        'foto' => null,
-        'alt' => '',
-        'icone' => 'bi-cup',
+        'foto' => 'img/fotos/vidro.jpg',
+        'alt' => 'Garrafas de vidro verdes para reciclagem',
+        'icone' => null,
         'descricao' => 'Garrafas, potes, frascos, copos e vidros planos.',
     ],
     [
@@ -243,7 +244,7 @@ $tipos_residuos = [
         'rotulo' => 'Eletrônicos',
         'termo' => 'eletronico',
         'foto' => 'img/fotos/eletronicos.jpg',
-        'alt' => 'Equipamentos eletrônicos descartados',
+        'alt' => 'Eletrônicos e placas de circuito descartados (e-lixo)',
         'icone' => null,
         'descricao' => 'Celulares, computadores, cabos, pilhas e eletroeletrônicos.',
     ],
