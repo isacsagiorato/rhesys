@@ -91,4 +91,40 @@ document.addEventListener('DOMContentLoaded', function () {
             }, PEEK_MS);
         });
     });
+
+    // ============================================================
+    // Cards das cores CONAMA (página inicial): abrem um modal com
+    // uma breve explicação sobre o material ao serem clicados.
+    // ============================================================
+    var modalConama = document.getElementById('modalConama');
+
+    function preencherModalConama(card) {
+        if (!modalConama) return;
+
+        var titulo = modalConama.querySelector('#modalConamaTitulo');
+        var corNome = modalConama.querySelector('#modalConamaCorNome');
+        var texto = modalConama.querySelector('#modalConamaTexto');
+        var faixa = modalConama.querySelector('#modalConamaCor');
+
+        if (titulo) titulo.textContent = card.getAttribute('data-material');
+        if (corNome) corNome.textContent = 'Lixeira ' + card.getAttribute('data-nome');
+        if (texto) texto.textContent = card.getAttribute('data-explicacao');
+        if (faixa) faixa.style.background = card.getAttribute('data-hex');
+    }
+
+    document.querySelectorAll('.conama-card').forEach(function (card) {
+        card.addEventListener('click', function () {
+            // Preenche o conteúdo antes do Bootstrap abrir o modal,
+            // garantindo que sempre mostre o cartão clicado.
+            preencherModalConama(card);
+        });
+
+        // Acessibilidade: Enter/Espaço também abrem o modal
+        card.addEventListener('keydown', function (evento) {
+            if (evento.key === 'Enter' || evento.key === ' ') {
+                evento.preventDefault();
+                card.click();
+            }
+        });
+    });
 });

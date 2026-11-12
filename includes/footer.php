@@ -10,7 +10,7 @@
 <?php endforeach; ?>
 
 <!-- JS próprio (?v=2 força o navegador a baixar a versão nova e não usar cache) -->
-<script src="<?php echo BASE_URL; ?>js/script.js?v=2"></script>
+<script src="<?php echo BASE_URL; ?>js/script.js?v=4"></script>
 
 </body>
 </html>
