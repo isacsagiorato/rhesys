@@ -8,7 +8,7 @@ require __DIR__ . '/../includes/header.php';
 <section class="pt-2 pb-1 reveal">
     <div class="section-tag">Guia educativo</div>
     <h1 class="mt-1 mb-2">Aprenda a descartar certo</h1>
-    <p class="text-muted mb-0">O essencial sobre resíduos, coleta seletiva e economia circular — direto ao ponto.</p>
+    <p class="text-muted mb-0">Tudo sobre resíduos, coleta seletiva e economia circular, na palma da sua mão.</p>
 </section>
 
 <section class="mt-5 pt-3 reveal" id="guia-residuos">
@@ -16,7 +16,7 @@ require __DIR__ . '/../includes/header.php';
         <div class="section-tag">Aprenda o básico</div>
         <h2 class="mt-1 mb-3">O que são resíduos sólidos?</h2>
         <p class="text-muted mx-auto" style="max-width: 760px;">
-            São os materiais que sobram das atividades do dia a dia — de casas, comércios e cidades.
+            São os materiais que sobram das atividades do dia a dia de casas, comércios e cidades.
             Com o crescimento urbano, a quantidade gerada só aumenta, e o descarte errado pode poluir
             o solo, contaminar a água e colocar a saúde pública em risco. Mas, com a destinação correta,
             boa parte deles deixa de ser lixo e volta a ser recurso.
@@ -36,8 +36,8 @@ require __DIR__ . '/../includes/header.php';
                     corrosivos, tóxicos, reativos ou patogênicos.
                 </p>
                 <p class="small mb-0">
-                    <strong>Exemplos:</strong> pilhas, baterias e lâmpadas fluorescentes —
-                    sempre em pontos de coleta específicos.
+                    <strong>Exemplos:</strong> pilhas, baterias e lâmpadas fluorescentes (obs: esses materiais devem ser descartados
+                    sempre em pontos de coleta específicos).
                 </p>
             </div>
         </div>
