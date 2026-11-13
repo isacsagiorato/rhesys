@@ -901,3 +901,52 @@ a:hover { color: var(--rhe-700); }
     .jogo-emoji-gigante { font-size: 3.5rem; }
 }
 
+/* ---------- COMPARTILHAMENTOS / ECONOMIA CIRCULAR ---------- */
+.oferta-card .photo { height: 170px; }
+
+.filtro-bar {
+    background: #fff;
+    border-radius: var(--rhe-radius);
+    box-shadow: var(--rhe-shadow);
+    padding: 1.1rem 1.25rem;
+}
+
+.oferta-meta { display: flex; flex-wrap: wrap; gap: .4rem; }
+.oferta-info { display: grid; gap: .35rem; }
+.oferta-info li { display: flex; align-items: flex-start; gap: .5rem; }
+.oferta-info i { color: var(--rhe-600); margin-top: .15rem; }
+
+.estado-novo     { background: #d1fae5; color: #065f46; }
+.estado-seminovo { background: #dbeafe; color: #1e40af; }
+.estado-usado    { background: #fef3c7; color: #92400e; }
+.estado-reparo   { background: #fee2e2; color: #b91c1c; }
+.estado-novo, .estado-seminovo, .estado-usado, .estado-reparo {
+    font-weight: 600;
+    padding: .42em .8em;
+    border-radius: 999px;
+    display: inline-block;
+    font-size: .85rem;
+}
+
+.contato-box {
+    background: var(--rhe-50);
+    border: 1px solid var(--rhe-200);
+    border-radius: 1rem;
+    padding: 1rem 1.15rem;
+}
+.contato-mail { word-break: break-all; }
+
+.condicoes-box {
+    background: #fff;
+    border: 1px dashed var(--rhe-300);
+    border-radius: 1rem;
+    padding: 1rem 1.15rem;
+}
+
+.meus-thumb {
+    display: block;
+    border-radius: 1rem;
+    overflow: hidden;
+    box-shadow: var(--rhe-shadow);
+}
+.meus-thumb img { width: 100%; height: 180px; object-fit: cover; display: block; }

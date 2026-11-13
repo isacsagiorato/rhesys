@@ -8,10 +8,10 @@ require __DIR__ . '/../includes/header.php';
 
 <section class="reveal text-center mb-4">
     <span class="section-tag">Jogo educativo</span>
-    <h1 class="mt-1 mb-2">Jogue no lixeiro certo</h1>
+    <h1 class="mt-1 mb-2">Jogue na lixeira certa</h1>
     <p class="text-muted mx-auto mb-0" style="max-width: 680px;">
         Um resíduo aparece por vez. Toque na lixeira da cor certa (padrão CONAMA 275/2001)
-        e acumule pontos — cada erro derruba a sua sequência.
+        e acumule pontos, cada erro derruba a sua sequência.
     </p>
 </section>
 
