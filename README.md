@@ -108,12 +108,17 @@ rhesys/
 
 ## Resíduos (Sprint 2 — consulta e cadastro)
 
-- `pages/residuos.php`: listagem de todos os resíduos, busca com `LIKE` em
-  `nome`, `palavras_chave` e `descricao` (RF03) e página de detalhes com
-  classificação, descarte, reciclagem e logística reversa (RF04–RF08).
+- `pages/residuos.php`: listagem agrupada por **tipo de material** (metais, plásticos,
+  papel, vidros, orgânicos, eletroeletrônicos, descarte especial, construção, roupas e
+  rejeitos), busca com `LIKE` em `nome`, `palavras_chave` e `descricao` (RF03) e filtros
+  combináveis por tipo, classe ABNT NBR 10004 e logística reversa (todos na URL, sem
+  JavaScript). A página de detalhes mostra classe, como descartar, reciclagem, logística
+  reversa, onde entregar e outros resíduos do mesmo tipo (RF04–RF08).
+- `config/residuos.php`: tipos de material, selos/cores das classes (I vermelho,
+  II A âmbar, II B cinza, como em Conteúdos) e escolha da foto de cada resíduo.
 - `pages/cadastro_residuo.php` (RF13): formulário com nome, descrição, forma
-  de descarte, reciclagem, palavras-chave e checkbox de logística reversa;
-  select de classificação vindo do banco. Exige login e CSRF. Após gravar,
+  de descarte, reciclagem, palavras-chave, tipo de material e checkbox de logística
+  reversa; select de classificação vindo do banco. Exige login e CSRF. Após gravar,
   redireciona para a página de detalhes do resíduo criado.
 - `pages/cadastro_classificacao.php`: tela simples para cadastrar as classes
   (Classe I - Perigosos, Classe II A - Não Inertes, Classe II B - Inertes).
@@ -127,6 +132,15 @@ rhesys/
   resíduos comuns do dia a dia (Classe I, II A e II B). Com os dados iniciais
   e o lote orgânico, o total é 50 itens. Execute-o **depois** do script principal:
   `mysql -u root -p < database/residuos_lote2.sql`.
+- Lote 3: `database/residuos_lote3.sql` cria a coluna `residuo.tipo_material`,
+  classifica todos os resíduos por tipo, corrige "Garrafas e potes de vidro" para
+  Classe II B (inerte) e insere mais 36 resíduos (caixa de pizza, cabos e
+  carregadores, gesso, telha de amianto, seringas, bitucas etc.). Idempotente;
+  execute **depois** dos lotes anteriores. Total: 86 resíduos.
+- Fotos dos resíduos: `img/fotos/residuos/` traz uma foto real para cada um dos 86 itens,
+  todas do Wikimedia Commons sob licenças livres. O crédito (autor + licença) aparece
+  na página de detalhes; a lista completa de fontes está em `docs/FONTES_FOTOS_RESIDUOS.md`
+  (dados usados pelo site em `config/fontes_fotos_residuos.php`).
 
 ## Compartilhamentos (Sprint 3)
 
@@ -154,7 +168,7 @@ rhesys/
 1. Instale XAMPP/Laragon com PHP 8+ e MySQL/MariaDB, ou use `php -S localhost:8000` na raiz.
 2. Crie o banco executando `database/rhesys_banco_dados.sql`. **Atenção:** esse script recria as tabelas e deve ser usado em uma instalação nova.
 3. Em um banco antigo, preserve os dados e execute apenas as migrações necessárias: `database/migracao_google.sql` (uma vez, se ainda não tiver as colunas do Google) e `database/migracao_sprints_3_a_6.sql` (idempotente).
-4. Execute `database/residuos_organicos.sql` para incluir os 10 orgânicos (script idempotente, também indicado para bancos existentes) e, opcionalmente, `database/residuos_lote2.sql` para acrescentar mais 35 itens. Com todos os lotes, a base fica com 50 resíduos.
+4. Execute `database/residuos_organicos.sql` para incluir os 10 orgânicos (script idempotente, também indicado para bancos existentes) e, opcionalmente, `database/residuos_lote2.sql` para acrescentar mais 35 itens e, por fim, `database/residuos_lote3.sql` (tipo de material + 36 itens). Com todos os lotes, a base fica com 86 resíduos.
 5. A conexão usa `root` sem senha e banco `rhesys` por padrão. Ajuste `config/conexao.php` ou defina `RHESYS_DB_HOST`, `RHESYS_DB_PORT`, `RHESYS_DB_NAME`, `RHESYS_DB_USER` e `RHESYS_DB_PASSWORD`.
 6. `BASE_URL` é detectada automaticamente. Acesse `index.php`; com o comando acima, use `http://localhost:8000`.
 

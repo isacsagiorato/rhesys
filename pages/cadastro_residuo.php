@@ -14,6 +14,7 @@
 require_once __DIR__ . '/../config/config.php';
 require_once __DIR__ . '/../config/conexao.php';
 require_once __DIR__ . '/../config/seguranca.php';
+require_once __DIR__ . '/../config/residuos.php';
 
 // RNF11 — Proteção de rotas: cadastro exige usuário logado
 exige_login();
@@ -28,6 +29,7 @@ $reciclagem = '';
 $palavras  = '';
 $logistica  = '';
 $id_classificacao = 0;
+$tipo_material = '';
 
 // Lista de classificações para o select
 $classificacoes = $pdo->query(
@@ -42,6 +44,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $palavras         = trim($_POST['palavras_chave'] ?? '');
     $logistica        = isset($_POST['possui_logistica_reversa']) ? 1 : 0;
     $id_classificacao = (int) ($_POST['id_classificacao'] ?? 0);
+    $tipo_material    = (string) ($_POST['tipo_material'] ?? '');
 
     // CSRF: recusa requisição forjada antes de qualquer validação
     if (!verificar_csrf()) {
@@ -59,6 +62,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
     if (mb_strlen($reciclagem) < 10) {
         $erros[] = 'Informe como o resíduo pode ser reciclado (mínimo de 10 caracteres).';
+    }
+
+    if (!isset(TIPOS_RESIDUO[$tipo_material])) {
+        $erros[] = 'Selecione o tipo de material do resíduo.';
     }
 
     // A classificação escolhida deve existir no banco
@@ -87,10 +94,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (empty($erros)) {
         $sql = 'INSERT INTO residuo
                     (id_classificacao, nome, descricao, forma_descarte,
-                     reciclagem, palavras_chave, possui_logistica_reversa)
+                     reciclagem, palavras_chave, possui_logistica_reversa, tipo_material)
                 VALUES
                     (:id_classificacao, :nome, :descricao, :forma_descarte,
-                     :reciclagem, :palavras_chave, :logistica)';
+                     :reciclagem, :palavras_chave, :logistica, :tipo)';
         $stmt = $pdo->prepare($sql);
         $stmt->bindValue(':id_classificacao', $id_classificacao, PDO::PARAM_INT);
         $stmt->bindValue(':nome', $nome);
@@ -99,6 +106,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt->bindValue(':reciclagem', $reciclagem);
         $stmt->bindValue(':palavras_chave', $palavras !== '' ? $palavras : null);
         $stmt->bindValue(':logistica', $logistica, PDO::PARAM_INT);
+        $stmt->bindValue(':tipo', $tipo_material);
         $stmt->execute();
 
         // Vai para a página de detalhes do resíduo criado (RF04-RF08)
@@ -168,6 +176,17 @@ require __DIR__ . '/../includes/header.php';
                                 Não encontrou a classe?
                                 <a href="cadastro_classificacao.php">Cadastre uma nova classificação</a>.
                             </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="tipo_material" class="form-label">Tipo de material</label>
+                            <select class="form-select" id="tipo_material" name="tipo_material" required>
+                                <option value="" disabled <?php echo $tipo_material === '' ? 'selected' : ''; ?>>Selecione...</option>
+                                <?php foreach (TIPOS_RESIDUO as $chave_tipo => $info_tipo): ?>
+                                    <option value="<?php echo htmlspecialchars($chave_tipo); ?>" <?php echo $tipo_material === $chave_tipo ? 'selected' : ''; ?>><?php echo htmlspecialchars($info_tipo['rotulo']); ?></option>
+                                <?php endforeach; ?>
+                            </select>
+                            <div class="form-text">Define em qual grupo o resíduo aparece na página de resíduos.</div>
                         </div>
 
                         <div class="mb-3">

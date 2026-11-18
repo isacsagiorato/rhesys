@@ -18,12 +18,12 @@ SELECT 2, 'Casca de banana',
 WHERE NOT EXISTS (SELECT 1 FROM residuo WHERE nome = 'Casca de banana');
 
 INSERT INTO residuo (id_classificacao, nome, descricao, forma_descarte, reciclagem, palavras_chave, possui_logistica_reversa)
-SELECT 2, 'Cenoura e cascas de legumes',
- 'Cenouras, suas cascas e outros restos de legumes são materiais de origem vegetal aproveitáveis na compostagem.',
+SELECT 2, 'Cascas de legumes',
+ 'Cascas de cenoura e de outros legumes são materiais de origem vegetal aproveitáveis na compostagem.',
  'Retire embalagens e adicione os restos à composteira ou à coleta de orgânicos, preferencialmente em pedaços pequenos.',
  'Os restos vegetais contribuem com nutrientes e umidade para a produção de composto orgânico.',
  'cenoura, casca, cascas, legumes, verduras, orgânico, organico', FALSE
-WHERE NOT EXISTS (SELECT 1 FROM residuo WHERE nome = 'Cenoura e cascas de legumes');
+WHERE NOT EXISTS (SELECT 1 FROM residuo WHERE nome = 'Cascas de legumes');
 
 INSERT INTO residuo (id_classificacao, nome, descricao, forma_descarte, reciclagem, palavras_chave, possui_logistica_reversa)
 SELECT 2, 'Queijo e laticínios',
