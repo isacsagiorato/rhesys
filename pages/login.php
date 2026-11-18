@@ -113,18 +113,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 require __DIR__ . '/../includes/header.php';
 ?>
 
-<section class="band reveal">
-    <img class="band-bg" src="<?php echo BASE_URL; ?>img/fotos/reciclaveis.jpg" alt="Recicláveis separados para coleta">
-    <span class="crumb">Sua conta</span>
-    <h1 class="mt-2">Entrar</h1>
-    <p class="mt-2">Acesse sua conta para compartilhar e acompanhar seus resultados.</p>
-</section>
-
-<div class="row justify-content-center mt-5 reveal">
-    <div class="col-md-8 col-lg-5">
-        <div class="card shadow-sm">
-            <div class="card-body p-4 p-lg-5">
-                <h4 class="card-title mb-4"><i class="bi bi-box-arrow-in-right me-2"></i>Acesso ao sistema</h4>
+<div class="auth-wrap reveal">
+    <div class="card shadow-sm auth-card">
+        <div class="row g-0">
+            <div class="col-lg-5 d-none d-lg-block">
+                <div class="auth-lado">
+                    <img src="<?php echo BASE_URL; ?>img/fotos/hero-hands.jpg" alt="">
+                    <span class="section-tag" style="color: var(--rhe-300);">Sua conta Rhesys</span>
+                    <h2 class="h3 mt-2 mb-0">Bem-vindo de volta</h2>
+                    <ul>
+                        <li><i class="bi bi-check-circle-fill"></i>Ofereça materiais e encontre itens para reaproveitar</li>
+                        <li><i class="bi bi-check-circle-fill"></i>Salve sua pontuação nos quizzes</li>
+                        <li><i class="bi bi-check-circle-fill"></i>Cadastre resíduos e pontos de coleta</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="col-lg-7">
+                <div class="card-body p-4 p-lg-5">
+                    <span class="section-tag">Sua conta</span>
+                    <h1 class="fs-2 mt-1 mb-1">Entrar</h1>
+                    <p class="text-muted mb-4">Acesse sua conta para compartilhar materiais e acompanhar seus resultados.</p>
 
                 <?php if (!empty($erros)): ?>
                     <div class="alert alert-danger">
@@ -167,6 +175,7 @@ require __DIR__ . '/../includes/header.php';
                 <p class="text-center text-muted small mt-4 mb-0">
                     Não tem conta? <a href="cadastro.php">Cadastre-se</a>
                 </p>
+                </div>
             </div>
         </div>
     </div>

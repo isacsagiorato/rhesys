@@ -11,7 +11,8 @@ $mensagens = [
     'interesse' => 'Seu interesse foi registrado. O ofertante poderá aceitá-lo e liberar o contato para a retirada.',
     'interesse_cancelado' => 'Seu interesse foi cancelado.',
 ];
-$sucesso = $mensagens[$_GET['sucesso'] ?? ''] ?? '';
+$codigo_sucesso = $_GET['sucesso'] ?? '';
+$sucesso = is_string($codigo_sucesso) ? ($mensagens[$codigo_sucesso] ?? '') : '';
 $id = (int) ($_GET['id'] ?? 0);
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {

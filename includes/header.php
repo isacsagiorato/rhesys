@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#04281c">
-    <title><?php echo isset($titulo_pagina) ? $titulo_pagina . ' - ' . NOME_SITE : NOME_SITE; ?></title>
+    <title><?php echo htmlspecialchars(isset($titulo_pagina) ? $titulo_pagina . ' - ' . NOME_SITE : NOME_SITE); ?></title>
 
     <!-- Favicon (nova logo) -->
     <link rel="icon" type="image/svg+xml" href="<?php echo BASE_URL; ?>img/logo-icon.svg">
@@ -20,13 +20,14 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
 
     <!-- CSS próprio (?v=14 força o navegador a baixar a versão nova e não usar cache) -->
-    <link rel="stylesheet" href="<?php echo BASE_URL; ?>css/style.css?v=21">
+    <link rel="stylesheet" href="<?php echo BASE_URL; ?>css/style.css?v=28">
     <?php foreach (($estilos_extras ?? []) as $stylesheet): ?>
     <link rel="stylesheet" href="<?php echo htmlspecialchars($stylesheet, ENT_QUOTES, 'UTF-8'); ?>">
     <?php endforeach; ?>
     <noscript><style>.reveal { opacity: 1; transform: none; }</style></noscript>
 </head>
 <body>
+<a class="skip-link" href="#conteudo">Pular para o conteúdo</a>
 
 <nav class="navbar navbar-expand-xl navbar-rhe">
     <div class="container">
@@ -49,21 +50,21 @@ if (strpos($pagina_atual, 'compartilhamen') !== false) {
     $pagina_atual = 'compartilhamentos.php';
 }
                 $links = [
-                    'index.php'             => ['Início', 'index.php'],
-                    'sobre.php'             => ['Sobre', 'pages/sobre.php'],
-                    'residuos.php'          => ['Resíduos', 'pages/residuos.php'],
-                    'compartilhamentos.php' => ['Compartilhamentos', 'pages/compartilhamentos.php'],
-                    'conteudos.php'         => ['Conteúdos', 'pages/conteudos.php'],
-                    'quiz.php'              => ['Quizzes', 'pages/quiz.php'],
-                    'jogo.php'              => ['Jogo', 'pages/jogo.php'],
-                    'pontos_coleta.php'     => ['Pontos de Coleta', 'pages/pontos_coleta.php'],
+                    'index.php'             => ['Início', 'index.php', 'bi-house'],
+                    'sobre.php'             => ['Sobre', 'pages/sobre.php', 'bi-info-circle'],
+                    'residuos.php'          => ['Resíduos', 'pages/residuos.php', 'bi-recycle'],
+                    'compartilhamentos.php' => ['Compartilhamentos', 'pages/compartilhamentos.php', 'bi-arrow-left-right'],
+                    'conteudos.php'         => ['Conteúdos', 'pages/conteudos.php', 'bi-book'],
+                    'quiz.php'              => ['Quizzes', 'pages/quiz.php', 'bi-patch-question'],
+                    'jogo.php'              => ['Jogo', 'pages/jogo.php', 'bi-controller'],
+                    'pontos_coleta.php'     => ['Pontos de Coleta', 'pages/pontos_coleta.php', 'bi-geo-alt'],
                 ];
                 foreach ($links as $arquivo => $item):
                     $classe = ($pagina_atual === $arquivo) ? ' active' : '';
                 ?>
                 <li class="nav-item">
-                    <a class="nav-link<?php echo $classe; ?>" href="<?php echo BASE_URL . $item[1]; ?>">
-                        <?php echo $item[0]; ?>
+                    <a class="nav-link<?php echo $classe; ?>" href="<?php echo BASE_URL . $item[1]; ?>"<?php echo $classe ? ' aria-current="page"' : ''; ?>>
+                        <i class="bi <?php echo $item[2]; ?> nav-icone" aria-hidden="true"></i><?php echo $item[0]; ?>
                     </a>
                 </li>
                 <?php endforeach; ?>
@@ -71,9 +72,10 @@ if (strpos($pagina_atual, 'compartilhamen') !== false) {
                 <!-- Acesso do usuário: Entrar/Cadastrar (deslogado) ou nome + Sair (logado) -->
                 <?php if (usuario_logado()): ?>
                 <li class="nav-item">
-                    <span class="nav-link">
-                        <i class="bi bi-person-circle"></i>
-                        Olá, <?php echo htmlspecialchars($_SESSION['nome_usuario']); ?>
+                    <?php $primeiro_nome = strtok(trim((string) $_SESSION['nome_usuario']), ' ') ?: ''; ?>
+                    <span class="nav-link nav-usuario" title="<?php echo htmlspecialchars($_SESSION['nome_usuario']); ?>">
+                        <i class="bi bi-person-circle nav-icone-usuario" aria-hidden="true"></i>
+                        <span class="nav-usuario-nome">Olá, <?php echo htmlspecialchars($primeiro_nome); ?></span>
                     </span>
                 </li>
                 <li class="nav-item">
@@ -81,7 +83,7 @@ if (strpos($pagina_atual, 'compartilhamen') !== false) {
                 </li>
                 <?php else: ?>
                 <li class="nav-item">
-                    <a class="nav-link" href="<?php echo BASE_URL; ?>pages/login.php">Entrar</a>
+                    <a class="nav-link nav-usuario" href="<?php echo BASE_URL; ?>pages/login.php"><i class="bi bi-box-arrow-in-right" aria-hidden="true"></i>Entrar</a>
                 </li>
                 <li class="nav-item ms-xl-2">
                     <a class="btn btn-success btn-sm px-3 my-1" href="<?php echo BASE_URL; ?>pages/cadastro.php">Cadastrar</a>
@@ -92,4 +94,4 @@ if (strpos($pagina_atual, 'compartilhamen') !== false) {
     </div>
 </nav>
 
-<main class="container my-4 my-lg-5">
+<main class="container my-4 my-lg-5" id="conteudo" tabindex="-1">

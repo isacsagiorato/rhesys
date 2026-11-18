@@ -90,3 +90,14 @@ Todas as fotos de `img/fotos/residuos/` vêm do **Wikimedia Commons** (commons.w
 | Termômetro de mercúrio | [2023 Rtęciowy termometr lekarski.jpg](https://commons.wikimedia.org/wiki/File:2023_Rt%C4%99ciowy_termometr_lekarski.jpg) | Jacek Halicki | [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0) |
 | Toner e cartucho de impressora | [Canon PG-810 CL-811 ink cartridge.JPG](https://commons.wikimedia.org/wiki/File:Canon_PG-810_CL-811_ink_cartridge.JPG) | eFilm | [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0) |
 | Vidro plano e espelho | [Glass cobweb.jpg](https://commons.wikimedia.org/wiki/File:Glass_cobweb.jpg) | Daniela M. | [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0) |
+
+## Fotos da página inicial
+
+Fotos de `img/fotos/home/`, também do Wikimedia Commons, reduzidas para 1200 px de largura.
+
+| Onde aparece | Foto original (Wikimedia Commons) | Autor | Licença |
+|---|---|---|---|
+| Cartão "Pesquise resíduos" | [Household waste cans.JPG](https://commons.wikimedia.org/wiki/File:Household_waste_cans.JPG) | SeppVei | Domínio público |
+| Cartão "Compartilhe itens" | [SceneAtClothingSwap.jpg](https://commons.wikimedia.org/wiki/File:SceneAtClothingSwap.jpg) | Conception Levy | [CC BY-SA 2.0](https://creativecommons.org/licenses/by-sa/2.0) |
+| Cartão "Aprenda brincando" | [IBPA 5323 - Implantação de Estação Integrada de Compostagem na EMEF Moradas - 2017-07-05 - Joel Vargas-PMPA.jpg](https://commons.wikimedia.org/wiki/File:IBPA_5323_-_Implanta%C3%A7%C3%A3o_de_Esta%C3%A7%C3%A3o_Integrada_de_Compostagem_na_EMEF_Moradas_-_2017-07-05_-_Joel_Vargas-PMPA.jpg) | Joel Vargas / PMPA | Atribuição (citar o autor) |
+| Faixa "Pequenas atitudes, grande impacto" | [Earth-day-cleanup-reusable-cotton-bags-ocean-blue-project.jpg](https://commons.wikimedia.org/wiki/File:Earth-day-cleanup-reusable-cotton-bags-ocean-blue-project.jpg) | Ocean Blue Project, Inc. | [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0) |

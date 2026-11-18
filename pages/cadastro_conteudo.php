@@ -108,8 +108,10 @@ require __DIR__ . '/../includes/header.php';
                 <label for="data_publicacao" class="form-label">Data de publicação</label>
                 <input class="form-control" type="datetime-local" id="data_publicacao" name="data_publicacao" value="<?php echo htmlspecialchars($data_publicacao); ?>" required>
             </div>
+            <div class="form-acoes">
             <button type="submit" class="btn btn-success">Publicar conteúdo</button>
             <a href="conteudos.php" class="btn btn-outline-success">Cancelar</a>
+            </div>
         </form>
     </div></div>
 </div></div>

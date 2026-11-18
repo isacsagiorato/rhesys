@@ -47,9 +47,9 @@ require __DIR__ . '/../includes/header.php';
     </p>
 </section>
 
-<div class="d-flex flex-wrap justify-content-between align-items-end gap-3 mt-4 reveal">
-    <form method="get" class="d-flex flex-wrap gap-2 align-items-end">
-        <div>
+<div class="filtro-bar d-flex flex-wrap justify-content-between align-items-end gap-3 mt-4">
+    <form method="get" class="d-flex flex-wrap gap-2 align-items-end flex-grow-1">
+        <div class="flex-grow-1" style="max-width: 26rem;">
             <label for="id_residuo" class="form-label small mb-1">Filtrar pelo resíduo aceito</label>
             <select name="id_residuo" id="id_residuo" class="form-select">
                 <option value="0">Todos os resíduos</option>
@@ -117,7 +117,7 @@ require __DIR__ . '/../includes/header.php';
                             <div class="mb-2">
                                 <strong class="small">Aceita:</strong><br>
                                 <?php foreach (explode(', ', $ponto['residuos_aceitos']) as $res_nome): ?>
-                                    <span class="badge-soft me-1 mt-1" style="font-size: .8rem;"><?php echo htmlspecialchars($res_nome); ?></span>
+                                    <a class="badge-soft me-1 mt-1 text-decoration-none" style="font-size: .8rem;" href="residuos.php?busca=<?php echo rawurlencode($res_nome); ?>#resultados"><?php echo htmlspecialchars($res_nome); ?></a>
                                 <?php endforeach; ?>
                             </div>
                         <?php endif; ?>

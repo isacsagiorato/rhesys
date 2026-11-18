@@ -2,6 +2,7 @@
 require_once __DIR__ . '/../config/config.php';
 require_once __DIR__ . '/../config/conexao.php';
 require_once __DIR__ . '/../config/seguranca.php';
+require_once __DIR__ . '/../config/residuos.php';
 exige_login();
 
 $id_ponto = (int) (($_SERVER['REQUEST_METHOD'] === 'POST' ? $_POST['id_ponto'] ?? 0 : $_GET['id'] ?? 0));
@@ -9,7 +10,7 @@ $titulo_pagina = $id_ponto > 0 ? 'Editar ponto de coleta' : 'Cadastrar ponto de 
 $erros = [];
 $nome = $endereco = $latitude = $longitude = $telefone = $horario = '';
 $selecionados = [];
-$residuos = $pdo->query('SELECT id_residuo, nome FROM residuo ORDER BY nome')->fetchAll();
+$residuos = $pdo->query('SELECT id_residuo, nome, tipo_material FROM residuo ORDER BY nome')->fetchAll();
 $ids_validos = array_map('intval', array_column($residuos, 'id_residuo'));
 
 if ($id_ponto > 0) {
@@ -144,19 +145,97 @@ require __DIR__ . '/../includes/header.php';
                     <?php if (!$residuos): ?>
                         <div class="alert alert-info">Cadastre um resíduo antes de criar o ponto.</div>
                     <?php else: ?>
-                        <div class="row g-2">
-                            <?php foreach ($residuos as $residuo): ?>
-                                <div class="col-sm-6 col-lg-4">
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" name="residuos[]" value="<?php echo (int) $residuo['id_residuo']; ?>" id="residuo-<?php echo (int) $residuo['id_residuo']; ?>" <?php echo in_array((int) $residuo['id_residuo'], $selecionados, true) ? 'checked' : ''; ?>>
-                                        <label class="form-check-label" for="residuo-<?php echo (int) $residuo['id_residuo']; ?>"><?php echo htmlspecialchars($residuo['nome']); ?></label>
+                        <?php
+                        // Agrupa os resíduos por tipo de material (mesma ordem da página de resíduos)
+                        $por_tipo = [];
+                        foreach ($residuos as $residuo) {
+                            $chave = isset(TIPOS_RESIDUO[$residuo['tipo_material'] ?? '']) ? $residuo['tipo_material'] : 'outros';
+                            $por_tipo[$chave][] = $residuo;
+                        }
+                        $ordem = array_flip(array_merge(array_keys(TIPOS_RESIDUO), ['outros']));
+                        uksort($por_tipo, fn($a, $b) => $ordem[$a] <=> $ordem[$b]);
+                        ?>
+                        <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-3">
+                            <div class="search-pill residuos-aceitos-busca flex-grow-1">
+                                <i class="bi bi-search" aria-hidden="true"></i>
+                                <label for="busca-aceitos" class="visually-hidden">Buscar resíduo</label>
+                                <input type="search" id="busca-aceitos" placeholder="Buscar resíduo pelo nome..." autocomplete="off">
+                            </div>
+                            <span class="contador-aceitos" id="contador-aceitos" aria-live="polite"><?php echo count($selecionados); ?> selecionado(s)</span>
+                        </div>
+                        <?php foreach ($por_tipo as $chave => $itens):
+                            $info = TIPOS_RESIDUO[$chave] ?? ['rotulo' => 'Outros', 'icone' => 'bi-three-dots'];
+                            $marcados = count(array_filter($itens, fn($r) => in_array((int) $r['id_residuo'], $selecionados, true))); ?>
+                            <details class="grupo-aceitos" <?php echo $marcados > 0 ? 'open' : ''; ?>>
+                                <summary>
+                                    <i class="bi <?php echo $info['icone']; ?>" style="color: var(--rhe-600);"></i>
+                                    <?php echo htmlspecialchars($info['rotulo']); ?>
+                                    <span class="conta-grupo<?php echo $marcados ? ' tem' : ''; ?>" data-total="<?php echo count($itens); ?>"><?php echo $marcados; ?>/<?php echo count($itens); ?></span>
+                                    <i class="bi bi-chevron-down seta" aria-hidden="true"></i>
+                                </summary>
+                                <div class="lista-aceitos">
+                                    <button type="button" class="btn btn-link btn-sm p-0 mb-2 marcar-grupo">Marcar todos deste tipo</button>
+                                    <div class="row g-2">
+                                        <?php foreach ($itens as $residuo): ?>
+                                            <div class="col-sm-6 col-lg-4 item-aceito" data-nome="<?php echo htmlspecialchars(normalizar_texto($residuo['nome'])); ?>">
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="checkbox" name="residuos[]" value="<?php echo (int) $residuo['id_residuo']; ?>" id="residuo-<?php echo (int) $residuo['id_residuo']; ?>" <?php echo in_array((int) $residuo['id_residuo'], $selecionados, true) ? 'checked' : ''; ?>>
+                                                    <label class="form-check-label" for="residuo-<?php echo (int) $residuo['id_residuo']; ?>"><?php echo htmlspecialchars($residuo['nome']); ?></label>
+                                                </div>
+                                            </div>
+                                        <?php endforeach; ?>
                                     </div>
                                 </div>
-                            <?php endforeach; ?>
-                        </div>
+                            </details>
+                        <?php endforeach; ?>
+                        <script>
+                        // Busca, contadores e "marcar todos" (sem JavaScript, tudo continua funcionando)
+                        (function () {
+                            var busca = document.getElementById('busca-aceitos');
+                            var contador = document.getElementById('contador-aceitos');
+                            var grupos = document.querySelectorAll('.grupo-aceitos');
+                            function normalizar(t) { return t.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, ''); }
+                            function atualizar() {
+                                var total = 0;
+                                grupos.forEach(function (g) {
+                                    var n = g.querySelectorAll('input:checked').length;
+                                    total += n;
+                                    var c = g.querySelector('.conta-grupo');
+                                    c.textContent = n + '/' + c.getAttribute('data-total');
+                                    c.classList.toggle('tem', n > 0);
+                                });
+                                contador.textContent = total + ' selecionado(s)';
+                            }
+                            document.addEventListener('change', function (e) { if (e.target.name === 'residuos[]') atualizar(); });
+                            document.querySelectorAll('.marcar-grupo').forEach(function (b) {
+                                b.addEventListener('click', function () {
+                                    var caixas = b.closest('.grupo-aceitos').querySelectorAll('input[type=checkbox]');
+                                    var todos = Array.prototype.every.call(caixas, function (c) { return c.checked; });
+                                    caixas.forEach(function (c) { c.checked = !todos; });
+                                    b.textContent = todos ? 'Marcar todos deste tipo' : 'Desmarcar todos deste tipo';
+                                    atualizar();
+                                });
+                            });
+                            busca.addEventListener('input', function () {
+                                var termo = normalizar(busca.value.trim());
+                                grupos.forEach(function (g) {
+                                    var visiveis = 0;
+                                    g.querySelectorAll('.item-aceito').forEach(function (i) {
+                                        var ok = termo === '' || i.getAttribute('data-nome').indexOf(termo) !== -1;
+                                        i.hidden = !ok;
+                                        if (ok) visiveis++;
+                                    });
+                                    g.hidden = visiveis === 0;
+                                    if (termo !== '') g.open = true;
+                                });
+                            });
+                            // Impede que o Enter na busca envie o formulário
+                            busca.addEventListener('keydown', function (e) { if (e.key === 'Enter') e.preventDefault(); });
+                        })();
+                        </script>
                     <?php endif; ?>
                 </fieldset>
-                <div class="d-flex flex-wrap gap-2 mt-4">
+                <div class="form-acoes">
                     <button type="submit" class="btn btn-success" <?php echo !$residuos ? 'disabled' : ''; ?>><?php echo $id_ponto > 0 ? 'Salvar alterações' : 'Cadastrar ponto'; ?></button>
                     <a href="pontos_coleta.php" class="btn btn-outline-success">Cancelar</a>
                     <a href="https://www.openstreetmap.org/" target="_blank" rel="noopener noreferrer" class="btn btn-link">Consultar coordenadas</a>

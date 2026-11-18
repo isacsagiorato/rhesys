@@ -89,20 +89,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 require __DIR__ . '/../includes/header.php';
 ?>
 
-<section class="band reveal">
-    <img class="band-bg" src="<?php echo BASE_URL; ?>img/fotos/reaproveitar.jpg" alt="Materiais reaproveitáveis">
-    <span class="crumb">Sua conta</span>
-    <h1 class="mt-2">Criar conta</h1>
-    <p class="mt-2">
-        Cadastre-se para compartilhar materiais e salvar seus resultados nos quizzes.
-    </p>
-</section>
-
-<div class="row justify-content-center mt-5 reveal">
-    <div class="col-md-8 col-lg-6">
-        <div class="card shadow-sm">
-            <div class="card-body p-4 p-lg-5">
-                <h4 class="card-title mb-4"><i class="bi bi-person-plus me-2"></i>Dados do cadastro</h4>
+<div class="auth-wrap reveal">
+    <div class="card shadow-sm auth-card">
+        <div class="row g-0">
+            <div class="col-lg-5 d-none d-lg-block">
+                <div class="auth-lado">
+                    <img src="<?php echo BASE_URL; ?>img/fotos/reaproveitar.jpg" alt="">
+                    <span class="section-tag" style="color: var(--rhe-300);">Sua conta Rhesys</span>
+                    <h2 class="h3 mt-2 mb-0">Faça parte da economia circular</h2>
+                    <ul>
+                        <li><i class="bi bi-check-circle-fill"></i>Ofereça materiais e encontre itens para reaproveitar</li>
+                        <li><i class="bi bi-check-circle-fill"></i>Salve sua pontuação nos quizzes</li>
+                        <li><i class="bi bi-check-circle-fill"></i>Cadastre resíduos e pontos de coleta</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="col-lg-7">
+                <div class="card-body p-4 p-lg-5">
+                    <span class="section-tag">Sua conta</span>
+                    <h1 class="fs-2 mt-1 mb-1">Criar conta</h1>
+                    <p class="text-muted mb-4">Cadastre-se para compartilhar materiais e salvar seus resultados nos quizzes.</p>
 
                 <?php if (!empty($erros)): ?>
                     <div class="alert alert-danger">
@@ -167,6 +173,7 @@ require __DIR__ . '/../includes/header.php';
                 <p class="text-center text-muted small mt-4 mb-0">
                     Já tem conta? <a href="login.php">Entrar</a>
                 </p>
+                </div>
             </div>
         </div>
     </div>
