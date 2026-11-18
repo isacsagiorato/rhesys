@@ -353,7 +353,9 @@ a:hover { color: var(--rhe-700); }
     overflow: hidden;
     box-shadow: var(--rhe-shadow);
 }
-.detail-photo img { width: 100%; height: 260px; object-fit: cover; display: block; }
+.detail-photo img { width: 100%; height: 320px; object-fit: cover; display: block; }
+.foto-credito { font-size: .78rem; color: #6c757d; margin-top: .45rem; text-align: right; }
+.foto-credito a { color: inherit; }
 .info-card {
     border: none;
     border-radius: var(--rhe-radius);
@@ -950,3 +952,161 @@ a:hover { color: var(--rhe-700); }
     box-shadow: var(--rhe-shadow);
 }
 .meus-thumb img { width: 100%; height: 180px; object-fit: cover; display: block; }
+
+/* ============================================================
+   PÁGINA DE RESÍDUOS — filtros, selos de classe e detalhe
+   Cores das classes iguais às da página de Conteúdos:
+   Classe I vermelho, II A âmbar, II B cinza.
+   ============================================================ */
+.classe-1  { background: #fee2e2 !important; color: #b91c1c !important; }
+.classe-2a { background: #fef3c7 !important; color: #b45309 !important; }
+.classe-2b { background: #e5e7eb !important; color: #4b5563 !important; }
+.classe-outra { background: var(--rhe-100) !important; color: var(--rhe-800) !important; }
+
+.badge-classe {
+    display: inline-flex;
+    align-items: center;
+    gap: .35rem;
+    font-weight: 600;
+    font-size: .85rem;
+    padding: .42em .85em;
+    border-radius: 999px;
+}
+.badge-classe-sm { font-size: .74rem; padding: .32em .7em; }
+.badge-tipo {
+    display: inline-flex;
+    align-items: center;
+    gap: .3rem;
+    font-weight: 600;
+    font-size: .74rem;
+    padding: .32em .7em;
+    border-radius: 999px;
+    background: var(--rhe-50);
+    color: var(--rhe-800);
+    border: 1px solid var(--rhe-200);
+}
+
+/* Selo "Logística reversa" sobre a foto do card */
+.card-residuo .photo-tag {
+    position: absolute;
+    left: .6rem;
+    bottom: .6rem;
+    z-index: 2;
+    background: #fef3c7;
+    color: #92400e;
+    font-weight: 600;
+    font-size: .72rem;
+    padding: .3em .65em;
+    border-radius: 999px;
+    box-shadow: 0 4px 12px -6px rgba(0, 0, 0, .35);
+}
+.card-residuo .card-title { line-height: 1.3; }
+
+/* Barra de busca e filtros */
+.residuos-filtros { position: relative; z-index: 2; margin-top: -2.2rem !important; margin-left: 1.25rem; margin-right: 1.25rem; padding: 1.25rem 1.4rem; scroll-margin-top: 100px; }
+.residuos-filtros .search-pill { box-shadow: none; border-color: var(--rhe-200); }
+.filtros-linha { display: flex; flex-wrap: wrap; align-items: center; gap: .45rem; }
+.filtros-rotulo { font-size: .8rem; font-weight: 700; color: var(--rhe-800); margin-right: .2rem; }
+.filtro-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: .35rem;
+    border: 1px solid var(--rhe-200);
+    border-radius: 999px;
+    padding: .4rem .8rem;
+    background: #fff;
+    color: var(--rhe-800);
+    font-size: .82rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: background .2s ease, color .2s ease, border-color .2s ease;
+}
+.filtro-chip:hover { background: var(--rhe-50); color: var(--rhe-800); border-color: var(--rhe-400); }
+.filtro-chip.active { background: var(--rhe-600); border-color: var(--rhe-600); color: #fff; }
+.filtro-chip-classe-1 .bi { color: #b91c1c; }
+.filtro-chip-classe-2a .bi { color: #b45309; }
+.filtro-chip-classe-2b .bi { color: #4b5563; }
+.filtro-chip-lr .bi { color: #92400e; }
+.filtro-chip-classe-1.active  { background: #b91c1c; border-color: #b91c1c; }
+.filtro-chip-classe-2a.active { background: #b45309; border-color: #b45309; }
+.filtro-chip-classe-2b.active { background: #4b5563; border-color: #4b5563; }
+.filtro-chip-lr.active { background: #92400e; border-color: #92400e; }
+.filtro-chip.active .bi { color: #fff; }
+.filtro-contagem {
+    background: rgba(4, 40, 28, .08);
+    border-radius: 999px;
+    padding: 0 .45rem;
+    font-size: .72rem;
+}
+.filtro-chip.active .filtro-contagem { background: rgba(255, 255, 255, .25); }
+.classes-ajuda summary { font-size: .82rem; color: var(--rhe-700); font-weight: 600; cursor: pointer; width: fit-content; }
+.classes-ajuda ul { padding-left: 1.1rem; color: #4b5b53; }
+.classes-ajuda li + li { margin-top: .25rem; }
+
+/* Atalhos de tipo (compactos) */
+.card-tipo-sm .photo { height: 78px; }
+.card-tipo-sm .card-body {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: .4rem;
+    padding: .6rem .75rem;
+}
+.card-tipo-sm .tipo-nome { font-family: 'Outfit', sans-serif; font-weight: 700; font-size: .92rem; color: var(--rhe-ink); line-height: 1.2; }
+.card-tipo-sm .tipo-nome .bi { color: var(--rhe-600); }
+.card-tipo-sm .tipo-contagem {
+    flex: 0 0 auto;
+    min-width: 1.8rem;
+    text-align: center;
+    background: var(--rhe-100);
+    color: var(--rhe-800);
+    font-weight: 700;
+    font-size: .75rem;
+    border-radius: 999px;
+    padding: .15rem .45rem;
+}
+.card-tipo-sm.active { outline-width: 3px; }
+.card-tipo-sm.active .tipo-contagem { background: var(--rhe-600); color: #fff; }
+
+/* Resumo e grupos de resultados */
+.filtro-ativo {
+    display: inline-flex;
+    align-items: center;
+    gap: .2rem;
+    background: var(--rhe-100);
+    color: var(--rhe-800);
+    font-size: .8rem;
+    font-weight: 600;
+    border-radius: 999px;
+    padding: .25rem .4rem .25rem .75rem;
+    text-decoration: none;
+}
+.filtro-ativo:hover { background: var(--rhe-200); color: var(--rhe-900); }
+.grupo-residuos { scroll-margin-top: 100px; }
+.grupo-cabecalho {
+    display: flex;
+    align-items: center;
+    gap: .75rem;
+    padding-bottom: .75rem;
+    margin-bottom: 1.1rem;
+    border-bottom: 1px solid #e3f0e8;
+}
+
+/* Detalhe do resíduo */
+.residuo-breadcrumb { font-size: .85rem; }
+.residuo-breadcrumb a { text-decoration: none; font-weight: 600; }
+.residuo-topo { overflow: hidden; height: auto; }
+.residuo-topo-foto { height: 100%; min-height: 300px; }
+.residuo-topo-foto img { width: 100%; height: 100%; min-height: 300px; max-height: 460px; object-fit: cover; display: block; }
+.descarte-destaque {
+    background: var(--rhe-50);
+    border: 1px solid var(--rhe-200);
+    border-left: 4px solid var(--rhe-500);
+    border-radius: 1rem;
+    padding: 1rem 1.15rem;
+}
+.descarte-destaque h2 { color: var(--rhe-800); }
+@media (max-width: 575px) {
+    .residuos-filtros { margin-left: .4rem; margin-right: .4rem; padding: 1rem; }
+    .residuos-filtros .search-pill .btn { padding-left: 1rem; padding-right: 1rem; }
+}

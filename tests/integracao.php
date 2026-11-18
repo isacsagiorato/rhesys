@@ -39,6 +39,19 @@ do {
     if (!$mysqli->more_results()) break;
     if (!$mysqli->next_result()) throw new RuntimeException('Falha no SQL de orgânicos: ' . $mysqli->error);
 } while (true);
+// Lote 3: tipo de material + novos resíduos (o lote 2 é carregado antes para o lote 3 classificá-lo)
+foreach (['residuos_lote2.sql', 'residuos_lote3.sql'] as $arquivoLote) {
+    $sqlLote = str_replace('USE rhesys;', "USE `$dbName`;", file_get_contents($root . '/database/' . $arquivoLote), $loteReplaced);
+    if ($loteReplaced !== 1 || strpos($sqlLote, 'USE rhesys;') !== false) {
+        throw new RuntimeException("Não foi possível isolar $arquivoLote no banco de testes.");
+    }
+    if (!$mysqli->multi_query($sqlLote)) throw new RuntimeException("Falha ao executar $arquivoLote: " . $mysqli->error);
+    do {
+        if ($result = $mysqli->store_result()) $result->free();
+        if (!$mysqli->more_results()) break;
+        if (!$mysqli->next_result()) throw new RuntimeException("Falha no SQL de $arquivoLote: " . $mysqli->error);
+    } while (true);
+}
 $mysqli->close();
 $pdo = new PDO("mysql:host=$dbHost;port=$dbPort;dbname=$dbName;charset=utf8mb4", $dbUser, $dbPassword, $options);
 
@@ -140,13 +153,25 @@ try {
     $response = request($base, $clients['publico'], 'GET', '/pages/residuos.php?busca=pilha');
     contains('Pilha', $response, 'busca de resíduo retorna o item esperado');
     $response = request($base, $clients['publico'], 'GET', '/pages/residuos.php');
-    verify(strpos($response['body'], 'Resíduos orgânicos') !== false && strpos($response['body'], 'img/fotos/lixo-organico.jpg') !== false, 'seção de orgânicos e foto são exibidas');
+    verify(strpos($response['body'], 'Casca de banana') !== false && strpos($response['body'], 'img/fotos/lixo-organico.jpg') !== false, 'seção de orgânicos e foto são exibidas');
     $response = request($base, $clients['publico'], 'GET', '/pages/residuos.php?busca=banana');
     contains('Casca de banana', $response, 'filtro de banana encontra resíduo orgânico');
     $response = request($base, $clients['publico'], 'GET', '/pages/residuos.php?busca=queijo');
     contains('Queijo e laticínios', $response, 'filtro de queijo encontra resíduo orgânico');
     $response = request($base, $clients['publico'], 'GET', '/pages/residuos.php?busca=resto%20de%20comida');
     contains('Restos de comida', $response, 'filtro de restos de comida encontra orientações');
+    verify((int) scalar($pdo, 'SELECT COUNT(*) FROM residuo WHERE tipo_material IS NULL') === 0, 'todos os resíduos têm tipo de material');
+    $response = request($base, $clients['publico'], 'GET', '/pages/residuos.php?tipo=papel');
+    verify(strpos($response['body'], 'Caixa de pizza') !== false && strpos($response['body'], 'Garrafa PET') === false, 'filtro por tipo mostra só o material escolhido');
+    $response = request($base, $clients['publico'], 'GET', '/pages/residuos.php?classe=2b');
+    verify(strpos($response['body'], 'Garrafas e potes de vidro') !== false && strpos($response['body'], '>Pilha<') === false, 'filtro por classe II B mostra inertes e esconde perigosos');
+    $response = request($base, $clients['publico'], 'GET', '/pages/residuos.php?lr=1&tipo=eletronico');
+    verify(strpos($response['body'], 'Cabos e carregadores') !== false && strpos($response['body'], 'Logística reversa') !== false, 'filtro de logística reversa combina com tipo');
+    $response = request($base, $clients['publico'], 'GET', '/pages/residuos.php?busca=pi%25ha');
+    verify($response['status'] === 200 && strpos($response['body'], 'Nenhum resíduo encontrado') !== false, 'curinga % na busca é tratado como texto');
+    $idPizza = (int) scalar($pdo, "SELECT id_residuo FROM residuo WHERE nome = 'Caixa de pizza'");
+    $response = request($base, $clients['publico'], 'GET', '/pages/residuos.php?id=' . $idPizza);
+    verify(strpos($response['body'], 'img/fotos/residuos/caixa-de-pizza.jpg') !== false && strpos($response['body'], 'foto-credito') !== false, 'novo resíduo exibe foto real com crédito');
 
     $response = request($base, $clients['admin'], 'GET', '/pages/cadastro_compartilhamento.php');
     $tokenAdmin = csrf($response);

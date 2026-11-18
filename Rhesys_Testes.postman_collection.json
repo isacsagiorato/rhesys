@@ -121,6 +121,7 @@
           { "key": "forma_descarte", "value": "descarte teste automatizado", "type": "text" },
           { "key": "reciclagem", "value": "reciclagem teste automatizado", "type": "text" },
           { "key": "id_classificacao", "value": "2", "type": "text" },
+          { "key": "tipo_material", "value": "plastico", "type": "text" },
           { "key": "csrf_token", "value": "invalido", "type": "text" }
         ] }
       },
@@ -140,6 +141,7 @@
           { "key": "reciclagem", "value": "Material de validação, reutilizável em testes futuros.", "type": "text" },
           { "key": "palavras_chave", "value": "teste, automatizado, validacao", "type": "text" },
           { "key": "id_classificacao", "value": "2", "type": "text" },
+          { "key": "tipo_material", "value": "plastico", "type": "text" },
           { "key": "possui_logistica_reversa", "value": "1", "type": "text" },
           { "key": "csrf_token", "value": "{{csrf_token}}", "type": "text" }
         ] }
@@ -172,6 +174,7 @@
           { "key": "reciclagem", "value": "Material de validação, reutilizável em testes futuros.", "type": "text" },
           { "key": "palavras_chave", "value": "teste, automatizado, validacao", "type": "text" },
           { "key": "id_classificacao", "value": "2", "type": "text" },
+          { "key": "tipo_material", "value": "plastico", "type": "text" },
           { "key": "possui_logistica_reversa", "value": "1", "type": "text" },
           { "key": "csrf_token", "value": "{{csrf_token}}", "type": "text" }
         ] }
