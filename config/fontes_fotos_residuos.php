@@ -34,6 +34,24 @@ return array (
     'licenca' => 'Domínio público',
     'licenca_url' => '',
   ),
+  'balde-e-bacia-de-plastico' => 
+  array (
+    'arquivo' => 'img/fotos/residuos/balde-e-bacia-de-plastico.jpg',
+    'titulo' => 'White plastic bucket.jpg',
+    'pagina' => 'https://commons.wikimedia.org/wiki/File:White_plastic_bucket.jpg',
+    'autor' => 'Santeri Viinamäki',
+    'licenca' => 'CC BY-SA 4.0',
+    'licenca_url' => 'https://creativecommons.org/licenses/by-sa/4.0',
+  ),
+  'bandeja-de-aluminio-marmitex' => 
+  array (
+    'arquivo' => 'img/fotos/residuos/bandeja-de-aluminio-marmitex.jpg',
+    'titulo' => 'Aluminium take-out tray.jpg',
+    'pagina' => 'https://commons.wikimedia.org/wiki/File:Aluminium_take-out_tray.jpg',
+    'autor' => 'SKopp',
+    'licenca' => 'CC BY-SA 3.0',
+    'licenca_url' => 'https://creativecommons.org/licenses/by-sa/3.0',
+  ),
   'bateria-automotiva' => 
   array (
     'arquivo' => 'img/fotos/residuos/bateria-automotiva.jpg',
@@ -60,6 +78,15 @@ return array (
     'autor' => 'Lead holder',
     'licenca' => 'Domínio público',
     'licenca_url' => '',
+  ),
+  'bicho-de-pelucia' => 
+  array (
+    'arquivo' => 'img/fotos/residuos/bicho-de-pelucia.jpg',
+    'titulo' => 'Teddy Bear - 13.jpg',
+    'pagina' => 'https://commons.wikimedia.org/wiki/File:Teddy_Bear_-_13.jpg',
+    'autor' => 'Dan Bollinger',
+    'licenca' => 'CC BY-SA 4.0',
+    'licenca_url' => 'https://creativecommons.org/licenses/by-sa/4.0',
   ),
   'bituca-de-cigarro' => 
   array (
@@ -96,6 +123,15 @@ return array (
     'autor' => 'ThePhilosopherAccount',
     'licenca' => 'CC BY-SA 4.0',
     'licenca_url' => 'https://creativecommons.org/licenses/by-sa/4.0',
+  ),
+  'cabide-de-metal' => 
+  array (
+    'arquivo' => 'img/fotos/residuos/cabide-de-metal.jpg',
+    'titulo' => 'Clothes hangers 01.jpg',
+    'pagina' => 'https://commons.wikimedia.org/wiki/File:Clothes_hangers_01.jpg',
+    'autor' => 'Anton-kurt',
+    'licenca' => 'CC BY-SA 3.0',
+    'licenca_url' => 'https://creativecommons.org/licenses/by-sa/3.0',
   ),
   'cabos-e-carregadores' => 
   array (
@@ -142,6 +178,15 @@ return array (
     'licenca' => 'CC BY-SA 4.0',
     'licenca_url' => 'https://creativecommons.org/licenses/by-sa/4.0',
   ),
+  'capsula-de-cafe' => 
+  array (
+    'arquivo' => 'img/fotos/residuos/capsula-de-cafe.jpg',
+    'titulo' => 'Nespresso-capsules AB-01.jpg',
+    'pagina' => 'https://commons.wikimedia.org/wiki/File:Nespresso-capsules_AB-01.jpg',
+    'autor' => 'Andrzej Barabasz (Chepry)',
+    'licenca' => 'CC BY-SA 4.0',
+    'licenca_url' => 'https://creativecommons.org/licenses/by-sa/4.0',
+  ),
   'casca-de-banana' => 
   array (
     'arquivo' => 'img/fotos/residuos/casca-de-banana.jpg',
@@ -150,6 +195,24 @@ return array (
     'autor' => 'Mohanramus',
     'licenca' => 'CC BY 4.0',
     'licenca_url' => 'https://creativecommons.org/licenses/by/4.0',
+  ),
+  'casca-de-coco' => 
+  array (
+    'arquivo' => 'img/fotos/residuos/casca-de-coco.jpg',
+    'titulo' => 'Coconut husks-1-veerapandy-coimbatore-India.jpg',
+    'pagina' => 'https://commons.wikimedia.org/wiki/File:Coconut_husks-1-veerapandy-coimbatore-India.jpg',
+    'autor' => 'Yercaud-elango',
+    'licenca' => 'CC BY-SA 4.0',
+    'licenca_url' => 'https://creativecommons.org/licenses/by-sa/4.0',
+  ),
+  'casca-de-laranja-e-frutas-citricas' => 
+  array (
+    'arquivo' => 'img/fotos/residuos/casca-de-laranja-e-frutas-citricas.jpg',
+    'titulo' => 'Candied Orange Peel, Sliced (4175935076).jpg',
+    'pagina' => 'https://commons.wikimedia.org/wiki/File:Candied_Orange_Peel,_Sliced_(4175935076).jpg',
+    'autor' => 'Veganbaking.net',
+    'licenca' => 'CC BY-SA 2.0',
+    'licenca_url' => 'https://creativecommons.org/licenses/by-sa/2.0',
   ),
   'cascas-de-legumes' => 
   array (
@@ -196,6 +259,33 @@ return array (
     'licenca' => 'CC0',
     'licenca_url' => 'http://creativecommons.org/publicdomain/zero/1.0/deed.en',
   ),
+  'chiclete' => 
+  array (
+    'arquivo' => 'img/fotos/residuos/chiclete.jpg',
+    'titulo' => 'Kaugummis.jpg',
+    'pagina' => 'https://commons.wikimedia.org/wiki/File:Kaugummis.jpg',
+    'autor' => 'Pascua Theus',
+    'licenca' => 'CC BY-SA 2.5',
+    'licenca_url' => 'https://creativecommons.org/licenses/by-sa/2.5',
+  ),
+  'clipes-e-grampos' => 
+  array (
+    'arquivo' => 'img/fotos/residuos/clipes-e-grampos.jpg',
+    'titulo' => 'Büroklammern -- 2021 -- 6481.jpg',
+    'pagina' => 'https://commons.wikimedia.org/wiki/File:B%C3%BCroklammern_--_2021_--_6481.jpg',
+    'autor' => 'Dietmar Rabich',
+    'licenca' => 'CC BY-SA 4.0',
+    'licenca_url' => 'https://creativecommons.org/licenses/by-sa/4.0',
+  ),
+  'cola-de-contato-e-adesivos' => 
+  array (
+    'arquivo' => 'img/fotos/residuos/cola-de-contato-e-adesivos.jpg',
+    'titulo' => '2023 Butapren.jpg',
+    'pagina' => 'https://commons.wikimedia.org/wiki/File:2023_Butapren.jpg',
+    'autor' => 'Jacek Halicki',
+    'licenca' => 'CC BY-SA 4.0',
+    'licenca_url' => 'https://creativecommons.org/licenses/by-sa/4.0',
+  ),
   'computador-e-notebook' => 
   array (
     'arquivo' => 'img/fotos/residuos/computador-e-notebook.jpg',
@@ -214,6 +304,15 @@ return array (
     'licenca' => 'CC BY-SA 4.0',
     'licenca_url' => 'https://creativecommons.org/licenses/by-sa/4.0',
   ),
+  'copo-de-papel' => 
+  array (
+    'arquivo' => 'img/fotos/residuos/copo-de-papel.jpg',
+    'titulo' => 'Disposable paper coffee cups- 7th Street, Coffee Bug, Queensland.jpg',
+    'pagina' => 'https://commons.wikimedia.org/wiki/File:Disposable_paper_coffee_cups-_7th_Street,_Coffee_Bug,_Queensland.jpg',
+    'autor' => 'Kgbo',
+    'licenca' => 'CC BY-SA 4.0',
+    'licenca_url' => 'https://creativecommons.org/licenses/by-sa/4.0',
+  ),
   'copo-de-vidro-quebrado' => 
   array (
     'arquivo' => 'img/fotos/residuos/copo-de-vidro-quebrado.jpg',
@@ -229,6 +328,15 @@ return array (
     'titulo' => 'Vasos desechables y sus tapas.jpg',
     'pagina' => 'https://commons.wikimedia.org/wiki/File:Vasos_desechables_y_sus_tapas.jpg',
     'autor' => 'Daniel Jim Carballido',
+    'licenca' => 'CC BY-SA 4.0',
+    'licenca_url' => 'https://creativecommons.org/licenses/by-sa/4.0',
+  ),
+  'cortina-e-tapete' => 
+  array (
+    'arquivo' => 'img/fotos/residuos/cortina-e-tapete.jpg',
+    'titulo' => '2008-08-24 Carpet array.jpg',
+    'pagina' => 'https://commons.wikimedia.org/wiki/File:2008-08-24_Carpet_array.jpg',
+    'autor' => 'Ildar Sagdejev',
     'licenca' => 'CC BY-SA 4.0',
     'licenca_url' => 'https://creativecommons.org/licenses/by-sa/4.0',
   ),
@@ -259,6 +367,15 @@ return array (
     'licenca' => 'Domínio público',
     'licenca_url' => '',
   ),
+  'embalagem-de-ovos' => 
+  array (
+    'arquivo' => 'img/fotos/residuos/embalagem-de-ovos.jpg',
+    'titulo' => 'Empty cardboard egg crate.jpg',
+    'pagina' => 'https://commons.wikimedia.org/wiki/File:Empty_cardboard_egg_crate.jpg',
+    'autor' => 'ChimaBee',
+    'licenca' => 'CC BY-SA 4.0',
+    'licenca_url' => 'https://creativecommons.org/licenses/by-sa/4.0',
+  ),
   'embalagem-metalizada-salgadinho-e-biscoito' => 
   array (
     'arquivo' => 'img/fotos/residuos/embalagem-metalizada-salgadinho-e-biscoito.jpg',
@@ -274,6 +391,15 @@ return array (
     'titulo' => 'Dülmen, ehemalige St.-Barbara-Kaserne, Bauschutt -- 2021 -- 0506.jpg',
     'pagina' => 'https://commons.wikimedia.org/wiki/File:D%C3%BClmen,_ehemalige_St.-Barbara-Kaserne,_Bauschutt_--_2021_--_0506.jpg',
     'autor' => 'Dietmar Rabich',
+    'licenca' => 'CC BY-SA 4.0',
+    'licenca_url' => 'https://creativecommons.org/licenses/by-sa/4.0',
+  ),
+  'envelope-e-cartas' => 
+  array (
+    'arquivo' => 'img/fotos/residuos/envelope-e-cartas.jpg',
+    'titulo' => 'Unopened police and water bill envelopes, Winschoten (2014).jpg',
+    'pagina' => 'https://commons.wikimedia.org/wiki/File:Unopened_police_and_water_bill_envelopes,_Winschoten_(2014).jpg',
+    'autor' => 'Donald Trung Quoc Don',
     'licenca' => 'CC BY-SA 4.0',
     'licenca_url' => 'https://creativecommons.org/licenses/by-sa/4.0',
   ),
@@ -312,6 +438,33 @@ return array (
     'autor' => 'Jiří Sedláček',
     'licenca' => 'CC BY-SA 4.0',
     'licenca_url' => 'https://creativecommons.org/licenses/by-sa/4.0',
+  ),
+  'extintor-de-incendio' => 
+  array (
+    'arquivo' => 'img/fotos/residuos/extintor-de-incendio.jpg',
+    'titulo' => 'US fire extinguishers from 1960 and 2010.jpg',
+    'pagina' => 'https://commons.wikimedia.org/wiki/File:US_fire_extinguishers_from_1960_and_2010.jpg',
+    'autor' => 'Waz8',
+    'licenca' => 'CC0',
+    'licenca_url' => 'http://creativecommons.org/publicdomain/zero/1.0/deed.en',
+  ),
+  'fita-adesiva-e-etiquetas' => 
+  array (
+    'arquivo' => 'img/fotos/residuos/fita-adesiva-e-etiquetas.jpg',
+    'titulo' => 'Packtape.jpg',
+    'pagina' => 'https://commons.wikimedia.org/wiki/File:Packtape.jpg',
+    'autor' => 'Esquilo',
+    'licenca' => 'CC BY-SA 3.0',
+    'licenca_url' => 'https://creativecommons.org/licenses/by-sa/3.0',
+  ),
+  'flores-murchas' => 
+  array (
+    'arquivo' => 'img/fotos/residuos/flores-murchas.jpg',
+    'titulo' => 'Wilting rose flower - UK 28062023.jpg',
+    'pagina' => 'https://commons.wikimedia.org/wiki/File:Wilting_rose_flower_-_UK_28062023.jpg',
+    'autor' => '多多123',
+    'licenca' => 'CC BY-SA 3.0',
+    'licenca_url' => 'https://creativecommons.org/licenses/by-sa/3.0',
   ),
   'folhas-secas' => 
   array (
@@ -358,6 +511,15 @@ return array (
     'licenca' => 'CC BY-SA 3.0',
     'licenca_url' => 'http://creativecommons.org/licenses/by-sa/3.0/',
   ),
+  'frasco-de-xampu-e-cosmeticos' => 
+  array (
+    'arquivo' => 'img/fotos/residuos/frasco-de-xampu-e-cosmeticos.jpg',
+    'titulo' => 'Shampoo Mechta Voskresensk museum.jpg',
+    'pagina' => 'https://commons.wikimedia.org/wiki/File:Shampoo_Mechta_Voskresensk_museum.jpg',
+    'autor' => 'Svetlov Artem',
+    'licenca' => 'CC0',
+    'licenca_url' => 'http://creativecommons.org/publicdomain/zero/1.0/deed.en',
+  ),
   'frutas-e-verduras-estragadas' => 
   array (
     'arquivo' => 'img/fotos/residuos/frutas-e-verduras-estragadas.jpg',
@@ -373,6 +535,15 @@ return array (
     'titulo' => 'Bales of PET bottles closeup.jpg',
     'pagina' => 'https://commons.wikimedia.org/wiki/File:Bales_of_PET_bottles_closeup.jpg',
     'autor' => 'Grendelkhan',
+    'licenca' => 'CC BY-SA 4.0',
+    'licenca_url' => 'https://creativecommons.org/licenses/by-sa/4.0',
+  ),
+  'garrafao-de-agua' => 
+  array (
+    'arquivo' => 'img/fotos/residuos/garrafao-de-agua.jpg',
+    'titulo' => 'Water bottles in yuen long.jpg',
+    'pagina' => 'https://commons.wikimedia.org/wiki/File:Water_bottles_in_yuen_long.jpg',
+    'autor' => 'Peachyeung316',
     'licenca' => 'CC BY-SA 4.0',
     'licenca_url' => 'https://creativecommons.org/licenses/by-sa/4.0',
   ),
@@ -394,6 +565,15 @@ return array (
     'licenca' => 'CC BY-SA 4.0',
     'licenca_url' => 'https://creativecommons.org/licenses/by-sa/4.0',
   ),
+  'graos-e-farinhas-vencidos' => 
+  array (
+    'arquivo' => 'img/fotos/residuos/graos-e-farinhas-vencidos.jpg',
+    'titulo' => 'Dried beans ,.jpg',
+    'pagina' => 'https://commons.wikimedia.org/wiki/File:Dried_beans_,.jpg',
+    'autor' => 'Ssemmanda will',
+    'licenca' => 'CC BY-SA 4.0',
+    'licenca_url' => 'https://creativecommons.org/licenses/by-sa/4.0',
+  ),
   'impressora' => 
   array (
     'arquivo' => 'img/fotos/residuos/impressora.jpg',
@@ -402,6 +582,15 @@ return array (
     'autor' => 'Smartway777',
     'licenca' => 'CC BY-SA 3.0',
     'licenca_url' => 'https://creativecommons.org/licenses/by-sa/3.0',
+  ),
+  'inseticida-e-veneno-domestico' => 
+  array (
+    'arquivo' => 'img/fotos/residuos/inseticida-e-veneno-domestico.jpg',
+    'titulo' => 'Baygon Shield 2023 and 2026 Philippines frontside.jpg',
+    'pagina' => 'https://commons.wikimedia.org/wiki/File:Baygon_Shield_2023_and_2026_Philippines_frontside.jpg',
+    'autor' => 'NepgearMahoNickel22H2',
+    'licenca' => 'CC BY 4.0',
+    'licenca_url' => 'https://creativecommons.org/licenses/by/4.0',
   ),
   'isopor' => 
   array (
@@ -436,6 +625,15 @@ return array (
     'titulo' => 'Fluorescent lamp E 27.jpg',
     'pagina' => 'https://commons.wikimedia.org/wiki/File:Fluorescent_lamp_E_27.jpg',
     'autor' => 'Dmitry Makeev',
+    'licenca' => 'CC BY-SA 4.0',
+    'licenca_url' => 'https://creativecommons.org/licenses/by-sa/4.0',
+  ),
+  'lampada-incandescente' => 
+  array (
+    'arquivo' => 'img/fotos/residuos/lampada-incandescente.jpg',
+    'titulo' => 'Lamp harp with incandescent bulb.jpg',
+    'pagina' => 'https://commons.wikimedia.org/wiki/File:Lamp_harp_with_incandescent_bulb.jpg',
+    'autor' => 'Verne Equinox',
     'licenca' => 'CC BY-SA 4.0',
     'licenca_url' => 'https://creativecommons.org/licenses/by-sa/4.0',
   ),
@@ -484,6 +682,24 @@ return array (
     'licenca' => 'CC BY-SA 4.0',
     'licenca_url' => 'https://creativecommons.org/licenses/by-sa/4.0',
   ),
+  'madeira-de-obra' => 
+  array (
+    'arquivo' => 'img/fotos/residuos/madeira-de-obra.jpg',
+    'titulo' => 'Pile of scrap wood near canal - geograph.org.uk - 7694233.jpg',
+    'pagina' => 'https://commons.wikimedia.org/wiki/File:Pile_of_scrap_wood_near_canal_-_geograph.org.uk_-_7694233.jpg',
+    'autor' => 'Robin Webster',
+    'licenca' => 'CC BY-SA 2.0',
+    'licenca_url' => 'https://creativecommons.org/licenses/by-sa/2.0',
+  ),
+  'mascara-descartavel' => 
+  array (
+    'arquivo' => 'img/fotos/residuos/mascara-descartavel.jpg',
+    'titulo' => 'A surgical mask (2017).jpg',
+    'pagina' => 'https://commons.wikimedia.org/wiki/File:A_surgical_mask_(2017).jpg',
+    'autor' => 'AlexChirkin',
+    'licenca' => 'CC0',
+    'licenca_url' => 'http://creativecommons.org/publicdomain/zero/1.0/deed.en',
+  ),
   'mato-e-podas' => 
   array (
     'arquivo' => 'img/fotos/residuos/mato-e-podas.jpg',
@@ -499,6 +715,24 @@ return array (
     'titulo' => 'Pills and medicines 02.jpg',
     'pagina' => 'https://commons.wikimedia.org/wiki/File:Pills_and_medicines_02.jpg',
     'autor' => 'BuhaM',
+    'licenca' => 'CC BY-SA 4.0',
+    'licenca_url' => 'https://creativecommons.org/licenses/by-sa/4.0',
+  ),
+  'mouse-e-teclado' => 
+  array (
+    'arquivo' => 'img/fotos/residuos/mouse-e-teclado.jpg',
+    'titulo' => 'Wireless computer keyboard with mouse an USB receiver.jpg',
+    'pagina' => 'https://commons.wikimedia.org/wiki/File:Wireless_computer_keyboard_with_mouse_an_USB_receiver.jpg',
+    'autor' => 'Andreas Schwarzkopf',
+    'licenca' => 'CC BY-SA 4.0',
+    'licenca_url' => 'https://creativecommons.org/licenses/by-sa/4.0',
+  ),
+  'nota-fiscal-e-papel-termico' => 
+  array (
+    'arquivo' => 'img/fotos/residuos/nota-fiscal-e-papel-termico.jpg',
+    'titulo' => 'Top1Toys receipt, Oude Pekela (2020) 05.jpg',
+    'pagina' => 'https://commons.wikimedia.org/wiki/File:Top1Toys_receipt,_Oude_Pekela_(2020)_05.jpg',
+    'autor' => 'Donald Trung Quoc Don',
     'licenca' => 'CC BY-SA 4.0',
     'licenca_url' => 'https://creativecommons.org/licenses/by-sa/4.0',
   ),
@@ -592,6 +826,15 @@ return array (
     'licenca' => 'CC BY-SA 4.0',
     'licenca_url' => 'https://creativecommons.org/licenses/by-sa/4.0',
   ),
+  'pen-drive-e-cartao-de-memoria' => 
+  array (
+    'arquivo' => 'img/fotos/residuos/pen-drive-e-cartao-de-memoria.jpg',
+    'titulo' => '2023 Pendrive\'y Verbatim Store ‘n’ Click 16 GB (1).jpg',
+    'pagina' => 'https://commons.wikimedia.org/wiki/File:2023_Pendrive%27y_Verbatim_Store_%E2%80%98n%E2%80%99_Click_16_GB_(1).jpg',
+    'autor' => 'Jacek Halicki',
+    'licenca' => 'CC BY-SA 4.0',
+    'licenca_url' => 'https://creativecommons.org/licenses/by-sa/4.0',
+  ),
   'pilha' => 
   array (
     'arquivo' => 'img/fotos/residuos/pilha.jpg',
@@ -600,6 +843,15 @@ return array (
     'autor' => 'ajay_suresh',
     'licenca' => 'CC BY 2.0',
     'licenca_url' => 'https://creativecommons.org/licenses/by/2.0',
+  ),
+  'plastico-bolha' => 
+  array (
+    'arquivo' => 'img/fotos/residuos/plastico-bolha.jpg',
+    'titulo' => 'Bubble Wrap.jpg',
+    'pagina' => 'https://commons.wikimedia.org/wiki/File:Bubble_Wrap.jpg',
+    'autor' => 'Consequencefree',
+    'licenca' => 'CC BY-SA 3.0',
+    'licenca_url' => 'http://creativecommons.org/licenses/by-sa/3.0/',
   ),
   'pneu' => 
   array (
@@ -637,6 +889,15 @@ return array (
     'licenca' => 'CC BY-SA 4.0',
     'licenca_url' => 'https://creativecommons.org/licenses/by-sa/4.0',
   ),
+  'radiografia-raio-x' => 
+  array (
+    'arquivo' => 'img/fotos/residuos/radiografia-raio-x.jpg',
+    'titulo' => 'Hip replacement Image 3684-PH.jpg',
+    'pagina' => 'https://commons.wikimedia.org/wiki/File:Hip_replacement_Image_3684-PH.jpg',
+    'autor' => 'Autor desconhecido',
+    'licenca' => 'Domínio público',
+    'licenca_url' => '',
+  ),
   'residuos-organicos' => 
   array (
     'arquivo' => 'img/fotos/residuos/residuos-organicos.jpg',
@@ -663,6 +924,15 @@ return array (
     'autor' => 'RAQUIJO',
     'licenca' => 'CC BY-SA 4.0',
     'licenca_url' => 'https://creativecommons.org/licenses/by-sa/4.0',
+  ),
+  'retalhos-de-tecido' => 
+  array (
+    'arquivo' => 'img/fotos/residuos/retalhos-de-tecido.jpg',
+    'titulo' => 'Fabric scraps and pin cushions (6281207987).jpg',
+    'pagina' => 'https://commons.wikimedia.org/wiki/File:Fabric_scraps_and_pin_cushions_(6281207987).jpg',
+    'autor' => 'Leslie Seaton',
+    'licenca' => 'CC BY 2.0',
+    'licenca_url' => 'https://creativecommons.org/licenses/by/2.0',
   ),
   'rolo-de-papel-higienico' => 
   array (
@@ -691,6 +961,15 @@ return array (
     'licenca' => 'CC BY-SA 3.0',
     'licenca_url' => 'https://creativecommons.org/licenses/by-sa/3.0',
   ),
+  'secador-e-chapinha-de-cabelo' => 
+  array (
+    'arquivo' => 'img/fotos/residuos/secador-e-chapinha-de-cabelo.jpg',
+    'titulo' => 'Sèche-cheveux Moulinex.jpg',
+    'pagina' => 'https://commons.wikimedia.org/wiki/File:S%C3%A8che-cheveux_Moulinex.jpg',
+    'autor' => 'Bachelot Pierre J-P',
+    'licenca' => 'CC BY-SA 3.0',
+    'licenca_url' => 'https://creativecommons.org/licenses/by-sa/3.0',
+  ),
   'seringa-e-agulha-uso-domestico' => 
   array (
     'arquivo' => 'img/fotos/residuos/seringa-e-agulha-uso-domestico.jpg',
@@ -709,6 +988,15 @@ return array (
     'licenca' => 'CC BY-SA 4.0',
     'licenca_url' => 'https://creativecommons.org/licenses/by-sa/4.0',
   ),
+  'sobras-de-argamassa-e-cimento' => 
+  array (
+    'arquivo' => 'img/fotos/residuos/sobras-de-argamassa-e-cimento.jpg',
+    'titulo' => 'Flickr - brewbooks - What\'s left of the concrete - Garden Rubble project.jpg',
+    'pagina' => 'https://commons.wikimedia.org/wiki/File:Flickr_-_brewbooks_-_What%27s_left_of_the_concrete_-_Garden_Rubble_project.jpg',
+    'autor' => 'brewbooks',
+    'licenca' => 'CC BY-SA 2.0',
+    'licenca_url' => 'https://creativecommons.org/licenses/by-sa/2.0',
+  ),
   'sucata-de-ferro-pregos-parafusos-e-ferramentas' => 
   array (
     'arquivo' => 'img/fotos/residuos/sucata-de-ferro-pregos-parafusos-e-ferramentas.jpg',
@@ -717,6 +1005,15 @@ return array (
     'autor' => 'Kotivalo',
     'licenca' => 'CC0',
     'licenca_url' => 'http://creativecommons.org/publicdomain/zero/1.0/deed.en',
+  ),
+  'tablet' => 
+  array (
+    'arquivo' => 'img/fotos/residuos/tablet.jpg',
+    'titulo' => 'IPad 4, model A1458-0869.jpg',
+    'pagina' => 'https://commons.wikimedia.org/wiki/File:IPad_4,_model_A1458-0869.jpg',
+    'autor' => 'Raimond Spekking',
+    'licenca' => 'CC BY-SA 4.0',
+    'licenca_url' => 'https://creativecommons.org/licenses/by-sa/4.0',
   ),
   'tampa-plastica-de-garrafa' => 
   array (
@@ -769,6 +1066,33 @@ return array (
     'titulo' => 'Canon PG-810 CL-811 ink cartridge.JPG',
     'pagina' => 'https://commons.wikimedia.org/wiki/File:Canon_PG-810_CL-811_ink_cartridge.JPG',
     'autor' => 'eFilm',
+    'licenca' => 'CC BY-SA 4.0',
+    'licenca_url' => 'https://creativecommons.org/licenses/by-sa/4.0',
+  ),
+  'travessa-de-vidro-temperado' => 
+  array (
+    'arquivo' => 'img/fotos/residuos/travessa-de-vidro-temperado.jpg',
+    'titulo' => 'Pyrex dish.jpg',
+    'pagina' => 'https://commons.wikimedia.org/wiki/File:Pyrex_dish.jpg',
+    'autor' => 'شہاب',
+    'licenca' => 'CC BY-SA 4.0',
+    'licenca_url' => 'https://creativecommons.org/licenses/by-sa/4.0',
+  ),
+  'tubos-e-conexoes-de-pvc' => 
+  array (
+    'arquivo' => 'img/fotos/residuos/tubos-e-conexoes-de-pvc.jpg',
+    'titulo' => 'PVC-U Druckrohr Transparent .jpg',
+    'pagina' => 'https://commons.wikimedia.org/wiki/File:PVC-U_Druckrohr_Transparent_.jpg',
+    'autor' => 'GWT Technik',
+    'licenca' => 'CC BY-SA 4.0',
+    'licenca_url' => 'https://creativecommons.org/licenses/by-sa/4.0',
+  ),
+  'ventilador' => 
+  array (
+    'arquivo' => 'img/fotos/residuos/ventilador.jpg',
+    'titulo' => 'Modern electric fan at a school.jpg',
+    'pagina' => 'https://commons.wikimedia.org/wiki/File:Modern_electric_fan_at_a_school.jpg',
+    'autor' => 'Curpharar',
     'licenca' => 'CC BY-SA 4.0',
     'licenca_url' => 'https://creativecommons.org/licenses/by-sa/4.0',
   ),

@@ -1459,39 +1459,51 @@ legend.quiz-pergunta-titulo { float: none; width: 100%; font-size: inherit; padd
    ============================================================ */
 
 /* Ilustração do topo */
-.cena-wrap { position: relative; max-width: 560px; margin: 0 auto; }
+.cena-wrap { position: relative; max-width: 470px; margin: 0 auto; }
 .cena { width: 100%; height: auto; display: block; filter: drop-shadow(0 24px 40px rgba(4, 66, 41, .18)); }
-.cena-rotulo { font-family: 'Outfit', sans-serif; font-weight: 700; font-size: 13px; fill: #064e3b; }
+.cena-rotulo { font-family: 'Outfit', sans-serif; font-weight: 700; font-size: 12.5px; fill: #064e3b; }
 .cena-item, .cena-tampa, .cena-folha, .cena-recicla-giro, .cena-arvore, .cena-sol { transform-box: fill-box; transform-origin: center; }
 
-/* Cada item cai no cesto da cor certa, um de cada vez (ciclo de 8 s) */
-.cena-item { animation: cair 8s cubic-bezier(.5, 0, .75, 0) infinite; opacity: 0; }
-.item-1 { animation-delay: 0s; }
-.item-2 { animation-delay: 2s; }
-.item-3 { animation-delay: 4s; }
-.item-4 { animation-delay: 6s; }
+/* As 10 lixeiras da CONAMA 275/2001: cada item cai no cesto da cor certa,
+   um de cada vez, a cada 1,6 s (ciclo de 16 s) */
+.cena-item { animation: cair 16s cubic-bezier(.5, 0, .75, 0) infinite; opacity: 0; }
+.item-1  { animation-delay: 0s; }
+.item-2  { animation-delay: 1.6s; }
+.item-3  { animation-delay: 3.2s; }
+.item-4  { animation-delay: 4.8s; }
+.item-5  { animation-delay: 6.4s; }
+.item-6  { animation-delay: 8s; }
+.item-7  { animation-delay: 9.6s; }
+.item-8  { animation-delay: 11.2s; }
+.item-9  { animation-delay: 12.8s; }
+.item-10 { animation-delay: 14.4s; }
 @keyframes cair {
-    0%   { opacity: 0; transform: translateY(-70px) rotate(-12deg); }
-    4%   { opacity: 1; }
-    16%  { opacity: 1; transform: translateY(80px) rotate(8deg); }
-    19%  { opacity: 0; transform: translateY(96px) scale(.6); }
-    100% { opacity: 0; transform: translateY(96px) scale(.6); }
+    0%    { opacity: 0; transform: translateY(-70px) rotate(-12deg); }
+    2%    { opacity: 1; }
+    8%    { opacity: 1; transform: translateY(80px) rotate(8deg); }
+    9.5%  { opacity: 0; transform: translateY(96px) scale(.6); }
+    100%  { opacity: 0; transform: translateY(96px) scale(.6); }
 }
 /* A tampa da lixeira "pula" quando o item entra */
-.cena-tampa { animation: tampa 8s ease-in-out infinite; transform-origin: left bottom; }
-.lixeira-1 .cena-tampa { animation-delay: 0s; }
-.lixeira-2 .cena-tampa { animation-delay: 2s; }
-.lixeira-3 .cena-tampa { animation-delay: 4s; }
-.lixeira-4 .cena-tampa { animation-delay: 6s; }
+.cena-tampa { animation: tampa 16s ease-in-out infinite; transform-origin: left bottom; }
+.lixeira-1  .cena-tampa { animation-delay: 0s; }
+.lixeira-2  .cena-tampa { animation-delay: 1.6s; }
+.lixeira-3  .cena-tampa { animation-delay: 3.2s; }
+.lixeira-4  .cena-tampa { animation-delay: 4.8s; }
+.lixeira-5  .cena-tampa { animation-delay: 6.4s; }
+.lixeira-6  .cena-tampa { animation-delay: 8s; }
+.lixeira-7  .cena-tampa { animation-delay: 9.6s; }
+.lixeira-8  .cena-tampa { animation-delay: 11.2s; }
+.lixeira-9  .cena-tampa { animation-delay: 12.8s; }
+.lixeira-10 .cena-tampa { animation-delay: 14.4s; }
 @keyframes tampa {
-    0%, 8%   { transform: rotate(0); }
-    12%      { transform: rotate(-24deg) translateY(-2px); }
-    19%      { transform: rotate(-24deg) translateY(-2px); }
-    23%, 100% { transform: rotate(0); }
+    0%, 4%     { transform: rotate(0); }
+    6%         { transform: rotate(-24deg) translateY(-2px); }
+    9.5%       { transform: rotate(-24deg) translateY(-2px); }
+    11.5%, 100% { transform: rotate(0); }
 }
-.cena-recicla-giro { animation: girar 14s linear infinite; }
-@keyframes girar { to { transform: translate(345px, 78px) rotate(360deg); } }
-.cena-recicla-giro { transform: translate(345px, 78px); }
+.cena-recicla-giro { transform: translate(372px, 52px) scale(.8); animation: girar 14s linear infinite; }
+@keyframes girar { to { transform: translate(372px, 52px) scale(.8) rotate(360deg); } }
 .cena-sol { animation: pulsar 4s ease-in-out infinite; }
 @keyframes pulsar { 50% { transform: scale(1.08); } }
 .cena-arvore { animation: balancar 5s ease-in-out infinite; transform-origin: center bottom; }
@@ -1642,7 +1654,7 @@ legend.quiz-pergunta-titulo { float: none; width: 100%; font-size: inherit; padd
 .cta-folha.f3 { top: 18%; right: 20%; font-size: 1.6rem; animation-delay: 4s; color: rgba(255, 255, 255, .35); }
 
 @media (max-width: 991px) {
-    .cena-wrap { max-width: 460px; }
+    .cena-wrap { max-width: 440px; }
 }
 @media (max-width: 575px) {
     .celular-mock { width: 240px; }
@@ -1666,3 +1678,144 @@ legend.quiz-pergunta-titulo { float: none; width: 100%; font-size: inherit; padd
 .nuvem-2 { animation-duration: 24s; animation-delay: -6s; }
 @keyframes nuvem { from { transform: translateX(-18px); } to { transform: translateX(28px); } }
 @media (prefers-reduced-motion: reduce) { .cena-nuvem { animation: none; } }
+/* Fileira da frente: queda mais curta, para o item não cruzar as lixeiras de trás */
+.cena-item.item-frente { animation-name: cair-frente; }
+@keyframes cair-frente {
+    0%    { opacity: 0; transform: translateY(-6px) rotate(-10deg); }
+    2%    { opacity: 1; }
+    8%    { opacity: 1; transform: translateY(80px) rotate(8deg); }
+    9.5%  { opacity: 0; transform: translateY(96px) scale(.6); }
+    100%  { opacity: 0; transform: translateY(96px) scale(.6); }
+}
+
+/* ============================================================
+   PÁGINA DE RESÍDUOS — versão mais limpa: o essencial aparece primeiro,
+   o resto só quando a pessoa interage
+   ============================================================ */
+.band-compacta { padding: 2.4rem 2.2rem 3.6rem; }
+.band-compacta h1 { font-size: clamp(1.7rem, 3vw, 2.3rem); }
+
+/* Tipos de material em pílulas (rolam para o lado no celular) */
+.tipos-pilulas {
+    display: flex;
+    gap: .45rem;
+    overflow-x: auto;
+    padding-bottom: .35rem;
+    scrollbar-width: thin;
+    -webkit-overflow-scrolling: touch;
+}
+@media (min-width: 992px) { .tipos-pilulas { flex-wrap: wrap; overflow: visible; } }
+.tipo-pilula {
+    flex: 0 0 auto;
+    display: inline-flex;
+    align-items: center;
+    gap: .4rem;
+    padding: .45rem .85rem;
+    border-radius: 999px;
+    border: 1px solid var(--rhe-200);
+    background: #fff;
+    color: var(--rhe-800);
+    font-weight: 600;
+    font-size: .86rem;
+    text-decoration: none;
+    white-space: nowrap;
+    transition: background .2s ease, color .2s ease, border-color .2s ease;
+}
+.tipo-pilula .bi { color: var(--rhe-600); }
+.tipo-pilula:hover { background: var(--rhe-50); border-color: var(--rhe-400); color: var(--rhe-800); }
+.tipo-pilula.active { background: var(--rhe-600); border-color: var(--rhe-600); color: #fff; }
+.tipo-pilula.active .bi { color: #fff; }
+.tipo-pilula-qtd {
+    font-size: .72rem;
+    background: var(--rhe-100);
+    color: var(--rhe-800);
+    border-radius: 999px;
+    padding: 0 .45rem;
+}
+.tipo-pilula.active .tipo-pilula-qtd { background: rgba(255, 255, 255, .25); color: #fff; }
+.tipo-pilula.vazio { opacity: .45; }
+
+/* Filtros avançados recolhidos */
+.filtros-avancados > summary {
+    display: inline-flex;
+    align-items: center;
+    gap: .45rem;
+    list-style: none;
+    cursor: pointer;
+    font-size: .85rem;
+    font-weight: 600;
+    color: var(--rhe-700);
+    padding: .3rem 0;
+}
+.filtros-avancados > summary::-webkit-details-marker { display: none; }
+.filtros-avancados > summary .seta { transition: transform .2s ease; }
+.filtros-avancados[open] > summary .seta { transform: rotate(180deg); }
+.filtros-qtd {
+    background: var(--rhe-600);
+    color: #fff;
+    font-size: .7rem;
+    border-radius: 999px;
+    padding: .05rem .45rem;
+}
+.classes-explicacao { padding-left: 1.1rem; color: #4b5b53; }
+.classes-explicacao li + li { margin-top: .25rem; }
+
+/* Cards limpos: foto, nome e classe */
+.card-residuo-limpo .photo { height: 130px; }
+.card-residuo-limpo .card-body { padding: .85rem 1rem 1rem; }
+.card-residuo-limpo .card-title { font-size: .95rem; }
+.card-residuo-limpo .descarte-hover {
+    position: absolute;
+    inset: 0;
+    z-index: 3;
+    display: flex;
+    align-items: flex-end;
+    padding: .8rem;
+    font-size: .78rem;
+    line-height: 1.35;
+    color: #fff;
+    background: linear-gradient(180deg, rgba(4, 40, 28, .2), rgba(4, 40, 28, .92) 55%);
+    opacity: 0;
+    transition: opacity .25s ease;
+    overflow: hidden;
+}
+@media (hover: hover) {
+    .card-residuo-limpo:hover .descarte-hover { opacity: 1; }
+}
+@media (max-width: 575px) {
+    .card-residuo-limpo .photo { height: 100px; }
+    .card-residuo-limpo .card-body { padding: .65rem .75rem .8rem; }
+    .card-residuo-limpo .card-title { font-size: .86rem; }
+    .band-compacta { padding: 1.8rem 1.25rem 3.2rem; }
+}
+
+/* Cada grupo mostra só os primeiros resíduos; o resto abre com "Ver mais" */
+.grupo-residuos .card-extra { display: none; }
+.grupo-residuos.grupo-aberto .card-extra { display: block; animation: spotlightIn .35s ease both; }
+.grupo-cabecalho { padding-bottom: .55rem; margin-bottom: .9rem; }
+/* Texto de descarte sobre a foto: rótulo em cima, texto alinhado à esquerda, até 4 linhas */
+.card-residuo-limpo .descarte-hover {
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: stretch;
+    gap: .3rem;
+    text-align: left;
+    padding: .75rem .85rem;
+    background: linear-gradient(180deg, rgba(4, 40, 28, .35) 0%, rgba(4, 40, 28, .94) 45%);
+}
+.descarte-hover-rotulo {
+    font-family: 'Outfit', sans-serif;
+    font-weight: 700;
+    font-size: .74rem;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    color: var(--rhe-300);
+}
+.descarte-hover-texto {
+    display: -webkit-box;
+    -webkit-line-clamp: 4;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    font-size: .8rem;
+    line-height: 1.4;
+}

@@ -77,24 +77,24 @@ require __DIR__ . '/includes/header.php';
 
     <div class="col-lg-6">
         <div class="cena-wrap" aria-hidden="true">
-            <svg class="cena" viewBox="0 0 420 380" xmlns="http://www.w3.org/2000/svg" role="presentation" focusable="false">
+            <svg class="cena" viewBox="0 0 420 470" xmlns="http://www.w3.org/2000/svg" role="presentation" focusable="false">
                 <defs>
                     <linearGradient id="g-fundo" x1="0" y1="0" x2="1" y2="1">
                         <stop offset="0" stop-color="#d1fae5"/>
                         <stop offset="1" stop-color="#a7f3d0"/>
                     </linearGradient>
                     <g id="simbolo-recicla" transform="scale(.5)">
-                        <path d="M-14-6 A16 16 0 0 1 10-12 M14 4 A16 16 0 0 1 -2 15 M-12 10 A16 16 0 0 1 -15 -4" fill="none" stroke="#fff" stroke-width="4.5" stroke-linecap="round"/>
-                        <path d="M10-12 l-1 7 l7-3 z M-2 15 l7 2 l-4-6 z M-15-4 l-3 7 l7-1 z" fill="#fff"/>
+                        <path d="M-14-6 A16 16 0 0 1 10-12 M14 4 A16 16 0 0 1 -2 15 M-12 10 A16 16 0 0 1 -15 -4" fill="none" stroke="currentColor" stroke-width="4.5" stroke-linecap="round"/>
+                        <path d="M10-12 l-1 7 l7-3 z M-2 15 l7 2 l-4-6 z M-15-4 l-3 7 l7-1 z" fill="currentColor"/>
                     </g>
-                    <clipPath id="recorte-cena"><rect x="10" y="10" width="400" height="360" rx="34"/></clipPath>
+                    <clipPath id="recorte-cena"><rect x="10" y="10" width="400" height="450" rx="34"/></clipPath>
                 </defs>
 
                 <g clip-path="url(#recorte-cena)">
                 <!-- Fundo -->
-                <rect x="10" y="10" width="400" height="360" rx="34" fill="url(#g-fundo)"/>
-                <circle class="cena-sol" cx="345" cy="78" r="30" fill="#fef3c7"/>
-                <g class="cena-recicla-giro" transform="translate(345 78)">
+                <rect x="10" y="10" width="400" height="450" rx="34" fill="url(#g-fundo)"/>
+                <circle class="cena-sol" cx="372" cy="52" r="24" fill="#fef3c7"/>
+                <g class="cena-recicla-giro" transform="translate(372 52) scale(.8)">
                     <path d="M-14-6 A16 16 0 0 1 10-12" fill="none" stroke="#059669" stroke-width="4" stroke-linecap="round"/>
                     <path d="M14 4 A16 16 0 0 1 -2 15" fill="none" stroke="#059669" stroke-width="4" stroke-linecap="round"/>
                     <path d="M-12 10 A16 16 0 0 1 -15 -4" fill="none" stroke="#059669" stroke-width="4" stroke-linecap="round"/>
@@ -104,56 +104,65 @@ require __DIR__ . '/includes/header.php';
                 <g class="cena-nuvem nuvem-1" fill="#fff" opacity=".85"><ellipse cx="120" cy="72" rx="34" ry="14"/><ellipse cx="140" cy="62" rx="22" ry="14"/><ellipse cx="104" cy="66" rx="16" ry="11"/></g>
                 <g class="cena-nuvem nuvem-2" fill="#fff" opacity=".7"><ellipse cx="245" cy="46" rx="26" ry="10"/><ellipse cx="260" cy="39" rx="16" ry="10"/></g>
                 <!-- Morros -->
-                <path d="M10 300 Q110 240 210 290 T410 270 L410 340 Q410 370 380 370 L40 370 Q10 370 10 340 Z" fill="#6ee7b7" opacity=".55"/>
-                <path d="M10 320 Q140 280 260 315 T410 305 L410 340 Q410 370 380 370 L40 370 Q10 370 10 340 Z" fill="#34d399" opacity=".45"/>
+                <path d="M10 320 Q110 260 210 310 T410 290 L410 430 Q410 460 380 460 L40 460 Q10 460 10 430 Z" fill="#6ee7b7" opacity=".55"/>
+                <path d="M10 380 Q140 340 260 375 T410 365 L410 430 Q410 460 380 460 L40 460 Q10 460 10 430 Z" fill="#34d399" opacity=".45"/>
 
-                <!-- Árvores -->
-                <g class="cena-arvore">
-                    <rect x="52" y="198" width="8" height="56" rx="3" fill="#065f46"/>
-                    <circle cx="56" cy="186" r="26" fill="#10b981"/>
-                    <circle cx="40" cy="200" r="16" fill="#059669"/>
-                    <circle cx="72" cy="200" r="16" fill="#047857"/>
-                </g>
-
-                <!-- Itens caindo nas lixeiras (cada um no seu cesto, padrão CONAMA) -->
-                <g class="cena-item item-1">
-                    <rect x="96" y="120" width="26" height="32" rx="3" fill="#fff" stroke="#93c5fd" stroke-width="2"/>
-                    <path d="M101 130 h16 M101 136 h16 M101 142 h10" stroke="#93c5fd" stroke-width="2" stroke-linecap="round"/>
-                </g>
-                <g class="cena-item item-2">
-                    <path d="M180 112 h8 v8 q8 6 8 16 v22 q0 5 -5 5 h-14 q-5 0 -5 -5 v-22 q0 -10 8 -16 z" fill="#fecaca" stroke="#dc2626" stroke-width="2"/>
-                    <rect x="179" y="106" width="10" height="7" rx="2" fill="#dc2626"/>
-                </g>
-                <g class="cena-item item-3">
-                    <rect x="250" y="118" width="26" height="36" rx="6" fill="#bbf7d0" stroke="#16a34a" stroke-width="2"/>
-                    <rect x="253" y="112" width="20" height="8" rx="2" fill="#16a34a"/>
-                </g>
-                <g class="cena-item item-4">
-                    <rect x="323" y="120" width="22" height="32" rx="4" fill="#e5e7eb" stroke="#6b7280" stroke-width="2"/>
-                    <path d="M323 128 h22 M323 144 h22" stroke="#9ca3af" stroke-width="2"/>
-                </g>
-
-                <!-- Lixeiras -->
                 <?php
+                // As 10 cores da Resolução CONAMA 275/2001, em duas fileiras de cinco.
+                // Cada lixeira recebe um item do seu material (desenhado em volta de 0,0 = base do item).
                 $lixeiras = [
-                    ['x' => 82,  'cor' => '#2563eb', 'tampa' => '#1d4ed8', 'rot' => 'Papel'],
-                    ['x' => 162, 'cor' => '#dc2626', 'tampa' => '#b91c1c', 'rot' => 'Plástico'],
-                    ['x' => 236, 'cor' => '#16a34a', 'tampa' => '#15803d', 'rot' => 'Vidro'],
-                    ['x' => 310, 'cor' => '#eab308', 'tampa' => '#ca8a04', 'rot' => 'Metal'],
+                    // Fileira de trás
+                    ['cor' => '#2563eb', 'tampa' => '#1d4ed8', 'rot' => ['Papel'],
+                     'item' => '<rect x="-12" y="-30" width="24" height="30" rx="3" fill="#fff" stroke="#93c5fd" stroke-width="2"/><path d="M-7 -21 h14 M-7 -15 h14 M-7 -9 h9" stroke="#93c5fd" stroke-width="2" stroke-linecap="round"/>'],
+                    ['cor' => '#dc2626', 'tampa' => '#b91c1c', 'rot' => ['Plástico'],
+                     'item' => '<path d="M-4 -34 h8 v6 q7 5 7 13 v12 q0 3 -3 3 h-16 q-3 0 -3 -3 v-12 q0 -8 7 -13 z" fill="#fecaca" stroke="#dc2626" stroke-width="2"/><rect x="-5" y="-38" width="10" height="6" rx="2" fill="#dc2626"/>'],
+                    ['cor' => '#16a34a', 'tampa' => '#15803d', 'rot' => ['Vidro'],
+                     'item' => '<rect x="-12" y="-28" width="24" height="28" rx="6" fill="#bbf7d0" stroke="#16a34a" stroke-width="2"/><rect x="-9" y="-34" width="18" height="7" rx="2" fill="#16a34a"/>'],
+                    ['cor' => '#eab308', 'tampa' => '#ca8a04', 'rot' => ['Metal'],
+                     'item' => '<rect x="-10" y="-30" width="20" height="30" rx="4" fill="#e5e7eb" stroke="#6b7280" stroke-width="2"/><path d="M-10 -23 h20 M-10 -7 h20" stroke="#9ca3af" stroke-width="2"/>'],
+                    ['cor' => '#92400e', 'tampa' => '#78350f', 'rot' => ['Orgânico'],
+                     'item' => '<path d="M-10 -28 q10 4 20 0 q-6 6 -6 14 q0 8 6 14 q-10 -4 -20 0 q6 -6 6 -14 q0 -8 -6 -14 z" fill="#fde68a" stroke="#b45309" stroke-width="2"/><path d="M0 -28 v-6" stroke="#78350f" stroke-width="2.5" stroke-linecap="round"/><path d="M1 -32 q6 -5 10 -2 q-4 5 -10 2 z" fill="#16a34a"/>'],
+                    // Fileira da frente
+                    ['cor' => '#1f2937', 'tampa' => '#111827', 'rot' => ['Madeira'],
+                     'item' => '<g transform="rotate(-12)"><rect x="-17" y="-14" width="34" height="13" rx="2" fill="#ca8a04" stroke="#713f12" stroke-width="2"/><path d="M-12 -9 q9 -3 20 -2 M-10 -5 q8 -2 16 0" stroke="#713f12" stroke-width="1.5" fill="none"/></g>'],
+                    ['cor' => '#f97316', 'tampa' => '#ea580c', 'rot' => ['Perigoso'],
+                     'item' => '<rect x="-8" y="-30" width="16" height="30" rx="3" fill="#fed7aa" stroke="#c2410c" stroke-width="2"/><rect x="-3" y="-34" width="6" height="4" rx="1" fill="#c2410c"/><path d="M-4 -18 h8 M0 -22 v8" stroke="#c2410c" stroke-width="2" stroke-linecap="round"/>'],
+                    ['cor' => '#f8fafc', 'tampa' => '#e2e8f0', 'rot' => ['Saúde'], 'contorno' => '#94a3b8', 'simbolo' => '#94a3b8',
+                     'item' => '<g transform="rotate(-20)"><rect x="-4" y="-30" width="8" height="22" rx="2" fill="#e0f2fe" stroke="#64748b" stroke-width="1.8"/><path d="M0 -8 v9" stroke="#64748b" stroke-width="1.6"/><path d="M-6 -30 h12 M0 -30 v-6 M-4 -36 h8" stroke="#64748b" stroke-width="2" stroke-linecap="round"/></g>'],
+                    ['cor' => '#7c3aed', 'tampa' => '#6d28d9', 'rot' => ['Radioativo'],
+                     'item' => '<rect x="-12" y="-28" width="24" height="28" rx="4" fill="#ddd6fe" stroke="#6d28d9" stroke-width="2"/><circle cx="0" cy="-14" r="8" fill="#facc15"/><path d="M0 -14 L-3.5 -20 A7 7 0 0 1 3.5 -20 Z M0 -14 L7 -14 A7 7 0 0 1 3.5 -8 Z M0 -14 L-3.5 -8 A7 7 0 0 1 -7 -14 Z" fill="#1f2937"/><circle cx="0" cy="-14" r="1.6" fill="#1f2937"/>'],
+                    ['cor' => '#6b7280', 'tampa' => '#4b5563', 'rot' => ['Não', 'reciclável'],
+                     'item' => '<path d="M-12 -28 l6 -3 l6 3 l6 -3 l6 3 v24 l-6 4 l-6 -3 l-6 3 l-6 -3 z" fill="#d1d5db" stroke="#6b7280" stroke-width="2"/><path d="M-6 -18 h12 M-6 -12 h8" stroke="#9ca3af" stroke-width="2" stroke-linecap="round"/>'],
                 ];
-                foreach ($lixeiras as $i => $l): $x = $l['x']; ?>
-                    <g class="cena-lixeira lixeira-<?php echo $i + 1; ?>">
-                        <path d="M<?php echo $x; ?> 214 h56 l-5 82 q-1 6 -7 6 h-32 q-6 0 -7 -6 z" fill="<?php echo $l['cor']; ?>"/>
-                        <path d="M<?php echo $x + 12; ?> 230 v54 M<?php echo $x + 28; ?> 230 v54 M<?php echo $x + 44; ?> 230 v54" stroke="rgba(255,255,255,.25)" stroke-width="3" stroke-linecap="round"/>
-                        <g class="cena-tampa">
-                            <rect x="<?php echo $x - 4; ?>" y="203" width="64" height="12" rx="5" fill="<?php echo $l['tampa']; ?>"/>
-                            <rect x="<?php echo $x + 20; ?>" y="197" width="16" height="7" rx="3" fill="<?php echo $l['tampa']; ?>"/>
-                        </g>
-                        <circle cx="<?php echo $x + 28; ?>" cy="252" r="12" fill="rgba(255,255,255,.22)"/>
-                        <use href="#simbolo-recicla" transform="translate(<?php echo $x + 28; ?> 252)"/>
-                        <text x="<?php echo $x + 28; ?>" y="322" text-anchor="middle" class="cena-rotulo"><?php echo $l['rot']; ?></text>
+                $colunas = [38, 110, 182, 254, 326];   // x da borda esquerda de cada lixeira
+                $tampas  = [140, 330];                  // y da tampa (fileira de trás e da frente)
+
+                // Desenha uma fileira: primeiro os itens (para "entrarem" atrás do corpo), depois as lixeiras
+                foreach ([0, 1] as $fileira):
+                    $y = $tampas[$fileira];
+                    ?>
+                <rect x="28" y="<?php echo $y + 78; ?>" width="364" height="9" rx="4.5" fill="#047857" opacity=".16"/>
+                    <?php
+                    foreach (array_slice($lixeiras, $fileira * 5, 5) as $j => $l):
+                        $n = $fileira * 5 + $j + 1; $cx = $colunas[$j] + 28; ?>
+                <g transform="translate(<?php echo $cx; ?> <?php echo $y - ($fileira ? 40 : 50); ?>)"><g class="cena-item item-<?php echo $n; ?><?php echo $fileira ? ' item-frente' : ''; ?>"><?php echo $l['item']; ?></g></g>
+                    <?php endforeach;
+                    foreach (array_slice($lixeiras, $fileira * 5, 5) as $j => $l):
+                        $n = $fileira * 5 + $j + 1; $x = $colunas[$j];
+                        $contorno = isset($l['contorno']) ? ' stroke="' . $l['contorno'] . '" stroke-width="1.5"' : ''; ?>
+                <g class="cena-lixeira lixeira-<?php echo $n; ?>" transform="translate(<?php echo $x; ?> <?php echo $y + 10; ?>)">
+                    <path d="M0 0 h56 l-5 66 q-1 6 -7 6 h-32 q-6 0 -7 -6 z" fill="<?php echo $l['cor']; ?>"<?php echo $contorno; ?>/>
+                    <path d="M14 16 v44 M28 16 v44 M42 16 v44" stroke="<?php echo isset($l['contorno']) ? 'rgba(148,163,184,.35)' : 'rgba(255,255,255,.22)'; ?>" stroke-width="3" stroke-linecap="round"/>
+                    <g class="cena-tampa">
+                        <rect x="-4" y="-11" width="64" height="12" rx="5" fill="<?php echo $l['tampa']; ?>"<?php echo $contorno; ?>/>
+                        <rect x="20" y="-17" width="16" height="7" rx="3" fill="<?php echo $l['tampa']; ?>"<?php echo $contorno; ?>/>
                     </g>
-                <?php endforeach; ?>
+                    <circle cx="28" cy="32" r="11" fill="<?php echo isset($l['contorno']) ? 'rgba(148,163,184,.15)' : 'rgba(255,255,255,.2)'; ?>"/>
+                    <use href="#simbolo-recicla" transform="translate(28 32)" style="color: <?php echo $l['simbolo'] ?? '#fff'; ?>"/>
+                    <text x="28" y="<?php echo count($l['rot']) > 1 ? 84 : 88; ?>" text-anchor="middle" class="cena-rotulo"><?php foreach ($l['rot'] as $k => $linha): ?><tspan x="28" dy="<?php echo $k ? 11 : 0; ?>"><?php echo $linha; ?></tspan><?php endforeach; ?></text>
+                </g>
+                    <?php endforeach;
+                endforeach; ?>
 
                 <!-- Folhas flutuando -->
                 <path class="cena-folha folha-1" d="M0 0 q10 -12 22 -4 q-6 14 -22 4 z" fill="#10b981"/>
@@ -161,10 +170,10 @@ require __DIR__ . '/includes/header.php';
                 <path class="cena-folha folha-3" d="M0 0 q10 -12 22 -4 q-6 14 -22 4 z" fill="#059669"/>
                 </g>
             </svg>
-            <span class="hero-chip chip-flutua" style="top: 1.1rem; left: 1.1rem;">
+            <span class="hero-chip chip-flutua" style="top: -.9rem; left: 1.4rem;">
                 <i class="bi bi-patch-check-fill" style="color: var(--rhe-600);"></i> Cada material no seu lugar
             </span>
-            <span class="hero-chip chip-flutua chip-flutua-2" style="bottom: 1.2rem; right: 1.1rem;">
+            <span class="hero-chip chip-flutua chip-flutua-2" style="bottom: -.9rem; right: 1.4rem;">
                 <i class="bi bi-arrow-repeat" style="color: var(--rhe-600);"></i> Economia circular
             </span>
         </div>
@@ -198,7 +207,7 @@ require __DIR__ . '/includes/header.php';
     <div class="row g-4">
         <?php
         $atalhos = [
-            ['foto' => 'home-pesquise.jpg', 'alt' => 'Lixeiras de coleta seletiva separadas por material', 'icone' => 'bi-search',
+            ['foto' => 'home-pesquise.jpg', 'alt' => 'Lixeiras coloridas de coleta seletiva para papel, plástico e latas em um parque', 'icone' => 'bi-search',
              'titulo' => 'Pesquise resíduos', 'texto' => 'Veja a classe, o tipo e a forma correta de descartar cada material.',
              'link' => 'pages/residuos.php', 'acao' => 'Pesquisar'],
             ['foto' => 'home-compartilhe.jpg', 'alt' => 'Pessoas trocando roupas em uma feira de troca', 'icone' => 'bi-arrow-left-right',
@@ -213,7 +222,7 @@ require __DIR__ . '/includes/header.php';
                 <a href="<?php echo $atalho['link']; ?>" class="text-decoration-none text-dark">
                     <article class="card card-feature">
                         <div class="photo">
-                            <img src="<?php echo BASE_URL; ?>img/fotos/home/<?php echo $atalho['foto']; ?>" alt="<?php echo htmlspecialchars($atalho['alt']); ?>" loading="lazy">
+                            <img src="<?php echo BASE_URL; ?>img/fotos/home/<?php echo $atalho['foto']; ?>?v=2" alt="<?php echo htmlspecialchars($atalho['alt']); ?>" loading="lazy">
                         </div>
                         <span class="icon-chip"><i class="bi <?php echo $atalho['icone']; ?>"></i></span>
                         <div class="card-body">
@@ -309,7 +318,7 @@ require __DIR__ . '/includes/header.php';
         </div>
     </div>
     <p class="foto-credito text-center mt-2 mb-0">
-        Fotos: SeppVei (domínio público), Conception Levy (CC BY-SA 2.0), Joel Vargas/Prefeitura de Porto Alegre e
+        Fotos: epSos.de (CC BY 2.0), Conception Levy (CC BY-SA 2.0), Joel Vargas/Prefeitura de Porto Alegre e
         Ocean Blue Project (CC BY-SA 4.0), via Wikimedia Commons.
     </p>
 </section>

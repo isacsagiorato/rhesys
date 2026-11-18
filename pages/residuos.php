@@ -314,32 +314,25 @@ $classes_info = [
     '2b' => classe_residuo('Classe II B'),
 ];
 
-/** Card de um resíduo na listagem. */
-function card_residuo(array $res)
+/** Card de um resíduo na listagem: só foto, nome e classe. O resto aparece ao passar o mouse e no detalhe. */
+function card_residuo(array $res, $extra = false)
 {
     $classe = classe_residuo($res['classificacao_nome']);
-    $tipo_info = TIPOS_RESIDUO[$res['tipo_material'] ?? ''] ?? null;
     $texto_descarte = trim((string) $res['forma_descarte']);
     ?>
-    <div class="col-sm-6 col-lg-4 col-xl-3">
-        <a href="residuos.php?id=<?php echo (int) $res['id_residuo']; ?>" class="text-decoration-none text-dark">
-            <article class="card card-residuo">
+    <div class="col-6 col-md-4 col-xl-3<?php echo $extra ? ' card-extra' : ''; ?>">
+        <a href="residuos.php?id=<?php echo (int) $res['id_residuo']; ?>" class="text-decoration-none text-dark d-block h-100">
+            <article class="card card-residuo card-residuo-limpo">
                 <div class="photo">
-                    <img src="<?php echo imagem_residuo($res['nome'], $res['tipo_material'] ?? null, $res['classificacao_nome']); ?>" alt="Foto: <?php echo htmlspecialchars($res['nome']); ?>" loading="lazy">
+                    <img src="<?php echo imagem_residuo($res['nome'], $res['tipo_material'] ?? null, $res['classificacao_nome']); ?>" alt="" loading="lazy">
                     <?php if ($res['possui_logistica_reversa']): ?>
-                        <span class="photo-tag" title="Sujeito à logística reversa (Lei 12.305/2010)"><i class="bi bi-arrow-repeat"></i> Logística reversa</span>
+                        <span class="photo-tag" title="Sujeito à logística reversa (Lei 12.305/2010)"><i class="bi bi-arrow-repeat"></i><span class="d-none d-sm-inline"> Logística reversa</span></span>
                     <?php endif; ?>
+                    <span class="descarte-hover" aria-hidden="true"><span class="descarte-hover-rotulo"><i class="bi bi-trash3"></i> Como descartar</span><span class="descarte-hover-texto"><?php echo htmlspecialchars($texto_descarte); ?></span></span>
                 </div>
-                <div class="card-body d-flex flex-column">
+                <div class="card-body">
                     <h3 class="h6 card-title mb-2"><?php echo htmlspecialchars($res['nome']); ?></h3>
-                    <div class="d-flex flex-wrap gap-1 mb-2">
-                        <span class="badge-classe badge-classe-sm <?php echo $classe['css']; ?>" title="<?php echo htmlspecialchars($res['classificacao_nome']); ?>"><i class="bi <?php echo $classe['icone']; ?>"></i> <?php echo htmlspecialchars($classe['curto']); ?></span>
-                        <?php if ($tipo_info): ?>
-                            <span class="badge-tipo"><i class="bi <?php echo $tipo_info['icone']; ?>"></i> <?php echo htmlspecialchars($tipo_info['rotulo']); ?></span>
-                        <?php endif; ?>
-                    </div>
-                    <p class="card-text small text-muted clamp-3 mb-3"><strong class="text-body">Descarte:</strong> <?php echo htmlspecialchars($texto_descarte); ?></p>
-                    <span class="link-arrow small mt-auto">Ver orientações <i class="bi bi-arrow-right"></i></span>
+                    <span class="badge-classe badge-classe-sm <?php echo $classe['css']; ?>" title="<?php echo htmlspecialchars($res['classificacao_nome']); ?>"><i class="bi <?php echo $classe['icone']; ?>"></i> <?php echo htmlspecialchars($classe['curto']); ?></span>
                 </div>
             </article>
         </a>
@@ -347,21 +340,22 @@ function card_residuo(array $res)
     <?php
 }
 
+const CARDS_POR_GRUPO = 4; // quantos resíduos cada grupo mostra antes de "Ver todos"
+$filtros_abertos = $classe_filtro !== '' || $lr_filtro;
+$qtd_filtros = ($classe_filtro !== '' ? 1 : 0) + ($lr_filtro ? 1 : 0);
+
 $titulo_pagina = 'Resíduos';
 require __DIR__ . '/../includes/header.php';
 ?>
 
-<section class="band reveal">
-    <img class="band-bg" src="<?php echo BASE_URL; ?>img/fotos/coleta.jpg" alt="Lixeiras coloridas de coleta seletiva">
+<section class="band band-compacta reveal">
+    <img class="band-bg" src="<?php echo BASE_URL; ?>img/fotos/coleta.jpg" alt="">
     <span class="crumb">Consulte antes de descartar</span>
-    <h1 class="mt-2">Resíduos</h1>
-    <p class="mt-2">
-        Digite o que você quer descartar ou escolha um tipo de material para ver
-        a classificação e a forma correta de descarte.
-    </p>
+    <h1 class="mt-1">Resíduos</h1>
+    <p class="mt-1">Descubra como descartar cada material do jeito certo.</p>
 </section>
 
-<!-- Busca + filtros -->
+<!-- Busca -->
 <div class="filtro-bar residuos-filtros mt-4" id="resultados">
     <form method="GET" action="residuos.php#resultados" role="search">
         <?php if ($tipo_filtro !== ''): ?><input type="hidden" name="tipo" value="<?php echo htmlspecialchars($tipo_filtro); ?>"><?php endif; ?>
@@ -370,79 +364,72 @@ require __DIR__ . '/../includes/header.php';
         <label for="busca" class="visually-hidden">O que você quer descartar?</label>
         <div class="search-pill">
             <i class="bi bi-search" aria-hidden="true"></i>
-            <input type="search" id="busca" name="busca" placeholder="O que você quer descartar? Ex.: pilha, caixa de pizza, óleo..." value="<?php echo htmlspecialchars($busca); ?>">
+            <input type="search" id="busca" name="busca" placeholder="O que você quer descartar?" value="<?php echo htmlspecialchars($busca); ?>">
             <button class="btn btn-success" type="submit">Buscar</button>
         </div>
     </form>
 
-    <div class="filtros-linha mt-3">
-        <span class="filtros-rotulo">Classe (ABNT NBR 10004):</span>
-        <a class="filtro-chip<?php echo $classe_filtro === '' ? ' active' : ''; ?>" href="<?php echo htmlspecialchars(url_residuos(['classe' => ''])); ?>">Todas</a>
-        <?php foreach ($classes_info as $chave => $info): $chave = (string) $chave; // a chave '1' vira inteiro no PHP ?>
-            <a class="filtro-chip filtro-chip-<?php echo $info['css']; ?><?php echo $classe_filtro === $chave ? ' active' : ''; ?>"
-               href="<?php echo htmlspecialchars(url_residuos(['classe' => $classe_filtro === $chave ? '' : $chave])); ?>"
-               <?php echo $classe_filtro === $chave ? 'aria-current="true"' : ''; ?>>
-                <i class="bi <?php echo $info['icone']; ?>"></i> <?php echo $info['curto']; ?> · <?php echo $info['resumo']; ?>
-                <span class="filtro-contagem"><?php echo $contagem_classe[$chave]; ?></span>
+    <!-- Tipos de material: fileira compacta (rola para o lado no celular) -->
+    <nav class="tipos-pilulas mt-3" aria-label="Tipos de material">
+        <a class="tipo-pilula<?php echo $tipo_filtro === '' ? ' active' : ''; ?>" href="<?php echo htmlspecialchars(url_residuos(['tipo' => '', 'busca' => ''])); ?>"<?php echo $tipo_filtro === '' ? ' aria-current="true"' : ''; ?>>
+            <i class="bi bi-grid"></i> Todos
+        </a>
+        <?php foreach (TIPOS_RESIDUO as $chave => $tipo):
+            $ativo = $tipo_filtro === $chave;
+            $qtd_tipo = (int) ($contagem_tipo[$chave] ?? 0); ?>
+            <a class="tipo-pilula<?php echo $ativo ? ' active' : ''; ?><?php echo $qtd_tipo === 0 && !$ativo ? ' vazio' : ''; ?>"
+               href="<?php echo htmlspecialchars(url_residuos(['tipo' => $ativo ? '' : $chave, 'busca' => ''])); ?>"
+               title="<?php echo htmlspecialchars($tipo['descricao']); ?>"<?php echo $ativo ? ' aria-current="true"' : ''; ?>>
+                <i class="bi <?php echo $tipo['icone']; ?>"></i> <?php echo htmlspecialchars($tipo['rotulo']); ?>
+                <span class="tipo-pilula-qtd"><?php echo $qtd_tipo; ?></span>
             </a>
         <?php endforeach; ?>
-        <a class="filtro-chip filtro-chip-lr<?php echo $lr_filtro ? ' active' : ''; ?>"
-           href="<?php echo htmlspecialchars(url_residuos(['lr' => $lr_filtro ? '' : '1'])); ?>"
-           <?php echo $lr_filtro ? 'aria-current="true"' : ''; ?>>
-            <i class="bi bi-arrow-repeat"></i> Logística reversa
-        </a>
-    </div>
-    <details class="classes-ajuda mt-2">
-        <summary>O que significa cada classe?</summary>
-        <ul class="small mb-0 mt-2">
+    </nav>
+
+    <!-- Filtros avançados: recolhidos até a pessoa abrir -->
+    <details class="filtros-avancados mt-2"<?php echo $filtros_abertos ? ' open' : ''; ?>>
+        <summary>
+            <i class="bi bi-sliders"></i> Filtrar por classe ou logística reversa
+            <?php if ($qtd_filtros): ?><span class="filtros-qtd"><?php echo $qtd_filtros; ?></span><?php endif; ?>
+            <i class="bi bi-chevron-down seta" aria-hidden="true"></i>
+        </summary>
+        <div class="filtros-linha mt-3">
+            <a class="filtro-chip<?php echo $classe_filtro === '' ? ' active' : ''; ?>" href="<?php echo htmlspecialchars(url_residuos(['classe' => ''])); ?>">Todas as classes</a>
+            <?php foreach ($classes_info as $chave => $info): $chave = (string) $chave; // a chave '1' vira inteiro no PHP ?>
+                <a class="filtro-chip filtro-chip-<?php echo $info['css']; ?><?php echo $classe_filtro === $chave ? ' active' : ''; ?>"
+                   href="<?php echo htmlspecialchars(url_residuos(['classe' => $classe_filtro === $chave ? '' : $chave])); ?>"
+                   <?php echo $classe_filtro === $chave ? 'aria-current="true"' : ''; ?>>
+                    <i class="bi <?php echo $info['icone']; ?>"></i> <?php echo $info['curto']; ?> · <?php echo $info['resumo']; ?>
+                    <span class="filtro-contagem"><?php echo $contagem_classe[$chave]; ?></span>
+                </a>
+            <?php endforeach; ?>
+            <a class="filtro-chip filtro-chip-lr<?php echo $lr_filtro ? ' active' : ''; ?>"
+               href="<?php echo htmlspecialchars(url_residuos(['lr' => $lr_filtro ? '' : '1'])); ?>"
+               <?php echo $lr_filtro ? 'aria-current="true"' : ''; ?>>
+                <i class="bi bi-arrow-repeat"></i> Logística reversa
+            </a>
+        </div>
+        <ul class="classes-explicacao small mb-0 mt-3">
             <li><strong>Classe I · Perigoso:</strong> inflamável, corrosivo, tóxico, reativo ou patogênico. Nunca vai para o lixo comum.</li>
-            <li><strong>Classe II A · Não inerte:</strong> não é perigoso, mas se altera com o tempo (biodegradável, combustível ou solúvel em água). Ex.: restos de comida, papel, plásticos.</li>
-            <li><strong>Classe II B · Inerte:</strong> praticamente não se transforma em contato com a água. Ex.: entulho, vidro, cerâmica, pedras.</li>
-            <li><strong>Logística reversa:</strong> por lei (Lei 12.305/2010), deve ser devolvido a quem fabrica ou vende, em pontos de coleta específicos.</li>
+            <li><strong>Classe II A · Não inerte:</strong> não é perigoso, mas se altera com o tempo (biodegradável, combustível ou solúvel em água).</li>
+            <li><strong>Classe II B · Inerte:</strong> praticamente não se transforma em contato com a água. Ex.: entulho, vidro, cerâmica.</li>
+            <li><strong>Logística reversa:</strong> por lei (Lei 12.305/2010), deve ser devolvido a quem fabrica ou vende.</li>
         </ul>
     </details>
 </div>
 
-<!-- Tipos de material -->
-<section class="mt-4" aria-labelledby="titulo-tipos">
-    <h2 class="h5 mb-3" id="titulo-tipos">Escolha o tipo de material<?php if ($classe_filtro !== ''): ?> <span class="text-muted fw-normal small">· contando só a <?php echo htmlspecialchars($classes_info[$classe_filtro]['curto'] . ' (' . $classes_info[$classe_filtro]['resumo'] . ')'); ?></span><?php endif; ?></h2>
-    <div class="row row-cols-2 row-cols-sm-3 row-cols-md-5 g-3">
-        <?php foreach (TIPOS_RESIDUO as $chave => $tipo):
-            $ativo = $tipo_filtro === $chave;
-            $qtd_tipo = (int) ($contagem_tipo[$chave] ?? 0); ?>
-            <div class="col">
-                <a href="<?php echo htmlspecialchars(url_residuos(['tipo' => $ativo ? '' : $chave, 'busca' => ''])); ?>"
-                   class="text-decoration-none text-dark" <?php echo $ativo ? 'aria-current="true"' : ''; ?>
-                   title="<?php echo htmlspecialchars($tipo['descricao']); ?>">
-                    <div class="card card-tipo card-tipo-sm<?php echo $ativo ? ' active' : ''; ?><?php echo $qtd_tipo === 0 && !$ativo ? ' vazio' : ''; ?>">
-                        <div class="photo">
-                            <img src="<?php echo BASE_URL . $tipo['foto']; ?>?v=4" alt="" loading="lazy">
-                        </div>
-                        <div class="card-body">
-                            <span class="tipo-nome"><i class="bi <?php echo $tipo['icone']; ?>"></i> <?php echo htmlspecialchars($tipo['rotulo']); ?></span>
-                            <span class="tipo-contagem" title="<?php echo $qtd_tipo; ?> resíduo(s)<?php echo $classe_filtro !== '' ? ' da ' . htmlspecialchars($classes_info[$classe_filtro]['curto']) : ''; ?>"><?php echo $qtd_tipo; ?></span>
-                        </div>
-                    </div>
-                </a>
-            </div>
-        <?php endforeach; ?>
-    </div>
-</section>
-
 <?php if ($tipo_filtro === 'organico'): ?>
     <div class="organic-filters mt-3" aria-label="Filtros rápidos de orgânicos">
-        <span class="filtros-rotulo">Orgânicos:</span>
         <?php foreach ($filtros_organicos as $termo_chip => $rotulo_chip): ?>
             <a href="<?php echo htmlspecialchars(url_residuos(['busca' => $busca === $termo_chip ? '' : $termo_chip])); ?>" class="organic-filter<?php echo $busca === $termo_chip ? ' active' : ''; ?>"><?php echo htmlspecialchars($rotulo_chip); ?></a>
         <?php endforeach; ?>
     </div>
 <?php endif; ?>
 
-<!-- Resumo dos filtros ativos -->
-<div class="d-flex flex-wrap align-items-center gap-2 mt-4 mb-2 resultado-resumo">
+<!-- Resumo: só aparece com detalhes quando há filtro ativo -->
+<div class="d-flex flex-wrap align-items-center gap-2 mt-4 mb-1 resultado-resumo">
     <span class="fw-semibold">
         <?php echo count($residuos); ?> <?php echo count($residuos) === 1 ? 'resíduo' : 'resíduos'; ?>
-        <?php if (!$filtrando): ?><span class="text-muted fw-normal">cadastrados</span><?php endif; ?>
     </span>
     <?php if ($busca !== ''): ?>
         <a class="filtro-ativo" href="<?php echo htmlspecialchars(url_residuos(['busca' => ''])); ?>" title="Remover busca">“<?php echo htmlspecialchars($busca); ?>” <i class="bi bi-x"></i></a>
@@ -460,10 +447,15 @@ require __DIR__ . '/../includes/header.php';
         <a href="residuos.php#resultados" class="small ms-1">Limpar filtros</a>
     <?php endif; ?>
     <?php if (usuario_logado()): ?>
-        <span class="ms-auto d-flex flex-wrap gap-2">
-            <a href="cadastro_residuo.php" class="btn btn-success btn-sm"><i class="bi bi-plus-circle me-1"></i>Cadastrar resíduo</a>
-            <a href="cadastro_classificacao.php" class="btn btn-outline-success btn-sm"><i class="bi bi-tags me-1"></i>Cadastrar classificação</a>
-        </span>
+        <div class="dropdown ms-auto">
+            <button class="btn btn-outline-success btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                <i class="bi bi-plus-circle me-1"></i>Cadastrar
+            </button>
+            <ul class="dropdown-menu dropdown-menu-end">
+                <li><a class="dropdown-item" href="cadastro_residuo.php">Novo resíduo</a></li>
+                <li><a class="dropdown-item" href="cadastro_classificacao.php">Nova classificação</a></li>
+            </ul>
+        </div>
     <?php endif; ?>
 </div>
 
@@ -474,25 +466,47 @@ require __DIR__ . '/../includes/header.php';
     </div>
 <?php endif; ?>
 
-<?php foreach ($grupos as $chave_grupo => $itens): if (!$itens) continue; ?>
-    <section class="grupo-residuos mt-4" <?php if ($chave_grupo !== '_todos'): ?>id="tipo-<?php echo htmlspecialchars($chave_grupo); ?>" aria-labelledby="titulo-grupo-<?php echo htmlspecialchars($chave_grupo); ?>"<?php endif; ?>>
-        <?php if ($chave_grupo !== '_todos'):
+<?php foreach ($grupos as $chave_grupo => $itens): if (!$itens) continue;
+    $agrupado = $chave_grupo !== '_todos';
+    $sobra = $agrupado ? max(0, count($itens) - CARDS_POR_GRUPO) : 0; ?>
+    <section class="grupo-residuos mt-4" <?php if ($agrupado): ?>id="tipo-<?php echo htmlspecialchars($chave_grupo); ?>" aria-labelledby="titulo-grupo-<?php echo htmlspecialchars($chave_grupo); ?>"<?php endif; ?>>
+        <?php if ($agrupado):
             $info_grupo = TIPOS_RESIDUO[$chave_grupo] ?? ['rotulo' => 'Outros', 'descricao' => '', 'icone' => 'bi-three-dots']; ?>
             <div class="grupo-cabecalho">
                 <span class="icon-chip-sm"><i class="bi <?php echo $info_grupo['icone']; ?>"></i></span>
-                <div class="flex-grow-1">
-                    <h2 class="h5 mb-0" id="titulo-grupo-<?php echo htmlspecialchars($chave_grupo); ?>"><?php echo htmlspecialchars($info_grupo['rotulo']); ?> <span class="text-muted fw-normal small">(<?php echo count($itens); ?>)</span></h2>
-                    <?php if ($info_grupo['descricao']): ?><p class="small text-muted mb-0"><?php echo htmlspecialchars($info_grupo['descricao']); ?></p><?php endif; ?>
-                </div>
-                <?php if (isset(TIPOS_RESIDUO[$chave_grupo])): ?>
-                    <a href="<?php echo htmlspecialchars(url_residuos(['tipo' => $chave_grupo])); ?>" class="link-arrow small">Só este tipo <i class="bi bi-arrow-right"></i></a>
-                <?php endif; ?>
+                <h2 class="h5 mb-0 flex-grow-1" id="titulo-grupo-<?php echo htmlspecialchars($chave_grupo); ?>" title="<?php echo htmlspecialchars($info_grupo['descricao']); ?>">
+                    <?php echo htmlspecialchars($info_grupo['rotulo']); ?> <span class="text-muted fw-normal small"><?php echo count($itens); ?></span>
+                </h2>
             </div>
         <?php endif; ?>
-        <div class="row g-4">
-            <?php foreach ($itens as $res) card_residuo($res); ?>
+        <div class="row g-3 g-md-4">
+            <?php foreach ($itens as $i => $res) card_residuo($res, $agrupado && $i >= CARDS_POR_GRUPO); ?>
         </div>
+        <?php if ($sobra > 0): ?>
+            <div class="text-center mt-3">
+                <a class="btn btn-outline-success btn-sm ver-mais" href="<?php echo htmlspecialchars(url_residuos(['tipo' => $chave_grupo])); ?>"
+                   data-ver-mais="<?php echo $sobra; ?>" aria-expanded="false">
+                    Ver mais <?php echo $sobra; ?> <i class="bi bi-chevron-down"></i>
+                </a>
+            </div>
+        <?php endif; ?>
     </section>
 <?php endforeach; ?>
+
+<script>
+// "Ver mais": abre o restante do grupo na própria página (sem JavaScript, o botão leva ao filtro do tipo)
+document.querySelectorAll('[data-ver-mais]').forEach(function (botao) {
+    botao.addEventListener('click', function (evento) {
+        evento.preventDefault();
+        var grupo = botao.closest('.grupo-residuos');
+        var aberto = grupo.classList.toggle('grupo-aberto');
+        botao.setAttribute('aria-expanded', aberto ? 'true' : 'false');
+        botao.innerHTML = aberto
+            ? 'Mostrar menos <i class="bi bi-chevron-up"></i>'
+            : 'Ver mais ' + botao.getAttribute('data-ver-mais') + ' <i class="bi bi-chevron-down"></i>';
+        if (!aberto) grupo.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+});
+</script>
 
 <?php require __DIR__ . '/../includes/footer.php'; ?>
