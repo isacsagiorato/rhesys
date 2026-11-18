@@ -136,8 +136,11 @@ rhesys/
   classifica todos os resíduos por tipo, corrige "Garrafas e potes de vidro" para
   Classe II B (inerte) e insere mais 36 resíduos (caixa de pizza, cabos e
   carregadores, gesso, telha de amianto, seringas, bitucas etc.). Idempotente;
-  execute **depois** dos lotes anteriores. Total: 86 resíduos.
-- Fotos dos resíduos: `img/fotos/residuos/` traz uma foto real para cada um dos 86 itens,
+  execute **depois** dos lotes anteriores.
+- Lote 4: `database/residuos_lote4.sql` insere mais 36 resíduos (marmitex, cápsula de café,
+  tablet, extintor, radiografia, máscara descartável, nota fiscal etc.), já com classe e tipo
+  de material. Idempotente; execute depois do lote 3. Total: 122 resíduos.
+- Fotos dos resíduos: `img/fotos/residuos/` traz uma foto real para cada um dos 122 itens,
   todas do Wikimedia Commons sob licenças livres. O crédito (autor + licença) aparece
   na página de detalhes; a lista completa de fontes está em `docs/FONTES_FOTOS_RESIDUOS.md`
   (dados usados pelo site em `config/fontes_fotos_residuos.php`).
@@ -168,7 +171,7 @@ rhesys/
 1. Instale XAMPP/Laragon com PHP 8+ e MySQL/MariaDB, ou use `php -S localhost:8000` na raiz.
 2. Crie o banco executando `database/rhesys_banco_dados.sql`. **Atenção:** esse script recria as tabelas e deve ser usado em uma instalação nova.
 3. Em um banco antigo, preserve os dados e execute apenas as migrações necessárias: `database/migracao_google.sql` (uma vez, se ainda não tiver as colunas do Google) e `database/migracao_sprints_3_a_6.sql` (idempotente).
-4. Execute `database/residuos_organicos.sql` para incluir os 10 orgânicos (script idempotente, também indicado para bancos existentes) e, opcionalmente, `database/residuos_lote2.sql` para acrescentar mais 35 itens e, por fim, `database/residuos_lote3.sql` (tipo de material + 36 itens). Com todos os lotes, a base fica com 86 resíduos.
+4. Execute `database/residuos_organicos.sql` para incluir os 10 orgânicos (script idempotente, também indicado para bancos existentes) e, opcionalmente, `database/residuos_lote2.sql` para acrescentar mais 35 itens `database/residuos_lote3.sql` (tipo de material + 36 itens) e, por fim, `database/residuos_lote4.sql` (mais 36 itens). Com todos os lotes, a base fica com 122 resíduos.
 5. A conexão usa `root` sem senha e banco `rhesys` por padrão. Ajuste `config/conexao.php` ou defina `RHESYS_DB_HOST`, `RHESYS_DB_PORT`, `RHESYS_DB_NAME`, `RHESYS_DB_USER` e `RHESYS_DB_PASSWORD`.
 6. `BASE_URL` é detectada automaticamente. Acesse `index.php`; com o comando acima, use `http://localhost:8000`.
 

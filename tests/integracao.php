@@ -40,7 +40,7 @@ do {
     if (!$mysqli->next_result()) throw new RuntimeException('Falha no SQL de orgânicos: ' . $mysqli->error);
 } while (true);
 // Lote 3: tipo de material + novos resíduos (o lote 2 é carregado antes para o lote 3 classificá-lo)
-foreach (['residuos_lote2.sql', 'residuos_lote3.sql'] as $arquivoLote) {
+foreach (['residuos_lote2.sql', 'residuos_lote3.sql', 'residuos_lote4.sql'] as $arquivoLote) {
     $sqlLote = str_replace('USE rhesys;', "USE `$dbName`;", file_get_contents($root . '/database/' . $arquivoLote), $loteReplaced);
     if ($loteReplaced !== 1 || strpos($sqlLote, 'USE rhesys;') !== false) {
         throw new RuntimeException("Não foi possível isolar $arquivoLote no banco de testes.");
@@ -153,7 +153,7 @@ try {
     $response = request($base, $clients['publico'], 'GET', '/pages/residuos.php?busca=pilha');
     contains('Pilha', $response, 'busca de resíduo retorna o item esperado');
     $response = request($base, $clients['publico'], 'GET', '/pages/residuos.php');
-    verify(strpos($response['body'], 'Casca de banana') !== false && strpos($response['body'], 'img/fotos/lixo-organico.jpg') !== false, 'seção de orgânicos e foto são exibidas');
+    verify(strpos($response['body'], 'Casca de banana') !== false && strpos($response['body'], 'id="tipo-organico"') !== false, 'seção de orgânicos e foto são exibidas');
     $response = request($base, $clients['publico'], 'GET', '/pages/residuos.php?busca=banana');
     contains('Casca de banana', $response, 'filtro de banana encontra resíduo orgânico');
     $response = request($base, $clients['publico'], 'GET', '/pages/residuos.php?busca=queijo');
