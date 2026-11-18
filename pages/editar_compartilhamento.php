@@ -165,7 +165,7 @@ require __DIR__ . '/../includes/header.php';
                 <form method="post" action="editar_compartilhamento.php?id=<?php echo $id; ?>" enctype="multipart/form-data">
                     <?php echo csrf_field(); ?>
                     <?php require __DIR__ . '/../includes/form_material.php'; ?>
-                    <div class="d-flex flex-wrap gap-2 mt-4">
+                    <div class="form-acoes">
                         <button type="submit" class="btn btn-success"><i class="bi bi-check-lg me-1"></i>Salvar alterações</button>
                         <a href="meus_compartilhamentos.php" class="btn btn-outline-success">Cancelar</a>
                     </div>

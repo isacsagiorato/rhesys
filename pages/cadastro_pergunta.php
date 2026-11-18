@@ -72,8 +72,10 @@ require __DIR__ . '/../includes/header.php';
                 <?php endforeach; ?>
             </div>
             <div class="mt-4 mb-4"><label for="resposta_correta" class="form-label">Resposta correta</label><select class="form-select" id="resposta_correta" name="resposta_correta" required><?php foreach (['a', 'b', 'c', 'd'] as $letra): ?><option value="<?php echo $letra; ?>" <?php echo $resposta_correta === $letra ? 'selected' : ''; ?>>Alternativa <?php echo strtoupper($letra); ?></option><?php endforeach; ?></select></div>
+            <div class="form-acoes">
             <button type="submit" class="btn btn-success">Cadastrar pergunta</button>
             <a href="quiz.php?id=<?php echo $id_quiz; ?>" class="btn btn-outline-success">Visualizar quiz</a>
+            </div>
         </form>
     </div></div>
 </div></div>

@@ -86,12 +86,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $id_quiz > 0) {
     $stmt_resultado->execute();
     ?>
 
-    <a href="quiz.php" class="btn btn-outline-success mb-3">&larr; Voltar aos quizzes</a>
+    <a href="quiz.php" class="btn btn-outline-success mb-3"><i class="bi bi-arrow-left me-1"></i>Voltar aos quizzes</a>
 
     <div class="card shadow-sm mb-4">
-        <div class="card-body text-center p-5">
-            <div class="score-big mb-2"><?php echo $pontuacao; ?>%</div>
-            <p class="fs-4">
+        <div class="card-body text-center p-4 p-lg-5">
+            <p class="section-tag mb-3"><?php echo htmlspecialchars($quiz['titulo']); ?></p>
+            <div class="score-anel" style="--p: <?php echo (int) $pontuacao; ?>;" role="img" aria-label="Pontuação: <?php echo (int) $pontuacao; ?>%">
+                <div><span class="score-big"><?php echo $pontuacao; ?>%</span></div>
+            </div>
+            <p class="fs-5">
                 Você acertou <strong><?php echo $acertos; ?></strong> de <strong><?php echo $total; ?></strong> perguntas
             </p>
             <?php if ($pontuacao >= 70): ?>
@@ -107,19 +110,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $id_quiz > 0) {
                     <strong>Não desanime!</strong> Revise o conteúdo sobre gestão de resíduos e tente novamente.
                 </div>
             <?php endif; ?>
-            <a href="quiz.php?id=<?php echo $id_quiz; ?>" class="btn btn-success">Tentar novamente</a>
+            <div class="d-flex flex-wrap justify-content-center gap-2">
+                <a href="quiz.php?id=<?php echo $id_quiz; ?>" class="btn btn-success"><i class="bi bi-arrow-repeat me-1"></i>Tentar novamente</a>
+                <a href="conteudos.php" class="btn btn-outline-success"><i class="bi bi-book me-1"></i>Revisar conteúdos</a>
+            </div>
         </div>
     </div>
 
     <!-- Revisão das respostas -->
-    <h3>Revisão das respostas</h3>
+    <h2 class="h4 mb-3">Revisão das respostas</h2>
     <div class="list-group mb-4">
         <?php foreach ($perguntas as $index => $p): 
             $id_pergunta = $p['id_pergunta'];
             $resposta_usuario = isset($respostas[$id_pergunta]) ? $respostas[$id_pergunta] : null;
             $correta = $resposta_usuario === $p['resposta_correta'];
         ?>
-            <div class="list-group-item <?php echo $correta ? 'list-group-item-success' : 'list-group-item-danger'; ?>">
+            <div class="list-group-item revisao-item <?php echo $correta ? 'revisao-certa' : 'revisao-errada'; ?> p-3">
                 <p class="mb-2">
                     <strong><?php echo ($index + 1); ?>.</strong>
                     <?php echo htmlspecialchars($p['enunciado']); ?>
@@ -132,7 +138,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $id_quiz > 0) {
                     <?php else: ?>
                         <em>Não respondida</em>
                     <?php endif; ?>
-                    <?php echo $correta ? '✅' : '❌'; ?>
+                    <?php if ($correta): ?>
+                        <span class="badge-soft ms-1"><i class="bi bi-check-lg"></i> Correta</span>
+                    <?php else: ?>
+                        <span class="badge-classe badge-classe-sm classe-1 ms-1"><i class="bi bi-x-lg"></i> Incorreta</span>
+                    <?php endif; ?>
                 </p>
                 <?php if (!$correta): ?>
                     <p class="mb-0 small">
@@ -145,8 +155,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $id_quiz > 0) {
         <?php endforeach; ?>
     </div>
 
-    <a href="quiz.php?id=<?php echo $id_quiz; ?>" class="btn btn-success">Refazer quiz</a>
-    <a href="quiz.php" class="btn btn-outline-success">Outros quizzes</a>
+    <div class="form-acoes">
+        <a href="quiz.php?id=<?php echo $id_quiz; ?>" class="btn btn-success">Refazer quiz</a>
+        <a href="quiz.php" class="btn btn-outline-success">Outros quizzes</a>
+    </div>
 
     <?php
     require __DIR__ . '/../includes/footer.php';
@@ -177,13 +189,13 @@ if ($id_quiz > 0) {
     $perguntas = $stmt_perguntas->fetchAll();
     ?>
 
-    <a href="quiz.php" class="btn btn-outline-success mb-3">&larr; Voltar aos quizzes</a>
+    <a href="quiz.php" class="btn btn-outline-success mb-3"><i class="bi bi-arrow-left me-1"></i>Voltar aos quizzes</a>
 
     <div class="card shadow-sm">
-        <div class="card-body p-4">
-            <h1 class="card-title text-success"><?php echo htmlspecialchars($quiz['titulo']); ?></h1>
-            <p class="text-muted"><?php echo htmlspecialchars($quiz['descricao']); ?></p>
-            <p class="badge bg-light text-dark mb-4"><?php echo count($perguntas); ?> perguntas</p>
+        <div class="card-body p-4 p-lg-5">
+            <span class="section-tag">Quiz · <?php echo count($perguntas); ?> <?php echo count($perguntas) === 1 ? 'pergunta' : 'perguntas'; ?></span>
+            <h1 class="fs-2 mt-1 mb-2"><?php echo htmlspecialchars($quiz['titulo']); ?></h1>
+            <p class="text-muted mb-4"><?php echo htmlspecialchars($quiz['descricao']); ?></p>
 
             <?php if (!usuario_logado()): ?>
                 <!-- Aviso prévio: sem login o resultado do quiz não é exibido -->
@@ -200,37 +212,61 @@ if ($id_quiz > 0) {
             <?php if (count($perguntas) === 0): ?>
                 <div class="alert alert-info">Este quiz ainda não possui perguntas cadastradas.</div>
             <?php else: ?>
-                <form method="POST" action="quiz.php?id=<?php echo $id_quiz; ?>">
+                <form method="POST" action="quiz.php?id=<?php echo $id_quiz; ?>" id="form-quiz">
                     <?php echo csrf_field(); ?>
+                    <div class="quiz-progresso" aria-live="polite">
+                        <div class="d-flex justify-content-between small fw-semibold mb-1">
+                            <span>Progresso</span>
+                            <span><span id="quiz-respondidas">0</span> de <?php echo count($perguntas); ?> respondidas</span>
+                        </div>
+                        <div class="progress" role="progressbar" aria-label="Perguntas respondidas" aria-valuemin="0" aria-valuemax="<?php echo count($perguntas); ?>" aria-valuenow="0">
+                            <div class="progress-bar" id="quiz-barra" style="width: 0%"></div>
+                        </div>
+                    </div>
                     <?php foreach ($perguntas as $index => $p): ?>
-                        <div class="info-card mb-4">
-                            <div class="card-body p-4">
-                                <div class="d-flex align-items-center gap-3 mb-3">
-                                    <div class="q-num"><?php echo $index + 1; ?></div>
-                                    <h5 class="mb-0"><?php echo htmlspecialchars($p['enunciado']); ?></h5>
-                                </div>
-                                <div class="ms-4">
+                        <fieldset class="info-card mb-4">
+                            <div class="card-body p-3 p-md-4">
+                                <legend class="quiz-pergunta-titulo">
+                                    <span class="q-num"><?php echo $index + 1; ?></span>
+                                    <h2><?php echo htmlspecialchars($p['enunciado']); ?></h2>
+                                </legend>
+                                <div class="quiz-opcoes">
                                     <?php foreach (['a', 'b', 'c', 'd'] as $alt): ?>
-                                        <div class="form-check mb-2 quiz-option">
-                                            <input class="form-check-input" type="radio"
-                                                   name="respostas[<?php echo $p['id_pergunta']; ?>]"
-                                                   id="p<?php echo $p['id_pergunta']; ?>_<?php echo $alt; ?>"
+                                        <label class="quiz-opcao" for="p<?php echo (int) $p['id_pergunta']; ?>_<?php echo $alt; ?>">
+                                            <input type="radio"
+                                                   name="respostas[<?php echo (int) $p['id_pergunta']; ?>]"
+                                                   id="p<?php echo (int) $p['id_pergunta']; ?>_<?php echo $alt; ?>"
                                                    value="<?php echo $alt; ?>" required>
-                                            <label class="form-check-label" for="p<?php echo $p['id_pergunta']; ?>_<?php echo $alt; ?>">
-                                                <strong><?php echo strtoupper($alt); ?></strong>
-                                                <?php echo htmlspecialchars($p['alternativa_' . $alt]); ?>
-                                            </label>
-                                        </div>
+                                            <span class="letra"><?php echo strtoupper($alt); ?></span>
+                                            <span><?php echo htmlspecialchars($p['alternativa_' . $alt]); ?></span>
+                                        </label>
                                     <?php endforeach; ?>
                                 </div>
                             </div>
-                        </div>
+                        </fieldset>
                     <?php endforeach; ?>
 
-                    <button type="submit" class="btn btn-success btn-lg w-100">
-                        Enviar respostas
+                    <button type="submit" class="btn btn-success btn-lg w-100 quiz-enviar">
+                        <i class="bi bi-send me-1"></i>Enviar respostas
                     </button>
                 </form>
+                <script>
+                // Atualiza a barra de progresso conforme as perguntas são respondidas
+                (function () {
+                    var form = document.getElementById('form-quiz');
+                    var total = <?php echo count($perguntas); ?>;
+                    var barra = document.getElementById('quiz-barra');
+                    var texto = document.getElementById('quiz-respondidas');
+                    form.addEventListener('change', function () {
+                        var nomes = {};
+                        form.querySelectorAll('input[type=radio]:checked').forEach(function (r) { nomes[r.name] = true; });
+                        var n = Object.keys(nomes).length;
+                        texto.textContent = n;
+                        barra.style.width = (n / total * 100) + '%';
+                        barra.parentNode.setAttribute('aria-valuenow', n);
+                    });
+                })();
+                </script>
             <?php endif; ?>
         </div>
     </div>
@@ -250,6 +286,26 @@ $sql = "SELECT q.*, COUNT(p.id_pergunta) AS total_perguntas
         ORDER BY q.titulo";
 $stmt = $pdo->query($sql);
 $quizzes = $stmt->fetchAll();
+
+// Melhor resultado do usuário logado em cada quiz
+$melhores = [];
+if (usuario_logado()) {
+    $stmt = $pdo->prepare('SELECT id_quiz, MAX(pontuacao) AS melhor FROM resultado_quiz WHERE id_usuario = :u GROUP BY id_quiz');
+    $stmt->bindValue(':u', $_SESSION['id_usuario'], PDO::PARAM_INT);
+    $stmt->execute();
+    foreach ($stmt->fetchAll() as $r) $melhores[(int) $r['id_quiz']] = (int) $r['melhor'];
+}
+
+/** Ícone e cor da capa conforme o tema do quiz (pelo título). */
+function capa_quiz($titulo)
+{
+    $t = mb_strtolower((string) $titulo, 'UTF-8');
+    if (strpos($t, 'classifica') !== false) return ['bi-shield-exclamation', 'quiz-capa-1'];
+    if (strpos($t, 'compost') !== false || strpos($t, 'orgân') !== false) return ['bi-flower1', 'quiz-capa-2'];
+    if (strpos($t, 'reversa') !== false || strpos($t, 'recicl') !== false) return ['bi-arrow-repeat', 'quiz-capa-3'];
+    if (strpos($t, 'dia a dia') !== false || strpos($t, 'descarte') !== false) return ['bi-house-heart', 'quiz-capa-4'];
+    return ['bi-patch-question', 'quiz-capa-3'];
+}
 ?>
 
 <section class="band reveal">
@@ -262,42 +318,48 @@ $quizzes = $stmt->fetchAll();
     </p>
 </section>
 
-<?php if (usuario_logado()): ?>
-    <div class="mt-4"><a href="cadastro_quiz.php" class="btn btn-success"><i class="bi bi-plus-circle me-1"></i>Cadastrar quiz e perguntas</a></div>
-<?php endif; ?>
-
-<p class="text-muted small mt-4 mb-0">
-    <i class="bi bi-patch-check"></i>
-    <?php echo count($quizzes); ?> quiz(zes) disponível(is).
-</p>
+<div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mt-4">
+    <p class="text-muted mb-0">
+        <i class="bi bi-patch-check me-1"></i>
+        <?php echo count($quizzes); ?> <?php echo count($quizzes) === 1 ? 'quiz disponível' : 'quizzes disponíveis'; ?>
+        <?php if (!usuario_logado()): ?> · <a href="login.php">entre</a> para salvar sua pontuação<?php endif; ?>
+    </p>
+    <?php if (usuario_logado()): ?>
+        <a href="cadastro_quiz.php" class="btn btn-outline-success btn-sm"><i class="bi bi-plus-circle me-1"></i>Cadastrar quiz e perguntas</a>
+    <?php endif; ?>
+</div>
 
 <?php if (count($quizzes) === 0): ?>
     <div class="alert alert-info mt-4">Nenhum quiz disponível no momento.</div>
 <?php else: ?>
-    <div class="row g-4 mt-2 reveal">
-        <?php foreach ($quizzes as $quiz): ?>
-            <div class="col-md-6 col-lg-4">
-                <div class="card card-residuo">
-                    <div class="photo" style="height: 120px;">
-                        <img src="<?php echo BASE_URL; ?>img/fotos/reciclaveis.jpg" alt="Recicláveis">
-                    </div>
+    <div class="row g-4 mt-1 reveal">
+        <?php foreach ($quizzes as $quiz):
+            [$icone_quiz, $cor_quiz] = capa_quiz($quiz['titulo']);
+            $melhor = $melhores[(int) $quiz['id_quiz']] ?? null;
+            $tem_perguntas = (int) $quiz['total_perguntas'] > 0; ?>
+            <div class="col-sm-6 col-lg-4">
+                <article class="card card-residuo quiz-card">
+                    <div class="quiz-capa <?php echo $cor_quiz; ?>" aria-hidden="true"><i class="bi <?php echo $icone_quiz; ?>"></i></div>
                     <div class="card-body d-flex flex-column">
-                        <h5 class="card-title"><?php echo htmlspecialchars($quiz['titulo']); ?></h5>
+                        <h2 class="h5 card-title"><?php echo htmlspecialchars($quiz['titulo']); ?></h2>
                         <p class="card-text text-muted small flex-grow-1">
                             <?php echo htmlspecialchars($quiz['descricao']); ?>
                         </p>
-                        <div class="d-flex justify-content-between align-items-center mt-3">
-                            <span class="badge-soft"><?php echo $quiz['total_perguntas']; ?> pergunta(s)</span>
-                            <?php if ($quiz['total_perguntas'] > 0): ?>
-                                <a href="quiz.php?id=<?php echo $quiz['id_quiz']; ?>" class="btn btn-sm btn-success">
-                                    Iniciar <i class="bi bi-arrow-right"></i>
+                        <?php if ($melhor !== null): ?>
+                            <p class="quiz-meu-resultado mb-2"><i class="bi bi-trophy me-1"></i>Sua melhor pontuação: <?php echo $melhor; ?>%</p>
+                        <?php endif; ?>
+                        <div class="d-flex justify-content-between align-items-center gap-2 mt-2">
+                            <span class="badge-soft small"><i class="bi bi-list-check me-1"></i><?php echo (int) $quiz['total_perguntas']; ?> <?php echo (int) $quiz['total_perguntas'] === 1 ? 'pergunta' : 'perguntas'; ?></span>
+                            <?php if ($tem_perguntas): ?>
+                                <a href="quiz.php?id=<?php echo (int) $quiz['id_quiz']; ?>" class="btn btn-sm btn-success">
+                                    <?php echo $melhor !== null ? 'Jogar de novo' : 'Começar'; ?> <i class="bi bi-arrow-right"></i>
                                 </a>
                             <?php else: ?>
                                 <span class="text-muted small">Em breve</span>
                             <?php endif; ?>
                         </div>
                     </div>
-                </div>
+                </article>
             </div>
         <?php endforeach; ?>
     </div>

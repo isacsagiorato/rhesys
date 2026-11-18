@@ -130,7 +130,7 @@ require __DIR__ . '/../includes/header.php';
                 <form method="post" action="cadastro_compartilhamento.php" enctype="multipart/form-data">
                     <?php echo csrf_field(); ?>
                     <?php require __DIR__ . '/../includes/form_material.php'; ?>
-                    <div class="d-flex flex-wrap gap-2 mt-4">
+                    <div class="form-acoes">
                         <button type="submit" class="btn btn-success"><i class="bi bi-box-arrow-up me-1"></i>Publicar material</button>
                         <a href="compartilhamentos.php" class="btn btn-outline-success">Cancelar</a>
                     </div>

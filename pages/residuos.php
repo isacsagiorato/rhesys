@@ -248,33 +248,7 @@ function url_residuos(array $mudancas)
     return 'residuos.php' . ($params ? '?' . http_build_query($params) : '') . '#resultados';
 }
 
-// Classificações cadastradas, agrupadas pela chave (1, 2a, 2b)
-$ids_por_classe = ['1' => [], '2a' => [], '2b' => []];
-foreach ($pdo->query('SELECT id_classificacao, nome FROM classificacao') as $c) {
-    $chave = classe_residuo($c['nome'])['chave'];
-    if (isset($ids_por_classe[$chave])) $ids_por_classe[$chave][] = (int) $c['id_classificacao'];
-}
-
-// Contagens (sobre todos os resíduos) para os atalhos de tipo e de classe
-$contagem_tipo = [];
-$contagem_classe = ['1' => 0, '2a' => 0, '2b' => 0];
-$stmt = $pdo->prepare(
-    'SELECT r.tipo_material, c.nome AS classificacao_nome
-     FROM residuo r INNER JOIN classificacao c ON r.id_classificacao = c.id_classificacao
-     WHERE r.nome <> :generico'
-);
-$stmt->bindValue(':generico', RESIDUO_GENERICO);
-$stmt->execute();
-$total_geral = 0;
-foreach ($stmt->fetchAll() as $linha) {
-    $total_geral++;
-    $chave_tipo = $linha['tipo_material'] ?? '';
-    $contagem_tipo[$chave_tipo] = ($contagem_tipo[$chave_tipo] ?? 0) + 1;
-    $chave_classe = classe_residuo($linha['classificacao_nome'])['chave'];
-    if (isset($contagem_classe[$chave_classe])) $contagem_classe[$chave_classe]++;
-}
-
-// Consulta com os filtros ativos
+// Busca e logística reversa valem para tudo (lista e contagens)
 $condicoes = ['r.nome <> :generico'];
 $params = [':generico' => RESIDUO_GENERICO];
 if ($busca !== '') {
@@ -282,14 +256,6 @@ if ($busca !== '') {
     $termo = '%' . addcslashes($busca, '%_\\') . '%';
     $condicoes[] = '(r.nome LIKE :busca1 OR r.palavras_chave LIKE :busca2 OR r.descricao LIKE :busca3)';
     $params[':busca1'] = $params[':busca2'] = $params[':busca3'] = $termo;
-}
-if ($tipo_filtro !== '') {
-    $condicoes[] = 'r.tipo_material = :tipo';
-    $params[':tipo'] = $tipo_filtro;
-}
-if ($classe_filtro !== '') {
-    $ids = $ids_por_classe[$classe_filtro] ?: [0];
-    $condicoes[] = 'r.id_classificacao IN (' . implode(',', array_map('intval', $ids)) . ')';
 }
 if ($lr_filtro) {
     $condicoes[] = 'r.possui_logistica_reversa = 1';
@@ -303,7 +269,22 @@ $stmt = $pdo->prepare(
 );
 foreach ($params as $chave => $valor) $stmt->bindValue($chave, $valor);
 $stmt->execute();
-$residuos = $stmt->fetchAll();
+
+// Tipo e classe são filtrados aqui, para que cada contagem respeite o outro filtro:
+// - número de cada TIPO   = resíduos daquele tipo dentro da classe escolhida;
+// - número de cada CLASSE = resíduos daquela classe dentro do tipo escolhido.
+$residuos = [];
+$contagem_tipo = [];
+$contagem_classe = ['1' => 0, '2a' => 0, '2b' => 0];
+foreach ($stmt->fetchAll() as $linha) {
+    $chave_tipo = (string) ($linha['tipo_material'] ?? '');
+    $chave_classe = classe_residuo($linha['classificacao_nome'])['chave'];
+    $passa_tipo = $tipo_filtro === '' || $chave_tipo === $tipo_filtro;
+    $passa_classe = $classe_filtro === '' || $chave_classe === $classe_filtro;
+    if ($passa_classe) $contagem_tipo[$chave_tipo] = ($contagem_tipo[$chave_tipo] ?? 0) + 1;
+    if ($passa_tipo && isset($contagem_classe[$chave_classe])) $contagem_classe[$chave_classe]++;
+    if ($passa_tipo && $passa_classe) $residuos[] = $linha;
+}
 
 $filtrando = $busca !== '' || $tipo_filtro !== '' || $classe_filtro !== '' || $lr_filtro;
 
@@ -424,20 +405,22 @@ require __DIR__ . '/../includes/header.php';
 
 <!-- Tipos de material -->
 <section class="mt-4" aria-labelledby="titulo-tipos">
-    <h2 class="h5 mb-3" id="titulo-tipos">Escolha o tipo de material</h2>
+    <h2 class="h5 mb-3" id="titulo-tipos">Escolha o tipo de material<?php if ($classe_filtro !== ''): ?> <span class="text-muted fw-normal small">· contando só a <?php echo htmlspecialchars($classes_info[$classe_filtro]['curto'] . ' (' . $classes_info[$classe_filtro]['resumo'] . ')'); ?></span><?php endif; ?></h2>
     <div class="row row-cols-2 row-cols-sm-3 row-cols-md-5 g-3">
-        <?php foreach (TIPOS_RESIDUO as $chave => $tipo): $ativo = $tipo_filtro === $chave; ?>
+        <?php foreach (TIPOS_RESIDUO as $chave => $tipo):
+            $ativo = $tipo_filtro === $chave;
+            $qtd_tipo = (int) ($contagem_tipo[$chave] ?? 0); ?>
             <div class="col">
                 <a href="<?php echo htmlspecialchars(url_residuos(['tipo' => $ativo ? '' : $chave, 'busca' => ''])); ?>"
                    class="text-decoration-none text-dark" <?php echo $ativo ? 'aria-current="true"' : ''; ?>
                    title="<?php echo htmlspecialchars($tipo['descricao']); ?>">
-                    <div class="card card-tipo card-tipo-sm<?php echo $ativo ? ' active' : ''; ?>">
+                    <div class="card card-tipo card-tipo-sm<?php echo $ativo ? ' active' : ''; ?><?php echo $qtd_tipo === 0 && !$ativo ? ' vazio' : ''; ?>">
                         <div class="photo">
                             <img src="<?php echo BASE_URL . $tipo['foto']; ?>?v=4" alt="" loading="lazy">
                         </div>
                         <div class="card-body">
                             <span class="tipo-nome"><i class="bi <?php echo $tipo['icone']; ?>"></i> <?php echo htmlspecialchars($tipo['rotulo']); ?></span>
-                            <span class="tipo-contagem"><?php echo (int) ($contagem_tipo[$chave] ?? 0); ?></span>
+                            <span class="tipo-contagem" title="<?php echo $qtd_tipo; ?> resíduo(s)<?php echo $classe_filtro !== '' ? ' da ' . htmlspecialchars($classes_info[$classe_filtro]['curto']) : ''; ?>"><?php echo $qtd_tipo; ?></span>
                         </div>
                     </div>
                 </a>

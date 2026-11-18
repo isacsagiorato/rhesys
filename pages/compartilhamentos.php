@@ -13,7 +13,8 @@ $mensagens = [
     'interesse' => 'Seu interesse foi registrado. O ofertante poderá aceitá-lo no painel.',
     'interesse_cancelado' => 'Seu interesse foi cancelado.',
 ];
-$sucesso = is_string($_GET['sucesso'] ?? '') ? ($mensagens[$_GET['sucesso']] ?? '') : '';
+$codigo_sucesso = $_GET['sucesso'] ?? '';
+$sucesso = is_string($codigo_sucesso) ? ($mensagens[$codigo_sucesso] ?? '') : '';
 
 $busca = trim((string) ($_GET['busca'] ?? ''));
 $categoria = (string) ($_GET['categoria'] ?? 'todas');
@@ -227,7 +228,7 @@ require __DIR__ . '/../includes/header.php';
                     <div class="d-flex flex-wrap gap-2 mt-auto">
                         <a href="compartilhamento.php?id=<?php echo (int) $oferta['id_compartilhamento']; ?>" class="btn btn-sm btn-outline-success">Ver detalhes</a>
                         <?php if ($propria): ?>
-                            <a href="meus_compartilhamentos.php#oferta-<?php echo (int) $oferta['id_compartilhamento']; ?>" class="btn btn-sm btn-outline-secondary">Gerenciar</a>
+                            <a href="meus_compartilhamentos.php#oferta-<?php echo (int) $oferta['id_compartilhamento']; ?>" class="btn btn-sm btn-outline-success">Gerenciar</a>
                         <?php elseif (in_array($oferta['meu_interesse_status'], ['pendente', 'aceito'], true)): ?>
                             <span class="badge-soft">Seu interesse: <?php echo $oferta['meu_interesse_status'] === 'aceito' ? 'aceito' : 'pendente'; ?></span>
                             <form method="post" action="compartilhamentos.php?status=<?php echo $status; ?>">

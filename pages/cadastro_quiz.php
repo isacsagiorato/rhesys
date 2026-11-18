@@ -38,8 +38,10 @@ require __DIR__ . '/../includes/header.php';
             <?php echo csrf_field(); ?>
             <div class="mb-3"><label for="titulo" class="form-label">Título</label><input class="form-control" id="titulo" name="titulo" value="<?php echo htmlspecialchars($titulo); ?>" required minlength="3" maxlength="150"></div>
             <div class="mb-4"><label for="descricao" class="form-label">Descrição</label><textarea class="form-control" id="descricao" name="descricao" rows="5" required minlength="10" maxlength="2000"><?php echo htmlspecialchars($descricao); ?></textarea></div>
+            <div class="form-acoes">
             <button type="submit" class="btn btn-success">Criar quiz e adicionar perguntas</button>
             <a href="quiz.php" class="btn btn-outline-success">Voltar</a>
+            </div>
         </form>
     </div></div>
 </div></div>
