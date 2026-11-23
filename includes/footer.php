@@ -61,7 +61,7 @@
 <?php endforeach; ?>
 
 <!-- JS próprio (?v= força o navegador a baixar a versão nova e não usar cache) -->
-<script src="<?php echo BASE_URL; ?>js/script.js?v=5"></script>
+<script src="<?php echo BASE_URL; ?>js/script.js?v=6"></script>
 <script src="<?php echo BASE_URL; ?>js/autocompletar.js?v=3"></script>
 
 </body>

@@ -128,3 +128,35 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 });
+
+// Números que sobem de 0 até o valor quando aparecem na tela (ex.: topo dos compartilhamentos)
+document.addEventListener('DOMContentLoaded', function () {
+    var numeros = document.querySelectorAll('[data-contar]');
+    if (!numeros.length) return;
+    var reduzir = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    function animar(el) {
+        var alvo = parseInt(el.getAttribute('data-contar'), 10) || 0;
+        if (reduzir || alvo === 0) { el.textContent = alvo; return; }
+        var inicio = null, duracao = 1200;
+        function passo(t) {
+            if (inicio === null) inicio = t;
+            var p = Math.min((t - inicio) / duracao, 1);
+            el.textContent = Math.round(alvo * (1 - Math.pow(1 - p, 3)));
+            if (p < 1) requestAnimationFrame(passo);
+        }
+        el.textContent = '0';
+        requestAnimationFrame(passo);
+    }
+
+    if ('IntersectionObserver' in window) {
+        var obs = new IntersectionObserver(function (entradas) {
+            entradas.forEach(function (e) {
+                if (e.isIntersecting) { animar(e.target); obs.unobserve(e.target); }
+            });
+        }, { threshold: 0.4 });
+        numeros.forEach(function (el) { obs.observe(el); });
+    } else {
+        numeros.forEach(animar);
+    }
+});
