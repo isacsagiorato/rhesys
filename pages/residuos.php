@@ -3,7 +3,7 @@
  * Resíduos — listagem com busca e filtros (RF03) e página de detalhes (RF04–RF08).
  *
  * Filtros combináveis, todos na URL (funcionam sem JavaScript):
- *   busca  — texto (LIKE em nome, palavras-chave e descrição);
+ *   busca  — texto, tolerante a erros de digitação (config/busca.php): nome, palavras-chave e descrição;
  *   tipo   — tipo de material (config/residuos.php: TIPOS_RESIDUO);
  *   classe — 1, 2a ou 2b (ABNT NBR 10004);
  *   lr     — 1 = somente resíduos com logística reversa.
@@ -11,6 +11,7 @@
 require_once __DIR__ . '/../config/config.php';
 require_once __DIR__ . '/../config/conexao.php';
 require_once __DIR__ . '/../config/residuos.php';
+require_once __DIR__ . '/../config/busca.php';
 
 // Item "guarda-chuva" usado só como referência dos orgânicos (não aparece na lista)
 const RESIDUO_GENERICO = 'Resíduos orgânicos';
@@ -251,12 +252,6 @@ function url_residuos(array $mudancas)
 // Busca e logística reversa valem para tudo (lista e contagens)
 $condicoes = ['r.nome <> :generico'];
 $params = [':generico' => RESIDUO_GENERICO];
-if ($busca !== '') {
-    // Escapa os curingas do LIKE (% e _) digitados pelo usuário
-    $termo = '%' . addcslashes($busca, '%_\\') . '%';
-    $condicoes[] = '(r.nome LIKE :busca1 OR r.palavras_chave LIKE :busca2 OR r.descricao LIKE :busca3)';
-    $params[':busca1'] = $params[':busca2'] = $params[':busca3'] = $termo;
-}
 if ($lr_filtro) {
     $condicoes[] = 'r.possui_logistica_reversa = 1';
 }
@@ -269,6 +264,13 @@ $stmt = $pdo->prepare(
 );
 foreach ($params as $chave => $valor) $stmt->bindValue($chave, $valor);
 $stmt->execute();
+$linhas = $stmt->fetchAll();
+
+// Busca tolerante a erros de digitação (config/busca.php): ordena pelos mais parecidos
+$busca_corrigida = null;
+if ($busca !== '') {
+    [$linhas, $busca_corrigida] = buscar_residuos($linhas, $busca);
+}
 
 // Tipo e classe são filtrados aqui, para que cada contagem respeite o outro filtro:
 // - número de cada TIPO   = resíduos daquele tipo dentro da classe escolhida;
@@ -276,7 +278,7 @@ $stmt->execute();
 $residuos = [];
 $contagem_tipo = [];
 $contagem_classe = ['1' => 0, '2a' => 0, '2b' => 0];
-foreach ($stmt->fetchAll() as $linha) {
+foreach ($linhas as $linha) {
     $chave_tipo = (string) ($linha['tipo_material'] ?? '');
     $chave_classe = classe_residuo($linha['classificacao_nome'])['chave'];
     $passa_tipo = $tipo_filtro === '' || $chave_tipo === $tipo_filtro;
@@ -364,7 +366,7 @@ require __DIR__ . '/../includes/header.php';
         <label for="busca" class="visually-hidden">O que você quer descartar?</label>
         <div class="search-pill">
             <i class="bi bi-search" aria-hidden="true"></i>
-            <input type="search" id="busca" name="busca" placeholder="O que você quer descartar?" value="<?php echo htmlspecialchars($busca); ?>">
+            <input type="search" id="busca" name="busca" placeholder="O que você quer descartar?" value="<?php echo htmlspecialchars($busca); ?>" data-autocompletar="<?php echo BASE_URL; ?>pages/sugestoes.php">
             <button class="btn btn-success" type="submit">Buscar</button>
         </div>
     </form>
@@ -458,6 +460,24 @@ require __DIR__ . '/../includes/header.php';
         </div>
     <?php endif; ?>
 </div>
+
+<?php
+// A busca é um tipo de material ("eletrônicos", "metais"...)? Oferece ver o tipo inteiro
+$tipo_da_busca = ($busca !== '' && $tipo_filtro === '') ? busca_tipo_correspondente($busca) : null;
+if ($tipo_da_busca !== null): ?>
+    <p class="busca-correcao mt-2 mb-0">
+        <i class="bi <?php echo TIPOS_RESIDUO[$tipo_da_busca]['icone']; ?>"></i>
+        Procurando um tipo de material?
+        <a href="<?php echo htmlspecialchars(url_residuos(['tipo' => $tipo_da_busca, 'busca' => ''])); ?>"><strong>Ver todos: <?php echo htmlspecialchars(TIPOS_RESIDUO[$tipo_da_busca]['rotulo']); ?></strong></a>
+    </p>
+<?php endif; ?>
+
+<?php if ($busca_corrigida !== null && $residuos): ?>
+    <p class="busca-correcao mt-2 mb-0">
+        <i class="bi bi-magic"></i> Mostrando resultados para <strong>“<?php echo htmlspecialchars($busca_corrigida); ?>”</strong>.
+        Você digitou “<?php echo htmlspecialchars($busca); ?>”.
+    </p>
+<?php endif; ?>
 
 <?php if (!$residuos): ?>
     <div class="alert alert-info mt-3">

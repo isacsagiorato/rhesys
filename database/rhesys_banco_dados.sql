@@ -82,7 +82,7 @@ CREATE TABLE residuo (
     descricao TEXT,
     forma_descarte TEXT,
     reciclagem TEXT,
-    palavras_chave VARCHAR(255),
+    palavras_chave VARCHAR(1000),
     possui_logistica_reversa BOOLEAN NOT NULL DEFAULT FALSE,
     -- Tipo de material (metal, plastico, papel, vidro, organico, eletronico,
     -- especial, construcao, textil, rejeito) — ver config/residuos.php

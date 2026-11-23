@@ -40,7 +40,7 @@ do {
     if (!$mysqli->next_result()) throw new RuntimeException('Falha no SQL de orgânicos: ' . $mysqli->error);
 } while (true);
 // Lote 3: tipo de material + novos resíduos (o lote 2 é carregado antes para o lote 3 classificá-lo)
-foreach (['residuos_lote2.sql', 'residuos_lote3.sql', 'residuos_lote4.sql'] as $arquivoLote) {
+foreach (['residuos_lote2.sql', 'residuos_lote3.sql', 'residuos_lote4.sql', 'palavras_chave_ampliadas.sql', 'residuos_lote5.sql', 'residuos_lote6.sql'] as $arquivoLote) {
     $sqlLote = str_replace('USE rhesys;', "USE `$dbName`;", file_get_contents($root . '/database/' . $arquivoLote), $loteReplaced);
     if ($loteReplaced !== 1 || strpos($sqlLote, 'USE rhesys;') !== false) {
         throw new RuntimeException("Não foi possível isolar $arquivoLote no banco de testes.");
@@ -167,11 +167,32 @@ try {
     verify(strpos($response['body'], 'Garrafas e potes de vidro') !== false && strpos($response['body'], '>Pilha<') === false, 'filtro por classe II B mostra inertes e esconde perigosos');
     $response = request($base, $clients['publico'], 'GET', '/pages/residuos.php?lr=1&tipo=eletronico');
     verify(strpos($response['body'], 'Cabos e carregadores') !== false && strpos($response['body'], 'Logística reversa') !== false, 'filtro de logística reversa combina com tipo');
-    $response = request($base, $clients['publico'], 'GET', '/pages/residuos.php?busca=pi%25ha');
-    verify($response['status'] === 200 && strpos($response['body'], 'Nenhum resíduo encontrado') !== false, 'curinga % na busca é tratado como texto');
+    $response = request($base, $clients['publico'], 'GET', '/pages/residuos.php?busca=' . rawurlencode('%_%'));
+    verify($response['status'] === 200 && strpos($response['body'], 'Nenhum resíduo encontrado') !== false && strpos($response['body'], 'Fatal') === false, 'curinga % e _ na busca não viram coringa do SQL');
     $idPizza = (int) scalar($pdo, "SELECT id_residuo FROM residuo WHERE nome = 'Caixa de pizza'");
     $response = request($base, $clients['publico'], 'GET', '/pages/residuos.php?id=' . $idPizza);
     verify(strpos($response['body'], 'img/fotos/residuos/caixa-de-pizza.jpg') !== false && strpos($response['body'], 'foto-credito') !== false, 'novo resíduo exibe foto real com crédito');
+    $response = request($base, $clients['publico'], 'GET', '/pages/residuos.php?busca=' . rawurlencode('garafa pet'));
+    verify(strpos($response['body'], '>Garrafa PET<') !== false && strpos($response['body'], 'Mostrando resultados para') !== false, 'busca com erro de digitação encontra o resíduo e mostra a correção');
+    $response = request($base, $clients['publico'], 'GET', '/pages/residuos.php?busca=' . rawurlencode('jeladeira'));
+    contains('Eletrodoméstico (geladeira, máquina de lavar)', $response, 'busca por som parecido (jeladeira) encontra a geladeira');
+    $response = request($base, $clients['publico'], 'GET', '/pages/residuos.php?busca=' . rawurlencode('remédio'));
+    contains('Medicamento vencido', $response, 'sinônimo popular (remédio) encontra o medicamento vencido');
+    $response = request($base, $clients['publico'], 'GET', '/pages/residuos.php?busca=' . rawurlencode('tenis'));
+    verify(strpos($response['body'], '>Calçado velho<') !== false && strpos($response['body'], '>Telha de amianto<') === false, 'busca aproximada não traz resultados sem relação');
+    $response = request($base, $clients['publico'], 'GET', '/pages/sugestoes.php?q=' . rawurlencode('pil'));
+    $json = json_decode($response['body'], true);
+    verify(is_array($json) && ($json['itens'][0]['nome'] ?? '') === 'Pilha', 'busca automática sugere Pilha ao digitar "pil"');
+    $response = request($base, $clients['publico'], 'GET', '/pages/sugestoes.php?q=' . rawurlencode('jeladeira'));
+    $json = json_decode($response['body'], true);
+    verify(($json['corrigida'] ?? '') === 'geladeira', 'busca automática sugere a correção "geladeira"');
+    $response = request($base, $clients['publico'], 'GET', '/pages/sugestoes.php?q=' . rawurlencode('eletronicos'));
+    $json = json_decode($response['body'], true);
+    verify(($json['tipo']['rotulo'] ?? '') === 'Eletroeletrônicos', 'busca automática oferece o atalho do tipo de material');
+    $response = request($base, $clients['publico'], 'GET', '/pages/sugestoes.php?q[]=x');
+    verify($response['status'] === 200 && json_decode($response['body'], true)['itens'] === [], 'busca automática ignora parâmetro inválido');
+    $response = request($base, $clients['publico'], 'GET', '/pages/residuos.php?busca=' . rawurlencode('botijao'));
+    contains('Botijão de gás', $response, 'resíduo do lote 5 aparece na busca');
 
     $response = request($base, $clients['admin'], 'GET', '/pages/cadastro_compartilhamento.php');
     $tokenAdmin = csrf($response);

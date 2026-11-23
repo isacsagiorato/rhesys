@@ -108,6 +108,17 @@ rhesys/
 
 ## Resíduos (Sprint 2 — consulta e cadastro)
 
+- Busca tolerante a erros (`config/busca.php`): ignora acentos, maiúsculas, plural e
+  letras dobradas, entende grafias de mesmo som (ss/ç/s/z, ch/x, lh/li...) e aceita pequenos
+  erros de digitação. Quando corrige, mostra "Mostrando resultados para...".
+- Busca automática (`js/autocompletar.js` + `pages/sugestoes.php`): sugestões a partir da
+  primeira letra, com foto, tipo e classe; destaca o trecho digitado; "Você quis dizer…"
+  clicável; atalho "Ver todos" quando a busca é um tipo de material ("eletrônicos", "metais");
+  buscas recentes e mais buscados ao clicar no campo vazio; navegação por teclado.
+  Ex.: "jeladeira" → geladeira, "garafa pet" → Garrafa PET, "oleo de cosinha" → óleo de cozinha.
+- `database/palavras_chave_ampliadas.sql`: amplia as palavras-chave de todos os resíduos com
+  sinônimos, nomes populares, marcas e exemplos ("remédio", "latinha", "durex"...), em média
+  13 termos por resíduo. Idempotente; execute depois dos lotes.
 - `pages/residuos.php`: listagem agrupada por **tipo de material** (metais, plásticos,
   papel, vidros, orgânicos, eletroeletrônicos, descarte especial, construção, roupas e
   rejeitos), busca com `LIKE` em `nome`, `palavras_chave` e `descricao` (RF03) e filtros
@@ -139,8 +150,15 @@ rhesys/
   execute **depois** dos lotes anteriores.
 - Lote 4: `database/residuos_lote4.sql` insere mais 36 resíduos (marmitex, cápsula de café,
   tablet, extintor, radiografia, máscara descartável, nota fiscal etc.), já com classe e tipo
-  de material. Idempotente; execute depois do lote 3. Total: 122 resíduos.
-- Fotos dos resíduos: `img/fotos/residuos/` traz uma foto real para cada um dos 122 itens,
+  de material. Idempotente; execute depois do lote 3.
+- Lote 5: `database/residuos_lote5.sql` insere mais 90 resíduos (botijão de gás, colchão,
+  videogame, cigarro eletrônico, painel solar, fio de cobre, lã de vidro, cocô de animal etc.),
+  com classe, tipo e palavras-chave ricas. Idempotente; execute depois do lote 4.
+- Lote 6: `database/residuos_lote6.sql` insere mais 288 resíduos e completa **50 resíduos em
+  cada um dos 10 tipos de material** (vidro, roupas e tecidos, construção, papel, metal,
+  rejeito, especial, orgânico, plástico e eletrônico). Idempotente; execute depois do lote 5.
+  Total: 500 resíduos.
+- Fotos dos resíduos: `img/fotos/residuos/` traz uma foto real para cada um dos 500 itens,
   todas do Wikimedia Commons sob licenças livres. O crédito (autor + licença) aparece
   na página de detalhes; a lista completa de fontes está em `docs/FONTES_FOTOS_RESIDUOS.md`
   (dados usados pelo site em `config/fontes_fotos_residuos.php`).
@@ -171,7 +189,7 @@ rhesys/
 1. Instale XAMPP/Laragon com PHP 8+ e MySQL/MariaDB, ou use `php -S localhost:8000` na raiz.
 2. Crie o banco executando `database/rhesys_banco_dados.sql`. **Atenção:** esse script recria as tabelas e deve ser usado em uma instalação nova.
 3. Em um banco antigo, preserve os dados e execute apenas as migrações necessárias: `database/migracao_google.sql` (uma vez, se ainda não tiver as colunas do Google) e `database/migracao_sprints_3_a_6.sql` (idempotente).
-4. Execute `database/residuos_organicos.sql` para incluir os 10 orgânicos (script idempotente, também indicado para bancos existentes) e, opcionalmente, `database/residuos_lote2.sql` para acrescentar mais 35 itens `database/residuos_lote3.sql` (tipo de material + 36 itens) e, por fim, `database/residuos_lote4.sql` (mais 36 itens). Com todos os lotes, a base fica com 122 resíduos.
+4. Execute `database/residuos_organicos.sql` para incluir os 10 orgânicos (script idempotente, também indicado para bancos existentes) e, opcionalmente, `database/residuos_lote2.sql` para acrescentar mais 35 itens `database/residuos_lote3.sql` (tipo de material + 36 itens) `database/residuos_lote4.sql` (mais 36 itens) , `database/palavras_chave_ampliadas.sql` (termos de busca) , `database/residuos_lote5.sql` (mais 90 itens) e, por fim, `database/residuos_lote6.sql` (mais 288 itens). Com todos os lotes, a base fica com 500 resíduos (50 por tipo de material).
 5. A conexão usa `root` sem senha e banco `rhesys` por padrão. Ajuste `config/conexao.php` ou defina `RHESYS_DB_HOST`, `RHESYS_DB_PORT`, `RHESYS_DB_NAME`, `RHESYS_DB_USER` e `RHESYS_DB_PASSWORD`.
 6. `BASE_URL` é detectada automaticamente. Acesse `index.php`; com o comando acima, use `http://localhost:8000`.
 

@@ -48,7 +48,7 @@ require __DIR__ . '/includes/header.php';
             <label for="busca-inicio" class="visually-hidden">O que você quer descartar?</label>
             <div class="search-pill">
                 <i class="bi bi-search" aria-hidden="true"></i>
-                <input type="search" id="busca-inicio" name="busca" placeholder="Ex.: pilha, óleo, vidro...">
+                <input type="search" id="busca-inicio" name="busca" placeholder="Ex.: pilha, óleo, vidro..." data-autocompletar="<?php echo BASE_URL; ?>pages/sugestoes.php">
                 <button class="btn btn-success" type="submit">Buscar</button>
             </div>
             <div class="hero-sugestoes">
