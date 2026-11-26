@@ -1,0 +1,4 @@
+# Os scripts do Codespace rodam em Linux: precisam de quebra de linha LF.
+# Sem isto, o Windows salva em CRLF e o Linux reclama de "bad interpreter".
+*.sh text eol=lf
+.devcontainer/* text eol=lf

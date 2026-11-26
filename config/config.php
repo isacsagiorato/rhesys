@@ -13,6 +13,13 @@ ini_set('session.cookie_httponly', '1');   // cookie inacessível via JavaScript
 ini_set('session.cookie_samesite', 'Lax'); // cookie só acompanha navegação same-site
 ini_set('session.cookie_lifetime', '0');   // cookie vale até fechar o navegador
 
+// Em HTTPS (site publicado), o cookie só trafega por conexão segura
+if ((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off')
+    || ($_SERVER['HTTP_X_FORWARDED_PROTO'] ?? '') === 'https'
+) {
+    ini_set('session.cookie_secure', '1');
+}
+
 // Sessão expira após 8 horas sem nenhuma visita a uma página
 // (a cada página aberta o relógio de inatividade é renovado)
 define('SESSAO_INATIVIDADE', 8 * 3600);

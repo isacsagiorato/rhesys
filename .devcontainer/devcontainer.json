@@ -1,0 +1,25 @@
+{
+    "name": "Rhesys",
+    "dockerComposeFile": "docker-compose.yml",
+    "service": "site",
+    "workspaceFolder": "/workspaces/rhesys",
+
+    "postCreateCommand": "bash .devcontainer/preparar.sh",
+    "postStartCommand": "bash .devcontainer/ligar.sh",
+
+    "forwardPorts": [8000],
+    "portsAttributes": {
+        "8000": {
+            "label": "Rhesys",
+            "onAutoForward": "openPreview"
+        }
+    },
+
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "bmewburn.vscode-intelephense-client"
+            ]
+        }
+    }
+}

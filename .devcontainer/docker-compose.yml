@@ -1,0 +1,37 @@
+# Dois serviços: o site (PHP) e o banco (MariaDB).
+# É o que o Codespaces usa para montar o ambiente do Rhesys.
+
+services:
+  site:
+    image: mcr.microsoft.com/devcontainers/php:8.2-bullseye
+    volumes:
+      - ..:/workspaces/rhesys:cached
+    command: sleep infinity
+    environment:
+      RHESYS_DB_HOST: banco
+      RHESYS_DB_PORT: '3306'
+      RHESYS_DB_NAME: rhesys
+      RHESYS_DB_USER: rhesys
+      RHESYS_DB_PASSWORD: rhesys
+    depends_on:
+      banco:
+        condition: service_healthy
+
+  banco:
+    image: mariadb:10.11
+    restart: unless-stopped
+    environment:
+      MARIADB_ROOT_PASSWORD: root
+      MARIADB_DATABASE: rhesys
+      MARIADB_USER: rhesys
+      MARIADB_PASSWORD: rhesys
+    volumes:
+      - dados-do-banco:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+
+volumes:
+  dados-do-banco:

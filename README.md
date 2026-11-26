@@ -216,6 +216,21 @@ rhesys/
 - `pages/cadastro_pergunta.php`: cadastra enunciado, quatro alternativas distintas e gabarito.
 - `pages/quiz.php`: executa o quiz, revisa respostas e grava a pontuação de usuários autenticados. Alternativas inválidas são tratadas como não respondidas, sem warnings.
 
+## Rodar pelo navegador (GitHub Codespaces)
+
+Dá para abrir o sistema inteiro no navegador, sem instalar nada: útil para
+apresentar o projeto em um computador que não é o seu.
+
+1. No GitHub, abra o repositório e clique em **Code > Codespaces > Create codespace**.
+2. Espere a preparação (uns 2 a 3 minutos na primeira vez). Ele instala o PHP,
+   sobe o MariaDB e cadastra os 500 resíduos sozinho.
+3. Quando terminar, abra a aba **Portas** e clique na porta **8000**.
+
+A configuração está em `.devcontainer/`: `preparar.sh` monta o banco na primeira
+vez e `ligar.sh` liga o servidor sempre que o Codespace abre.
+
+Conta de administrador já criada: `admin@rhesys.com`.
+
 ## Como rodar localmente
 
 1. Instale XAMPP/Laragon com PHP 8+ e MySQL/MariaDB, ou use `php -S localhost:8000` na raiz.
