@@ -157,7 +157,7 @@ function caminho_foto_residuo($nome_residuo, $tipo = null, $nome_classificacao =
  */
 function imagem_residuo($nome_residuo, $tipo = null, $nome_classificacao = '')
 {
-    return BASE_URL . caminho_foto_residuo($nome_residuo, $tipo, $nome_classificacao) . '?v=5';
+    return BASE_URL . caminho_foto_residuo($nome_residuo, $tipo, $nome_classificacao) . '?v=7';
 }
 
 /** Crédito da foto (autor e licença), quando ela vem do Wikimedia Commons. */

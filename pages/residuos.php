@@ -80,7 +80,7 @@ if ($id_residuo > 0) {
         <div class="row g-0">
             <div class="col-lg-6">
                 <figure class="residuo-topo-foto mb-0">
-                    <img src="<?php echo BASE_URL . $caminho_foto; ?>?v=5" alt="Foto: <?php echo htmlspecialchars($residuo['nome']); ?>">
+                    <img src="<?php echo imagem_residuo($residuo['nome'], $tipo, $residuo['classificacao_nome']); ?>" alt="Foto: <?php echo htmlspecialchars($residuo['nome']); ?>">
                 </figure>
             </div>
             <div class="col-lg-6">

@@ -73,11 +73,11 @@ return array (
   'album-de-figurinhas' => 
   array (
     'arquivo' => 'img/fotos/residuos/album-de-figurinhas.jpg',
-    'titulo' => 'World War I sticker album (29451864392).jpg',
-    'pagina' => 'https://commons.wikimedia.org/wiki/File:World_War_I_sticker_album_(29451864392).jpg',
-    'autor' => 'Thomas Quine',
-    'licenca' => 'CC BY 2.0',
-    'licenca_url' => 'https://creativecommons.org/licenses/by/2.0',
+    'titulo' => 'Personas intercambiando cromos de Panini 03.jpg',
+    'pagina' => 'https://commons.wikimedia.org/wiki/File:Personas_intercambiando_cromos_de_Panini_03.jpg',
+    'autor' => 'ProtoplasmaKid',
+    'licenca' => 'CC BY 4.0',
+    'licenca_url' => 'https://creativecommons.org/licenses/by/4.0',
   ),
   'alcool-liquido-e-alcool-em-gel' => 
   array (
@@ -1162,11 +1162,11 @@ return array (
   'celular' => 
   array (
     'arquivo' => 'img/fotos/residuos/celular.jpg',
-    'titulo' => 'Mobile phone PHS Japan 1997-2003.jpg',
-    'pagina' => 'https://commons.wikimedia.org/wiki/File:Mobile_phone_PHS_Japan_1997-2003.jpg',
-    'autor' => 'Marus',
-    'licenca' => 'Domínio público',
-    'licenca_url' => '',
+    'titulo' => 'Back of the Samsung Galaxy S23.jpg',
+    'pagina' => 'https://commons.wikimedia.org/wiki/File:Back_of_the_Samsung_Galaxy_S23.jpg',
+    'autor' => 'Hajoon0102',
+    'licenca' => 'CC BY-SA 4.0',
+    'licenca_url' => 'https://creativecommons.org/licenses/by-sa/4.0',
   ),
   'cera-depilatoria-usada' => 
   array (
@@ -1315,11 +1315,11 @@ return array (
   'computador-e-notebook' => 
   array (
     'arquivo' => 'img/fotos/residuos/computador-e-notebook.jpg',
-    'titulo' => 'Electronic wastes.jpg',
-    'pagina' => 'https://commons.wikimedia.org/wiki/File:Electronic_wastes.jpg',
-    'autor' => 'shyamlal.t.pushpan',
-    'licenca' => 'CC BY-SA 3.0',
-    'licenca_url' => 'https://creativecommons.org/licenses/by-sa/3.0',
+    'titulo' => 'M2 Macbook Air Midnight model - 1.jpg',
+    'pagina' => 'https://commons.wikimedia.org/wiki/File:M2_Macbook_Air_Midnight_model_-_1.jpg',
+    'autor' => 'KKPCW（Kyu3）',
+    'licenca' => 'CC BY-SA 4.0',
+    'licenca_url' => 'https://creativecommons.org/licenses/by-sa/4.0',
   ),
   'conta-gotas-e-pipeta-de-vidro' => 
   array (
@@ -2161,11 +2161,11 @@ return array (
   'garrafa-retornavel-cerveja-e-refrigerante' => 
   array (
     'arquivo' => 'img/fotos/residuos/garrafa-retornavel-cerveja-e-refrigerante.jpg',
-    'titulo' => 'Liberia, Africa - panoramio (33).jpg',
-    'pagina' => 'https://commons.wikimedia.org/wiki/File:Liberia,_Africa_-_panoramio_(33).jpg',
-    'autor' => 'blk24ga',
-    'licenca' => 'CC BY 3.0',
-    'licenca_url' => 'https://creativecommons.org/licenses/by/3.0',
+    'titulo' => 'Antarctica Original pilsner in 600 ml bottles, São Paulo state.jpg',
+    'pagina' => 'https://commons.wikimedia.org/wiki/File:Antarctica_Original_pilsner_in_600_ml_bottles,_S%C3%A3o_Paulo_state.jpg',
+    'autor' => 'Wilfredor',
+    'licenca' => 'CC0',
+    'licenca_url' => 'http://creativecommons.org/publicdomain/zero/1.0/deed.en',
   ),
   'garrafa-termica-ampola-de-vidro' => 
   array (
@@ -2260,9 +2260,9 @@ return array (
   'grampo-de-cabelo-e-presilha-de-metal' => 
   array (
     'arquivo' => 'img/fotos/residuos/grampo-de-cabelo-e-presilha-de-metal.jpg',
-    'titulo' => 'Solidor Hig (1).jpg',
-    'pagina' => 'https://commons.wikimedia.org/wiki/File:Solidor_Hig_(1).jpg',
-    'autor' => 'Memoseal',
+    'titulo' => 'Bobby pin in girl\'s hair.jpg',
+    'pagina' => 'https://commons.wikimedia.org/wiki/File:Bobby_pin_in_girl%27s_hair.jpg',
+    'autor' => 'Yoleeth',
     'licenca' => 'CC BY-SA 4.0',
     'licenca_url' => 'https://creativecommons.org/licenses/by-sa/4.0',
   ),
@@ -2350,11 +2350,11 @@ return array (
   'ingresso-bilhete-e-raspadinha' => 
   array (
     'arquivo' => 'img/fotos/residuos/ingresso-bilhete-e-raspadinha.jpg',
-    'titulo' => 'Entrance ticket to the 1975 Nobel Prize ceremony, front.jpg',
-    'pagina' => 'https://commons.wikimedia.org/wiki/File:Entrance_ticket_to_the_1975_Nobel_Prize_ceremony,_front.jpg',
-    'autor' => 'W.carter',
-    'licenca' => 'CC BY-SA 4.0',
-    'licenca_url' => 'https://creativecommons.org/licenses/by-sa/4.0',
+    'titulo' => 'Loteria Mega-Sena (2011).jpg',
+    'pagina' => 'https://commons.wikimedia.org/wiki/File:Loteria_Mega-Sena_(2011).jpg',
+    'autor' => 'Wilson Dias/Abr',
+    'licenca' => 'CC BY 3.0 br',
+    'licenca_url' => 'https://creativecommons.org/licenses/by/3.0/br/deed.en',
   ),
   'inseticida-e-veneno-domestico' => 
   array (
@@ -2755,11 +2755,11 @@ return array (
   'maco-de-cigarro' => 
   array (
     'arquivo' => 'img/fotos/residuos/maco-de-cigarro.jpg',
-    'titulo' => 'Bonus Cigarettes.jpg',
-    'pagina' => 'https://commons.wikimedia.org/wiki/File:Bonus_Cigarettes.jpg',
-    'autor' => 'Antonio Kless',
-    'licenca' => 'CC BY-SA 4.0',
-    'licenca_url' => 'https://creativecommons.org/licenses/by-sa/4.0',
+    'titulo' => 'Cigarettes brazil.JPG',
+    'pagina' => 'https://commons.wikimedia.org/wiki/File:Cigarettes_brazil.JPG',
+    'autor' => 'Brazilian Health Ministry (MS) - Instituto Nacional do Câncer (INCA)',
+    'licenca' => 'Attribution',
+    'licenca_url' => '',
   ),
   'madeira-de-obra' => 
   array (
@@ -3403,11 +3403,11 @@ return array (
   'placa-de-carro' => 
   array (
     'arquivo' => 'img/fotos/residuos/placa-de-carro.jpg',
-    'titulo' => 'California Sesquicentennial License Plate.jpg',
-    'pagina' => 'https://commons.wikimedia.org/wiki/File:California_Sesquicentennial_License_Plate.jpg',
-    'autor' => 'CA81enjoyer',
-    'licenca' => 'CC0',
-    'licenca_url' => 'http://creativecommons.org/publicdomain/zero/1.0/deed.en',
+    'titulo' => '1990-2018 Particular.jpg',
+    'pagina' => 'https://commons.wikimedia.org/wiki/File:1990-2018_Particular.jpg',
+    'autor' => 'JasonVogel1970',
+    'licenca' => 'CC BY-SA 4.0',
+    'licenca_url' => 'https://creativecommons.org/licenses/by-sa/4.0',
   ),
   'plantas-mortas' => 
   array (
@@ -3520,11 +3520,11 @@ return array (
   'pote-de-sorvete-de-plastico' => 
   array (
     'arquivo' => 'img/fotos/residuos/pote-de-sorvete-de-plastico.jpg',
-    'titulo' => 'An open tub of Zielona Budka "Karmel z Solą" (Caramel with Salt) ice cream; Gliwice, Silesian Voivodeship, Poland, February 2026.jpg',
-    'pagina' => 'https://commons.wikimedia.org/wiki/File:An_open_tub_of_Zielona_Budka_%22Karmel_z_Sol%C4%85%22_(Caramel_with_Salt)_ice_cream;_Gliwice,_Silesian_Voivodeship,_Poland,_February_2026.jpg',
-    'autor' => 'MichalPL',
-    'licenca' => 'CC BY-SA 4.0',
-    'licenca_url' => 'https://creativecommons.org/licenses/by-sa/4.0',
+    'titulo' => 'Póte de sorvete jundiá.jpg',
+    'pagina' => 'https://commons.wikimedia.org/wiki/File:P%C3%B3te_de_sorvete_jundi%C3%A1.jpg',
+    'autor' => 'JucaIceland',
+    'licenca' => 'Domínio público',
+    'licenca_url' => '',
   ),
   'pote-hermetico-de-vidro' => 
   array (
@@ -3997,11 +3997,11 @@ return array (
   'soda-caustica-e-desentupidor' => 
   array (
     'arquivo' => 'img/fotos/residuos/soda-caustica-e-desentupidor.jpg',
-    'titulo' => 'HK Sheung Wan 日本城 Japan Home Centre 飛魚牌 通渠水 Eliminate Drain Pipe Cleaner April-2012.JPG',
-    'pagina' => 'https://commons.wikimedia.org/wiki/File:HK_Sheung_Wan_%E6%97%A5%E6%9C%AC%E5%9F%8E_Japan_Home_Centre_%E9%A3%9B%E9%AD%9A%E7%89%8C_%E9%80%9A%E6%B8%A0%E6%B0%B4_Eliminate_Drain_Pipe_Cleaner_April-2012.JPG',
-    'autor' => 'Slipperzoo',
-    'licenca' => 'CC BY-SA 3.0',
-    'licenca_url' => 'https://creativecommons.org/licenses/by-sa/3.0',
+    'titulo' => 'SodiumHydroxide.jpg',
+    'pagina' => 'https://commons.wikimedia.org/wiki/File:SodiumHydroxide.jpg',
+    'autor' => 'Walkerma',
+    'licenca' => 'Domínio público',
+    'licenca_url' => '',
   ),
   'sofa-e-estofados' => 
   array (
@@ -4321,9 +4321,9 @@ return array (
   'tubo-de-pasta-de-dente' => 
   array (
     'arquivo' => 'img/fotos/residuos/tubo-de-pasta-de-dente.jpg',
-    'titulo' => '2023 Pasta do zębów Meridol.jpg',
-    'pagina' => 'https://commons.wikimedia.org/wiki/File:2023_Pasta_do_z%C4%99b%C3%B3w_Meridol.jpg',
-    'autor' => 'Jacek Halicki',
+    'titulo' => '2022 Colgate Toothpaste for Russia market assorted.jpg',
+    'pagina' => 'https://commons.wikimedia.org/wiki/File:2022_Colgate_Toothpaste_for_Russia_market_assorted.jpg',
+    'autor' => 'Nord794ub',
     'licenca' => 'CC BY-SA 4.0',
     'licenca_url' => 'https://creativecommons.org/licenses/by-sa/4.0',
   ),
