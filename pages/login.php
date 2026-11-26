@@ -124,7 +124,7 @@ require __DIR__ . '/../includes/header.php';
                     <ul>
                         <li><i class="bi bi-check-circle-fill"></i>Ofereça materiais e encontre itens para reaproveitar</li>
                         <li><i class="bi bi-check-circle-fill"></i>Salve sua pontuação nos quizzes</li>
-                        <li><i class="bi bi-check-circle-fill"></i>Cadastre resíduos e pontos de coleta</li>
+                        <li><i class="bi bi-check-circle-fill"></i>Doe ou venda materiais e converse pelo chat</li>
                     </ul>
                 </div>
             </div>

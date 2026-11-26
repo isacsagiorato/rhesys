@@ -236,29 +236,6 @@ try {
     $response = request($base, $clients['admin'], 'POST', '/pages/meus_compartilhamentos.php', ['csrf_token' => $tokenAdmin, 'acao' => 'concluir_oferta', 'id_compartilhamento' => $idOferta]);
     verify($response['status'] === 302 && scalar($pdo, 'SELECT status FROM compartilhamento_residuo WHERE id_compartilhamento = ?', [$idOferta]) === 'concluido', 'ofertante conclui o compartilhamento');
 
-    $response = request($base, $clients['admin'], 'POST', '/pages/cadastro_ponto_coleta.php', [
-        'csrf_token' => $tokenAdmin, 'id_ponto' => 0, 'nome' => 'Ponto Automatizado Rhesys',
-        'endereco' => 'Rua dos Testes, 123 - Centro', 'latitude' => '-21.9700000', 'longitude' => '-46.7900000',
-        'telefone' => '(19) 99999-0000', 'horario_funcionamento' => 'Seg-Sex 08:00-17:00', 'residuos' => [1, 2],
-    ]);
-    verify($response['status'] === 302, 'ponto de coleta criado com vínculos N:N');
-    $idPonto = (int) scalar($pdo, 'SELECT MAX(id_ponto) FROM ponto_coleta');
-    verify((int) scalar($pdo, 'SELECT COUNT(*) FROM residuo_ponto_coleta WHERE id_ponto = ?', [$idPonto]) === 2, 'dois resíduos vinculados ao ponto');
-    $response = request($base, $clients['publico'], 'GET', '/pages/pontos_coleta.php?id_residuo=1');
-    contains('Ponto Automatizado Rhesys', $response, 'filtro encontra ponto que aceita o resíduo');
-    contains('dados-pontos', $response, 'dados do mapa são renderizados');
-    $response = request($base, $clients['publico'], 'GET', '/pages/pontos_coleta.php?id_residuo=3');
-    verify(strpos($response['body'], 'Ponto Automatizado Rhesys') === false, 'filtro exclui ponto sem o resíduo');
-    $response = request($base, $clients['publico'], 'GET', '/pages/residuos.php?id=1');
-    contains('Ponto Automatizado Rhesys', $response, 'detalhe do resíduo mostra pontos compatíveis');
-
-    $response = request($base, $clients['admin'], 'POST', '/pages/cadastro_ponto_coleta.php?id=' . $idPonto, [
-        'csrf_token' => $tokenAdmin, 'id_ponto' => $idPonto, 'nome' => 'Ponto Automatizado Rhesys',
-        'endereco' => 'Rua dos Testes, 123 - Centro', 'latitude' => '-21.9700000', 'longitude' => '-46.7900000',
-        'telefone' => '', 'horario_funcionamento' => '', 'residuos' => [1],
-    ]);
-    verify($response['status'] === 302, 'edição do ponto concluída');
-    verify((int) scalar($pdo, 'SELECT COUNT(*) FROM residuo_ponto_coleta WHERE id_ponto = ?', [$idPonto]) === 1, 'edição atualiza os vínculos N:N');
 
     $response = request($base, $clients['admin'], 'GET', '/pages/cadastro_conteudo.php');
     $tokenAdmin = csrf($response);

@@ -20,14 +20,6 @@ INNER JOIN residuo r_keep
         ON r_keep.nome = r_dup.nome AND r_keep.id_residuo < r_dup.id_residuo
 SET c.id_residuo = r_keep.id_residuo;
 
--- 1b) Vínculos de pontos de coleta também são copiados para o ID
--- mantido (INSERT IGNORE evita duplicar o par resíduo + ponto)
-INSERT IGNORE INTO residuo_ponto_coleta (id_residuo, id_ponto)
-SELECT r_keep.id_residuo, rpc.id_ponto
-FROM residuo_ponto_coleta rpc
-INNER JOIN residuo r_dup ON rpc.id_residuo = r_dup.id_residuo
-INNER JOIN residuo r_keep
-        ON r_keep.nome = r_dup.nome AND r_keep.id_residuo < r_dup.id_residuo;
 
 -- 2) Remove os resíduos duplicados (mantém o menor id de cada nome)
 DELETE r FROM residuo r

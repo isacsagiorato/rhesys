@@ -5,13 +5,12 @@
 -- ============================================================
 --
 -- Entidades do modelo conceitual:
---   Usuario, Residuo, Classificacao, Ponto_Coleta,
+--   Usuario, Residuo, Classificacao,
 --   Compartilhamento_Residuo, Interesse_Compartilhamento,
 --   Conteudo_Educativo, Quiz, Pergunta, Resultado_Quiz
 --
 -- Relacionamentos:
 --   classifica    (1,1)-(1,n)  Classificacao -> Residuo
---   compoe        (0,n)-(0,n)  Residuo <-> Ponto_Coleta  [N:N]
 --   Oferta        (0,n)-(1,1)  Usuario -> Compartilhamento_Residuo
 --   demonstra     (0,n)-(0,n)  Usuario -> Interesse_Compartilhamento
 --   aceita        (0,n)-(0,n)  Compartilhamento_Residuo -> Interesse_Compartilhamento
@@ -35,8 +34,8 @@ DROP TABLE IF EXISTS quiz;
 DROP TABLE IF EXISTS conteudo_educativo;
 DROP TABLE IF EXISTS interesse_compartilhamento;
 DROP TABLE IF EXISTS compartilhamento_residuo;
-DROP TABLE IF EXISTS residuo_ponto_coleta;
-DROP TABLE IF EXISTS ponto_coleta;
+DROP TABLE IF EXISTS residuo_ponto_coleta; -- tabela antiga (pontos de coleta, removidos)
+DROP TABLE IF EXISTS ponto_coleta;         -- tabela antiga (pontos de coleta, removidos)
 DROP TABLE IF EXISTS residuo;
 DROP TABLE IF EXISTS classificacao;
 DROP TABLE IF EXISTS usuario;
@@ -97,36 +96,6 @@ CREATE TABLE residuo (
         ON DELETE RESTRICT ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- ------------------------------------------------------------
--- Tabela: PONTO_COLETA
--- Locais de recebimento de resíduos (coordenadas para mapa)
--- ------------------------------------------------------------
-CREATE TABLE ponto_coleta (
-    id_ponto INT AUTO_INCREMENT PRIMARY KEY,
-    nome VARCHAR(150) NOT NULL,
-    endereco VARCHAR(255),
-    latitude DECIMAL(10, 7),
-    longitude DECIMAL(10, 7),
-    telefone VARCHAR(20),
-    horario_funcionamento VARCHAR(150)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- ------------------------------------------------------------
--- Tabela associativa: RESIDUO_PONTO_COLETA (N:N)
--- Relacionamento "compoe": resíduo <-> ponto de coleta
--- ------------------------------------------------------------
-CREATE TABLE residuo_ponto_coleta (
-    id_residuo INT NOT NULL,
-    id_ponto INT NOT NULL,
-    PRIMARY KEY (id_residuo, id_ponto),
-    INDEX idx_rpc_ponto (id_ponto),
-    CONSTRAINT fk_rpc_residuo
-        FOREIGN KEY (id_residuo) REFERENCES residuo(id_residuo)
-        ON DELETE CASCADE ON UPDATE CASCADE,
-    CONSTRAINT fk_rpc_ponto
-        FOREIGN KEY (id_ponto) REFERENCES ponto_coleta(id_ponto)
-        ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ------------------------------------------------------------
 -- Tabela: COMPARTILHAMENTO_RESIDUO
@@ -376,31 +345,6 @@ INSERT INTO residuo (id_classificacao, nome, descricao, forma_descarte, reciclag
  'O entulho pode ser reciclado para produção de agregados reciclados e pavimentação.',
  'entulho, construcao civil, concreto, tijolo', FALSE);
 
--- ------------------------------------------------------------
--- Ponto de coleta de exemplo
--- ------------------------------------------------------------
-INSERT INTO ponto_coleta (nome, endereco, latitude, longitude, telefone, horario_funcionamento) VALUES
-('Ecoponto Central',
- 'Praça da República, 100 - Centro, São João da Boa Vista - SP',
- -21.9696000, -46.7906000,
- '(19) 3631-0000',
- 'Seg-Sex 08:00-17:00, Sáb 08:00-12:00'),
-('Ponto de Coleta de Eletrônicos - IFSP',
- 'Av. Prof. João Alves de Souza, 670 - São João da Boa Vista - SP',
- -21.9750000, -46.7850000,
- '(19) 3631-1000',
- 'Seg-Sex 08:00-18:00');
-
--- ------------------------------------------------------------
--- Relacionamento resíduo <-> ponto de coleta
--- ------------------------------------------------------------
-INSERT INTO residuo_ponto_coleta (id_residuo, id_ponto) VALUES
-(1, 1), -- Pilha no Ecoponto Central
-(1, 2), -- Pilha no IFSP
-(2, 2), -- Bateria de celular no IFSP
-(3, 1), -- Garrafa PET no Ecoponto Central
-(4, 1), -- Papelão no Ecoponto Central
-(5, 1); -- Entulho no Ecoponto Central
 
 -- ------------------------------------------------------------
 -- Conteúdo educativo de exemplo

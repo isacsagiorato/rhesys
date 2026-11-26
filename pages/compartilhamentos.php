@@ -197,11 +197,6 @@ require __DIR__ . '/../includes/header.php';
             <a href="cadastro_compartilhamento.php" class="btn btn-light btn-lg comp-btn-oferecer"><i class="bi bi-plus-circle me-2"></i>Oferecer material</a>
             <a href="meus_compartilhamentos.php" class="btn btn-outline-light btn-lg"><i class="bi bi-person-lines-fill me-2"></i>Meus compartilhamentos</a>
         </div>
-        <dl class="comp-stats">
-            <div><dt data-contar="<?php echo $contagem_status['disponivel']; ?>"><?php echo $contagem_status['disponivel']; ?></dt><dd>disponíveis agora</dd></div>
-            <div><dt data-contar="<?php echo $contagem_status['concluido']; ?>"><?php echo $contagem_status['concluido']; ?></dt><dd>já reaproveitados</dd></div>
-            <div><dt data-contar="<?php echo $total_interesses; ?>"><?php echo $total_interesses; ?></dt><dd>interesses registrados</dd></div>
-        </dl>
     </div>
 
     <div class="comp-ciclo" aria-hidden="true">
@@ -233,13 +228,12 @@ require __DIR__ . '/../includes/header.php';
     <div class="comp-explorar-topo">
         <div>
             <h2 class="h3 mb-1">Materiais compartilhados</h2>
-            <p class="text-muted mb-0"><?php echo count($ofertas); ?> <?php echo count($ofertas) === 1 ? 'material encontrado' : 'materiais encontrados'; ?><?php echo $tem_filtro ? ' com os filtros atuais' : ''; ?></p>
+            <p class="text-muted mb-0">Doe, venda ou encontre materiais para reaproveitar.</p>
         </div>
         <nav class="comp-abas" aria-label="Filtrar por status">
             <?php foreach ($status_validos as $v => $rot): if ($v === 'cancelado' && $contagem_status['cancelado'] === 0) continue; ?>
                 <a href="<?php echo htmlspecialchars(url_compartilhamentos(['status' => $v])); ?>" class="<?php echo $status === $v ? 'ativo' : ''; ?>" <?php echo $status === $v ? 'aria-current="page"' : ''; ?>>
                     <i class="bi <?php echo $icones_status[$v]; ?>"></i><?php echo htmlspecialchars($rot); ?>
-                    <span class="comp-aba-num"><?php echo $contagem_status[$v] ?? 0; ?></span>
                 </a>
             <?php endforeach; ?>
         </nav>
@@ -282,7 +276,7 @@ require __DIR__ . '/../includes/header.php';
     <nav class="comp-tipos" aria-label="Doação ou venda">
         <?php foreach (['todos' => ['bi-collection', 'Tudo'], 'doacao' => ['bi-gift', 'Doações'], 'venda' => ['bi-tag', 'À venda']] as $v => [$icone, $rot]): ?>
             <a href="<?php echo htmlspecialchars(url_compartilhamentos(['tipo' => $v])); ?>" class="comp-tipo tipo-<?php echo $v; ?> <?php echo $tipo === $v ? 'ativo' : ''; ?>" <?php echo $tipo === $v ? 'aria-current="page"' : ''; ?>>
-                <i class="bi <?php echo $icone; ?>"></i><?php echo $rot; ?><span><?php echo $contagem_tipo[$v]; ?></span>
+                <i class="bi <?php echo $icone; ?>"></i><?php echo $rot; ?>
             </a>
         <?php endforeach; ?>
     </nav>
@@ -291,7 +285,7 @@ require __DIR__ . '/../includes/header.php';
         <a role="listitem" href="<?php echo htmlspecialchars(url_compartilhamentos(['categoria' => 'todas'])); ?>" class="comp-chip <?php echo $categoria === 'todas' ? 'ativo' : ''; ?>"><i class="bi bi-grid-3x3-gap"></i>Todas</a>
         <?php foreach (CATEGORIAS_MATERIAIS as $v => $rot): $qtd = $contagem_categoria[$v] ?? 0; if ($qtd === 0 && $categoria !== $v) continue; ?>
             <a role="listitem" href="<?php echo htmlspecialchars(url_compartilhamentos(['categoria' => $v])); ?>" class="comp-chip <?php echo $categoria === $v ? 'ativo' : ''; ?>">
-                <i class="bi <?php echo $icones_categoria[$v] ?? 'bi-box-seam'; ?>"></i><?php echo htmlspecialchars($rot); ?><span><?php echo $qtd; ?></span>
+                <i class="bi <?php echo $icones_categoria[$v] ?? 'bi-box-seam'; ?>"></i><?php echo htmlspecialchars($rot); ?>
             </a>
         <?php endforeach; ?>
         <?php if ($tem_filtro): ?>

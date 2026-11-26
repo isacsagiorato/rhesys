@@ -12,14 +12,13 @@
                 </a>
                 <p class="footer-texto mt-3 mb-0">
                     Educação ambiental e tecnologia para descartar cada resíduo do jeito certo,
-                    reaproveitar materiais e encontrar pontos de coleta.
+                    e doar ou vender materiais que ainda podem ser reaproveitados.
                 </p>
             </div>
             <div class="col-6 col-md-4 col-lg-2 offset-lg-1">
                 <h2 class="footer-titulo">Descarte</h2>
                 <ul class="footer-links">
                     <li><a href="<?php echo BASE_URL; ?>pages/residuos.php">Resíduos</a></li>
-                    <li><a href="<?php echo BASE_URL; ?>pages/pontos_coleta.php">Pontos de coleta</a></li>
                     <li><a href="<?php echo BASE_URL; ?>pages/compartilhamentos.php">Compartilhamentos</a></li>
                 </ul>
             </div>
@@ -55,7 +54,7 @@
 <!-- Bootstrap JS (necessário para o menu responsivo funcionar) -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
-<!-- Scripts específicos de cada página (ex.: Leaflet no mapa) -->
+<!-- Scripts específicos de cada página (ex.: chat) -->
 <?php foreach (($scripts_extras ?? []) as $script): ?>
 <script src="<?php echo htmlspecialchars($script, ENT_QUOTES, 'UTF-8'); ?>"></script>
 <?php endforeach; ?>

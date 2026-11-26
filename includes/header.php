@@ -106,7 +106,6 @@ if (strpos($pagina_atual, 'compartilhamen') !== false) {
                     'conteudos.php'         => ['Conteúdos', 'pages/conteudos.php', 'bi-book'],
                     'quiz.php'              => ['Quizzes', 'pages/quiz.php', 'bi-patch-question'],
                     'jogo.php'              => ['Jogo', 'pages/jogo.php', 'bi-controller'],
-                    'pontos_coleta.php'     => ['Pontos de Coleta', 'pages/pontos_coleta.php', 'bi-geo-alt'],
                 ];
                 foreach ($links as $arquivo => $item):
                     $classe = ($pagina_atual === $arquivo) ? ' active' : '';

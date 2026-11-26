@@ -32,8 +32,7 @@ require __DIR__ . '/../includes/header.php';
         </p>
         <p class="text-muted mb-0">
             O sistema também permite que os próprios usuários compartilhem materiais entre si,
-            incentivando o reaproveitamento e a economia circular, e disponibiliza a localização
-            de pontos de coleta próximos.
+            por doação ou venda, incentivando o reaproveitamento e a economia circular.
         </p>
     </div>
     <div class="col-lg-5">

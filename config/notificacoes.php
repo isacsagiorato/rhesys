@@ -26,7 +26,6 @@ const TIPOS_NOTIFICACAO = [
     'boas_vindas'         => ['icone' => 'bi-stars',           'cor' => 'lima',     'email' => true],
     'conteudo_novo'       => ['icone' => 'bi-book',            'cor' => 'verde',    'email' => false],
     'quiz_novo'           => ['icone' => 'bi-patch-question',  'cor' => 'verde',    'email' => false],
-    'ponto_novo'          => ['icone' => 'bi-geo-alt',         'cor' => 'verde',    'email' => false],
 ];
 
 /** IDs de notificações criadas nesta requisição que ainda precisam de e-mail. */
@@ -162,7 +161,6 @@ function notificacao_rotulo_link($link)
     if (strpos($link, 'compartilhamentos.php') !== false) return 'Ver outros materiais';
     if (strpos($link, 'conteudos.php') !== false) return 'Ler o conteúdo';
     if (strpos($link, 'quiz.php') !== false) return 'Jogar o quiz';
-    if (strpos($link, 'pontos_coleta.php') !== false) return 'Ver no mapa';
     if (strpos($link, 'residuos.php') !== false) return 'Explorar os resíduos';
     return 'Abrir';
 }
@@ -390,7 +388,7 @@ function notif_oferta_publicada(PDO $pdo, $id_oferta)
 function notif_boas_vindas(PDO $pdo, $id_usuario)
 {
     notificar($pdo, $id_usuario, 'boas_vindas', 'Bem-vindo(a) ao Rhesys!',
-        'Sua conta foi criada com sucesso. Aqui você descobre como descartar cada resíduo do jeito certo, encontra pontos de coleta perto de você e pode compartilhar materiais que não usa mais. Sempre que algo acontecer com os seus compartilhamentos, avisaremos por aqui e pelo seu e-mail.',
+        'Sua conta foi criada com sucesso. Aqui você descobre como descartar cada resíduo do jeito certo, e pode doar ou vender materiais que não usa mais. Sempre que algo acontecer com os seus compartilhamentos, avisaremos por aqui e pelo seu e-mail.',
         'pages/residuos.php');
 }
 
@@ -410,10 +408,3 @@ function notif_quiz_novo(PDO $pdo, $id_quiz, $titulo, $autor = null)
         'pages/quiz.php?id=' . (int) $id_quiz, $autor);
 }
 
-/** Novo ponto de coleta cadastrado (todos, só no site). */
-function notif_ponto_novo(PDO $pdo, $id_ponto, $nome, $endereco, $autor = null)
-{
-    notificar_todos($pdo, 'ponto_novo', 'Novo ponto de coleta: ' . $nome,
-        "Um novo ponto de coleta foi cadastrado em $endereco. Veja no mapa quais resíduos ele recebe.",
-        'pages/pontos_coleta.php#ponto-' . (int) $id_ponto, $autor);
-}

@@ -37,7 +37,7 @@ require __DIR__ . '/../includes/header.php';
                 </p>
                 <p class="small mb-0">
                     <strong>Exemplos:</strong> pilhas, baterias e lâmpadas fluorescentes (obs: esses materiais devem ser descartados
-                    sempre em pontos de coleta específicos).
+                    sempre em locais específicos, como lojas e ecopontos).
                 </p>
             </div>
         </div>
@@ -105,7 +105,7 @@ require __DIR__ . '/../includes/header.php';
             'Verde'    => 'Garrafas, potes e frascos de vidro. O vidro é reciclável infinitas vezes; nunca misture cacos com o lixo comum.',
             'Amarelo'  => 'Latas de alumínio, aço e outros metais. São 100% recicláveis e podem voltar à indústria quantas vezes for preciso.',
             'Preto'    => 'Móveis, paletes e restos de madeira. Devem ir para reaproveitamento ou reciclagem específica.',
-            'Laranja'  => 'Pilhas, baterias, lâmpadas e produtos químicos. Exigem descarte em pontos de coleta específicos (logística reversa).',
+            'Laranja'  => 'Pilhas, baterias, lâmpadas e produtos químicos. Exigem descarte em locais específicos, como lojas e ecopontos (logística reversa).',
             'Branco'   => 'Materiais de hospitais e serviços de saúde. Têm coleta especializada — jamais vão para o lixo comum.',
             'Roxo'     => 'Rejeitos radioativos. Coleta e descarte exclusivos por órgãos especializados e licenciados.',
             'Marrom'   => 'Restos de alimentos e material orgânico. Podem virar adubo pela compostagem em vez de irem ao aterro.',
@@ -188,7 +188,6 @@ require __DIR__ . '/../includes/header.php';
                         <p class="small text-muted mb-0">
                             Pilhas, baterias, lâmpadas fluorescentes e eletrônicos voltam ao setor
                             produtivo para reaproveitamento, em vez de virar lixo.
-                            <a href="<?php echo BASE_URL; ?>pages/pontos_coleta.php">Veja os pontos de coleta</a>.
                         </p>
                     </div>
                 </div>

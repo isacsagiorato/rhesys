@@ -5,11 +5,6 @@ require_once __DIR__ . '/config/residuos.php';
 
 $titulo_pagina = 'Início';
 
-// Números para a seção de estatísticas
-$total_residuos = (int) $pdo->query('SELECT COUNT(*) FROM residuo')->fetchColumn();
-$total_pontos   = (int) $pdo->query('SELECT COUNT(*) FROM ponto_coleta')->fetchColumn();
-$total_quizzes  = (int) $pdo->query('SELECT COUNT(*) FROM quiz')->fetchColumn();
-
 // Faixa animada com resíduos do catálogo (um pouco de cada tipo)
 $faixa = $pdo->query(
     "SELECT r.id_residuo, r.nome, r.tipo_material
@@ -41,7 +36,7 @@ require __DIR__ . '/includes/header.php';
         </h1>
         <p class="hero-lead mt-3">
             Descubra como descartar cada material, compartilhe o que pode ser reaproveitado,
-            encontre pontos de coleta e aprenda brincando com quizzes e jogos.
+            converse com quem tem interesse e aprenda brincando com quizzes e jogos.
         </p>
 
         <form class="hero-busca mt-4" method="get" action="pages/residuos.php#resultados" role="search">
@@ -59,20 +54,6 @@ require __DIR__ . '/includes/header.php';
             </div>
         </form>
 
-        <div class="stats-grid mt-4">
-            <a class="stat-card" href="pages/residuos.php">
-                <div class="stat-num" data-contar="<?php echo $total_residuos; ?>"><?php echo $total_residuos; ?></div>
-                <div class="stat-label">resíduos cadastrados</div>
-            </a>
-            <a class="stat-card" href="pages/pontos_coleta.php">
-                <div class="stat-num" data-contar="<?php echo $total_pontos; ?>"><?php echo $total_pontos; ?></div>
-                <div class="stat-label"><?php echo $total_pontos === 1 ? 'ponto de coleta' : 'pontos de coleta'; ?></div>
-            </a>
-            <a class="stat-card" href="pages/quiz.php">
-                <div class="stat-num" data-contar="<?php echo $total_quizzes; ?>"><?php echo $total_quizzes; ?></div>
-                <div class="stat-label"><?php echo $total_quizzes === 1 ? 'quiz educativo' : 'quizzes educativos'; ?></div>
-            </a>
-        </div>
     </div>
 
     <div class="col-lg-6">
@@ -258,7 +239,7 @@ require __DIR__ . '/includes/header.php';
                         </div>
                         <div class="celular-dica">
                             <i class="bi bi-geo-alt-fill"></i>
-                            <span>Entregue em um ponto de coleta de pilhas e baterias</span>
+                            <span>Leve a uma loja que vende pilhas e baterias</span>
                         </div>
                         <div class="celular-dica dica-2">
                             <i class="bi bi-arrow-repeat"></i>
@@ -286,7 +267,7 @@ require __DIR__ . '/includes/header.php';
                 </li>
                 <li>
                     <span class="passo-num">3</span>
-                    <div><strong>Entregue no lugar certo</strong><p class="small text-muted mb-0">Encontre no mapa os pontos de coleta que aceitam o resíduo.</p></div>
+                    <div><strong>Descarte do jeito certo</strong><p class="small text-muted mb-0">Siga as orientações e, se der, doe ou venda o que ainda serve.</p></div>
                 </li>
             </ol>
             <a href="pages/residuos.php" class="btn btn-success mt-2"><i class="bi bi-search me-1"></i>Começar agora</a>
@@ -306,10 +287,10 @@ require __DIR__ . '/includes/header.php';
         <div class="cta-conteudo">
             <span class="crumb">Faça a sua parte</span>
             <h2 class="text-white mt-2 mb-2">Pequenas atitudes, grande impacto.</h2>
-            <p class="mb-4">Separe, reaproveite e leve cada resíduo ao ponto de coleta certo.</p>
+            <p class="mb-4">Separe, reaproveite e dê o destino certo a cada resíduo.</p>
             <div class="d-flex flex-wrap justify-content-center gap-2">
-                <a href="pages/pontos_coleta.php" class="btn btn-light btn-lg rounded-pill px-4 fw-semibold">
-                    <i class="bi bi-geo-alt me-1"></i>Ver pontos de coleta
+                <a href="pages/residuos.php" class="btn btn-light btn-lg rounded-pill px-4 fw-semibold">
+                    <i class="bi bi-search me-1"></i>Pesquisar resíduos
                 </a>
                 <a href="pages/jogo.php" class="btn btn-outline-light btn-lg rounded-pill px-4 fw-semibold">
                     <i class="bi bi-controller me-1"></i>Jogar

@@ -9,7 +9,7 @@ rhesys/
 ├── config/       -> conexão PDO, sessão, OAuth, CSRF e validações
 ├── includes/     -> header/footer reutilizáveis com Bootstrap
 ├── css/          -> identidade visual e layouts responsivos
-├── js/           -> interações gerais e mapa Leaflet/OpenStreetMap
+├── js/           -> interações gerais, chat, notificações e autocompletar
 ├── pages/        -> telas públicas, autenticação e gestão dos módulos
 ├── database/     -> modelo completo, migrações e lotes de resíduos
 ├── docs/         -> escopo final para o TCC e roteiro de apresentação
@@ -22,7 +22,6 @@ rhesys/
 - Cadastro/login tradicional e Google, sessão, logout e proteção de rotas.
 - Resíduos e classificações: cadastro, listagem, busca e detalhes (RF03–RF08/RF13).
 - Compartilhamentos: oferta, filtro, interesse, painel do ofertante, aceite, conclusão e cancelamentos.
-- Pontos de coleta: cadastro/edição, vínculos N:N, filtro, mapa e integração com o resíduo.
 - Conteúdos educativos: cadastro com imagem, listagem e detalhe (RF09).
 - Quizzes: cadastro de quiz/perguntas, respostas, revisão e pontuação salva (RF10–RF12).
 
@@ -176,7 +175,7 @@ rhesys/
   a lista completa fica em `pages/notificacoes.php` (marcar como lida, excluir, limpar lidas).
 - Avisos dos compartilhamentos chegam no site **e no e-mail cadastrado**: novo interesse,
   interesse cancelado, aceito, recusado, material retirado, indisponível ou excluído, além das
-  boas-vindas no cadastro. Novidades do site (conteúdo, quiz e ponto de coleta novos) e edições
+  boas-vindas no cadastro. Novidades do site (conteúdo e quiz novos) e edições
   de material aparecem só no sino, para não lotar a caixa de entrada.
 - Os textos de todas as notificações ficam em `config/notificacoes.php` (uma função por evento).
 - Banco existente: execute `database/notificacoes.sql` para criar a tabela `notificacao`.
@@ -209,12 +208,6 @@ rhesys/
   por `pages/chat_imagem.php` para os dois participantes da conversa.
 - Banco existente: execute `database/chat.sql` para criar a tabela `mensagem` (e a coluna da foto).
 
-## Pontos de coleta (Sprint 4)
-
-- `pages/cadastro_ponto_coleta.php`: cadastra/edita endereço, coordenadas, contato, horário e resíduos aceitos em uma única transação.
-- `pages/pontos_coleta.php`: lista e filtra por resíduo, exibe mapa Leaflet/OpenStreetMap e mantém links externos como fallback.
-- `pages/residuos.php?id=N`: apresenta somente os pontos que aceitam o resíduo aberto.
-- `js/mapa.js`: cria marcadores e popups usando nós DOM, sem injetar HTML dos dados.
 
 ## Educação e quizzes (Sprint 5)
 

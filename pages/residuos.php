@@ -48,15 +48,6 @@ if ($id_residuo > 0) {
     $caminho_foto = caminho_foto_residuo($residuo['nome'], $tipo, $residuo['classificacao_nome']);
     $credito = credito_foto_residuo($caminho_foto);
 
-    // Pontos de coleta que aceitam este resíduo
-    $stmt = $pdo->prepare(
-        'SELECT p.* FROM ponto_coleta p
-         INNER JOIN residuo_ponto_coleta rpc ON p.id_ponto = rpc.id_ponto
-         WHERE rpc.id_residuo = :id ORDER BY p.nome'
-    );
-    $stmt->bindValue(':id', $id_residuo, PDO::PARAM_INT);
-    $stmt->execute();
-    $pontos = $stmt->fetchAll();
 
     // Outros resíduos do mesmo tipo (navegação)
     $relacionados = [];
@@ -147,8 +138,8 @@ if ($id_residuo > 0) {
                         <h2 class="card-title h5"><span class="icon-chip-sm" style="background: #fef3c7; color: #92400e;"><i class="bi bi-arrow-repeat"></i></span> Logística reversa</h2>
                         <p class="card-text mb-0">
                             Este resíduo está sujeito à logística reversa conforme a Lei nº 12.305/2010:
-                            quem fabrica, importa ou vende é responsável por recolhê-lo. Entregue em pontos
-                            de coleta específicos (lojas, assistências e ecopontos) para reaproveitamento ou
+                            quem fabrica, importa ou vende é responsável por recolhê-lo. Entregue em
+                            lojas, assistências técnicas ou ecopontos para reaproveitamento ou
                             destinação ambientalmente adequada.
                         </p>
                     </div>
@@ -157,34 +148,6 @@ if ($id_residuo > 0) {
         <?php endif; ?>
     </div>
 
-    <section class="mt-5" aria-labelledby="titulo-pontos">
-        <h2 class="h4 mb-3" id="titulo-pontos"><i class="bi bi-geo-alt me-1" style="color: var(--rhe-600);"></i>Onde entregar</h2>
-        <?php if ($pontos): ?>
-            <ul class="list-group">
-                <?php foreach ($pontos as $ponto): ?>
-                    <li class="list-group-item">
-                        <strong><?php echo htmlspecialchars($ponto['nome']); ?></strong><br>
-                        <span class="text-muted"><?php echo htmlspecialchars((string) $ponto['endereco']); ?></span>
-                        <?php if ($ponto['telefone']): ?>
-                            <br><span class="text-muted">Tel: <?php echo htmlspecialchars($ponto['telefone']); ?></span>
-                        <?php endif; ?>
-                        <?php if ($ponto['horario_funcionamento']): ?>
-                            <br><span class="text-muted">Horário: <?php echo htmlspecialchars($ponto['horario_funcionamento']); ?></span>
-                        <?php endif; ?>
-                        <?php if ($ponto['latitude'] && $ponto['longitude']): ?>
-                            <br><a href="https://www.openstreetmap.org/?mlat=<?php echo (float) $ponto['latitude']; ?>&amp;mlon=<?php echo (float) $ponto['longitude']; ?>&amp;zoom=18" target="_blank" rel="noopener noreferrer" class="small">Ver no mapa</a>
-                        <?php endif; ?>
-                    </li>
-                <?php endforeach; ?>
-            </ul>
-            <a href="pontos_coleta.php?id_residuo=<?php echo $id_residuo; ?>" class="link-arrow small mt-3">Ver estes pontos no mapa <i class="bi bi-arrow-right"></i></a>
-        <?php else: ?>
-            <div class="alert alert-info mb-0">
-                Nenhum ponto de coleta cadastrado aceita este resíduo até o momento.
-                Siga as orientações de descarte acima ou <a href="pontos_coleta.php">veja todos os pontos de coleta</a>.
-            </div>
-        <?php endif; ?>
-    </section>
 
     <?php if (!empty($residuo['palavras_chave'])): ?>
         <div class="mt-4">
@@ -430,9 +393,11 @@ require __DIR__ . '/../includes/header.php';
 
 <!-- Resumo: só aparece com detalhes quando há filtro ativo -->
 <div class="d-flex flex-wrap align-items-center gap-2 mt-4 mb-1 resultado-resumo">
+    <?php if ($busca !== '' || $tipo_filtro !== '' || !empty($classe_filtro)): ?>
     <span class="fw-semibold">
-        <?php echo count($residuos); ?> <?php echo count($residuos) === 1 ? 'resíduo' : 'resíduos'; ?>
+        <?php echo count($residuos); ?> <?php echo count($residuos) === 1 ? 'resultado' : 'resultados'; ?>
     </span>
+    <?php endif; ?>
     <?php if ($busca !== ''): ?>
         <a class="filtro-ativo" href="<?php echo htmlspecialchars(url_residuos(['busca' => ''])); ?>" title="Remover busca">“<?php echo htmlspecialchars($busca); ?>” <i class="bi bi-x"></i></a>
     <?php endif; ?>
