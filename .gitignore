@@ -31,3 +31,6 @@ Thumbs.db
 # Arquivos de backup
 *.bak
 *~
+# E-mail (credenciais SMTP) e e-mails salvos localmente
+config/email_local.php
+/storage/

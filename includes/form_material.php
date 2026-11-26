@@ -3,9 +3,46 @@
  * Parcial do formulário de cadastro/edição de material para compartilhamento.
  * Espera a variável $valores com as chaves:
  *   nome, descricao, categoria, quantidade, estado_conservacao,
- *   localizacao, condicoes_retirada.
+ *   localizacao, condicoes_retirada, tipo_oferta, preco, preco_negociavel.
  */
+$tipo_atual = $valores['tipo_oferta'] ?? 'doacao';
 ?>
+<fieldset class="oferta-tipo mb-4">
+    <legend class="form-label">Como você quer oferecer? *</legend>
+    <div class="oferta-tipo-opcoes">
+        <label class="oferta-tipo-cartao">
+            <input type="radio" name="tipo_oferta" value="doacao" <?php echo $tipo_atual !== 'venda' ? 'checked' : ''; ?>>
+            <span class="oferta-tipo-icone"><i class="bi bi-gift"></i></span>
+            <span class="oferta-tipo-texto"><strong>Doação</strong><small>Grátis para quem precisar</small></span>
+            <i class="bi bi-check-circle-fill oferta-tipo-check" aria-hidden="true"></i>
+        </label>
+        <label class="oferta-tipo-cartao">
+            <input type="radio" name="tipo_oferta" value="venda" <?php echo $tipo_atual === 'venda' ? 'checked' : ''; ?>>
+            <span class="oferta-tipo-icone"><i class="bi bi-tag"></i></span>
+            <span class="oferta-tipo-texto"><strong>Venda</strong><small>Você define o preço</small></span>
+            <i class="bi bi-check-circle-fill oferta-tipo-check" aria-hidden="true"></i>
+        </label>
+    </div>
+    <div class="oferta-preco">
+        <div class="row g-3 align-items-end">
+            <div class="col-sm-6">
+                <label for="preco" class="form-label">Preço *</label>
+                <div class="input-group">
+                    <span class="input-group-text">R$</span>
+                    <input class="form-control" id="preco" name="preco" inputmode="decimal" maxlength="14" autocomplete="off"
+                           value="<?php echo htmlspecialchars((string) ($valores['preco'] ?? '')); ?>" placeholder="Ex.: 50 ou 49,90">
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="form-check form-switch mb-2">
+                    <input class="form-check-input" type="checkbox" role="switch" id="preco_negociavel" name="preco_negociavel" value="1" <?php echo !empty($valores['preco_negociavel']) ? 'checked' : ''; ?>>
+                    <label class="form-check-label" for="preco_negociavel">Aceito negociar o preço</label>
+                </div>
+            </div>
+        </div>
+        <p class="form-text mb-0"><i class="bi bi-shield-check me-1"></i>O Rhesys não intermedeia pagamentos: o valor e a forma de pagamento são combinados pelo chat, direto com quem se interessar.</p>
+    </div>
+</fieldset>
 <div class="row g-3">
     <div class="col-md-6">
         <label for="nome" class="form-label">Nome do material *</label>

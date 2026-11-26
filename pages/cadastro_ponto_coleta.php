@@ -3,6 +3,7 @@ require_once __DIR__ . '/../config/config.php';
 require_once __DIR__ . '/../config/conexao.php';
 require_once __DIR__ . '/../config/seguranca.php';
 require_once __DIR__ . '/../config/residuos.php';
+require_once __DIR__ . '/../config/notificacoes.php';
 exige_login();
 
 $id_ponto = (int) (($_SERVER['REQUEST_METHOD'] === 'POST' ? $_POST['id_ponto'] ?? 0 : $_GET['id'] ?? 0));
@@ -78,7 +79,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $stmt->bindValue(':telefone', $telefone !== '' ? $telefone : null, $telefone !== '' ? PDO::PARAM_STR : PDO::PARAM_NULL);
             $stmt->bindValue(':horario', $horario !== '' ? $horario : null, $horario !== '' ? PDO::PARAM_STR : PDO::PARAM_NULL);
             $stmt->execute();
-            if ($id_ponto === 0) $id_ponto = (int) $pdo->lastInsertId();
+            if ($id_ponto === 0) {
+                $id_ponto = (int) $pdo->lastInsertId();
+                notif_ponto_novo($pdo, $id_ponto, $nome, $endereco, $_SESSION['id_usuario']);
+            }
             $stmt = $pdo->prepare('DELETE FROM residuo_ponto_coleta WHERE id_ponto = :id');
             $stmt->bindValue(':id', $id_ponto, PDO::PARAM_INT);
             $stmt->execute();

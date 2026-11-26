@@ -92,12 +92,15 @@ if (usuario_logado()) {
 
         // Avisa quem estava apenas navegando (GET); em POST segue o fluxo
         $paginaAtual = basename($_SERVER['PHP_SELF'] ?? '');
-        if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'GET' && $paginaAtual !== 'logout.php') {
+        if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'GET' && !in_array($paginaAtual, ['logout.php', 'notificacoes_api.php', 'chat_api.php'], true)) {
             header('Location: ' . BASE_URL . 'pages/login.php?expirada=1');
             exit;
         }
-    } else {
+    } elseif (!in_array(basename($_SERVER['PHP_SELF'] ?? ''), ['notificacoes_api.php', 'chat_api.php'], true)
+        || ($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
         // Renova a janela de inatividade a cada página visitada
+        // (as consultas automáticas do sino e do chat não contam como uso do site;
+        //  enviar uma mensagem conta)
         $_SESSION['ultimo_acesso'] = $agora;
     }
 }

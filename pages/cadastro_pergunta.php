@@ -2,6 +2,7 @@
 require_once __DIR__ . '/../config/config.php';
 require_once __DIR__ . '/../config/conexao.php';
 require_once __DIR__ . '/../config/seguranca.php';
+require_once __DIR__ . '/../config/notificacoes.php';
 exige_login();
 
 $id_quiz = (int) (($_SERVER['REQUEST_METHOD'] === 'POST' ? $_POST['id_quiz'] ?? 0 : $_GET['id_quiz'] ?? 0));
@@ -34,6 +35,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         foreach (['a', 'b', 'c', 'd'] as $letra) $stmt->bindValue(':' . $letra, $alternativas[$letra]);
         $stmt->bindValue(':correta', $resposta_correta);
         $stmt->execute();
+        $stmt = $pdo->prepare('SELECT COUNT(*) FROM pergunta WHERE id_quiz = :quiz');
+        $stmt->bindValue(':quiz', $id_quiz, PDO::PARAM_INT);
+        $stmt->execute();
+        if ((int) $stmt->fetchColumn() === 1) notif_quiz_novo($pdo, $id_quiz, $quiz['titulo'], $_SESSION['id_usuario']);
         header('Location: cadastro_pergunta.php?id_quiz=' . $id_quiz . '&sucesso=pergunta#perguntas');
         exit;
     }

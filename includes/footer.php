@@ -63,6 +63,7 @@
 <!-- JS próprio (?v= força o navegador a baixar a versão nova e não usar cache) -->
 <script src="<?php echo BASE_URL; ?>js/script.js?v=6"></script>
 <script src="<?php echo BASE_URL; ?>js/autocompletar.js?v=3"></script>
+<?php if (usuario_logado()): ?><script src="<?php echo BASE_URL; ?>js/notificacoes.js?v=4"></script><?php endif; ?>
 
 </body>
 </html>

@@ -87,7 +87,7 @@ function imagem_material($imagem)
 {
     return ($imagem !== null && $imagem !== '')
         ? BASE_URL . $imagem
-        : BASE_URL . 'img/fotos/reaproveitar.jpg';
+        : BASE_URL . 'img/sem-foto.svg';
 }
 
 /**
@@ -157,4 +157,83 @@ function compartilhamento_remover_imagem($caminho)
         && is_file($alvo)) {
         unlink($alvo);
     }
+}
+// ============================================================
+// Doação ou venda
+// ============================================================
+
+/** Formas de oferecer um material. */
+const TIPOS_OFERTA = [
+    'doacao' => 'Doação',
+    'venda'  => 'Venda',
+];
+
+/** Preço máximo aceito (evita erros de digitação absurdos). */
+const PRECO_MAXIMO = 1000000;
+
+/**
+ * Lê um preço digitado no jeito brasileiro: "50", "50,90", "1.234,50",
+ * "R$ 30". Devolve o valor (float) ou null se não for um número válido.
+ */
+function compartilhamento_ler_preco($texto)
+{
+    $t = trim(str_replace(['R$', 'r$', ' ', "\u{00A0}"], '', (string) $texto));
+    if ($t === '') return null;
+    if (strpos($t, ',') !== false) {
+        $t = str_replace('.', '', $t);       // "1.234,50" -> "1234,50"
+        $t = str_replace(',', '.', $t);      // "1234,50"  -> "1234.50"
+    } elseif (substr_count($t, '.') > 1 || preg_match('/\.\d{3}$/', $t)) {
+        $t = str_replace('.', '', $t);       // "1.234" -> "1234"
+    }
+    if (!preg_match('/^\d+(\.\d{1,2})?$/', $t)) return null;
+    return round((float) $t, 2);
+}
+
+/** "R$ 1.234,50" */
+function formatar_preco($valor)
+{
+    return 'R$ ' . number_format((float) $valor, 2, ',', '.');
+}
+
+/** O que aparece na etiqueta do material: "Grátis" ou o preço. */
+function rotulo_preco_oferta(array $oferta)
+{
+    return ($oferta['tipo_oferta'] ?? 'doacao') === 'venda' && $oferta['preco'] !== null
+        ? formatar_preco($oferta['preco'])
+        : 'Grátis';
+}
+
+/** Material vendido aparece como "Vendido" em vez de "Retirado". */
+function rotulo_status_oferta($status, $tipo_oferta)
+{
+    if ($status === 'concluido' && $tipo_oferta === 'venda') return 'Vendido';
+    return rotulo_status_compartilhamento($status);
+}
+
+/**
+ * Lê e valida tipo, preço e "aceito negociar" do formulário.
+ * Preenche $valores e adiciona mensagens em $erros.
+ */
+function compartilhamento_ler_venda(array $post, array &$valores, array &$erros)
+{
+    $valores['tipo_oferta'] = (string) ($post['tipo_oferta'] ?? 'doacao');
+    $valores['preco'] = trim((string) ($post['preco'] ?? ''));
+    $valores['preco_negociavel'] = !empty($post['preco_negociavel']);
+
+    if (!isset(TIPOS_OFERTA[$valores['tipo_oferta']])) {
+        $erros[] = 'Escolha se o material é para doação ou para venda.';
+        $valores['tipo_oferta'] = 'doacao';
+    }
+    if ($valores['tipo_oferta'] !== 'venda') {
+        $valores['preco_valor'] = null;
+        $valores['preco_negociavel'] = false;
+        return;
+    }
+    $preco = compartilhamento_ler_preco($valores['preco']);
+    if ($preco === null || $preco <= 0) {
+        $erros[] = 'Informe o preço de venda (ex.: 50 ou 49,90).';
+    } elseif ($preco > PRECO_MAXIMO) {
+        $erros[] = 'O preço pode ser de no máximo ' . formatar_preco(PRECO_MAXIMO) . '.';
+    }
+    $valores['preco_valor'] = $preco;
 }

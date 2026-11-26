@@ -3,6 +3,7 @@ require_once __DIR__ . '/../config/config.php';
 require_once __DIR__ . '/../config/conexao.php';
 require_once __DIR__ . '/../config/seguranca.php';
 require_once __DIR__ . '/../config/compartilhamento.php';
+require_once __DIR__ . '/../config/notificacoes.php';
 exige_login();
 
 $titulo_pagina = 'Detalhes do material';
@@ -50,6 +51,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $stmt->bindValue(':usuario', $_SESSION['id_usuario'], PDO::PARAM_INT);
                 }
                 $stmt->execute();
+                notif_interesse_novo($pdo, $id, $_SESSION['id_usuario']);
                 $pdo->commit();
                 header('Location: compartilhamento.php?id=' . $id . '&sucesso=interesse');
                 exit;
@@ -72,6 +74,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $stmt->bindValue(':id', $interesse['id_compartilhamento'], PDO::PARAM_INT);
                     $stmt->execute();
                 }
+                notif_interesse_cancelado($pdo, $interesse['id_compartilhamento'], $_SESSION['id_usuario'], $interesse['status'] === 'aceito');
                 $pdo->commit();
                 header('Location: compartilhamento.php?id=' . $id . '&sucesso=interesse_cancelado');
                 exit;
@@ -137,12 +140,23 @@ require __DIR__ . '/../includes/header.php';
     <div class="col-lg-8">
         <div class="info-card"><div class="card-body p-4 p-lg-5">
 <div class="d-flex flex-wrap align-items-center gap-2 mb-3">
-                <span class="badge text-bg-<?php echo classe_status_compartilhamento($oferta['status']); ?>"><?php echo rotulo_status_compartilhamento($oferta['status']); ?></span>
+                <span class="badge text-bg-<?php echo classe_status_compartilhamento($oferta['status']); ?>"><?php echo rotulo_status_oferta($oferta['status'], $oferta['tipo_oferta']); ?></span>
                 <span class="badge-soft"><i class="bi bi-tag me-1"></i><?php echo htmlspecialchars($categoria_rotulo); ?></span>
                 <span class="<?php echo classe_estado_conservacao($oferta['estado_conservacao']); ?>"><i class="bi bi-stars me-1"></i><?php echo htmlspecialchars(rotulo_estado_conservacao($oferta['estado_conservacao'])); ?></span>
             </div>
 
             <h1 class="fs-2 mb-2"><?php echo htmlspecialchars($oferta['material_nome']); ?></h1>
+            <div class="detalhe-preco <?php echo $oferta['tipo_oferta'] === 'venda' ? 'venda' : 'doacao'; ?>">
+                <?php if ($oferta['tipo_oferta'] === 'venda'): ?>
+                    <span class="detalhe-preco-rotulo"><i class="bi bi-tag"></i>À venda</span>
+                    <strong><?php echo htmlspecialchars(rotulo_preco_oferta($oferta)); ?></strong>
+                    <span class="detalhe-preco-extra"><?php echo $oferta['preco_negociavel'] ? '<i class="bi bi-chat-dots"></i>Aceita negociar' : '<i class="bi bi-lock"></i>Preço fixo'; ?></span>
+                <?php else: ?>
+                    <span class="detalhe-preco-rotulo"><i class="bi bi-gift"></i>Doação</span>
+                    <strong>Grátis</strong>
+                    <span class="detalhe-preco-extra"><i class="bi bi-heart"></i>Para quem precisar</span>
+                <?php endif; ?>
+            </div>
             <p class="text-muted small mb-4">Oferecido por <strong><?php echo htmlspecialchars($oferta['ofertante_nome']); ?></strong> em <?php echo date('d/m/Y', strtotime($oferta['data_publicacao'])); ?></p>
 
             <h2 class="h5 mb-2">Descrição</h2>
@@ -157,13 +171,15 @@ require __DIR__ . '/../includes/header.php';
 
             <?php if ($propria): ?>
                 <a href="meus_compartilhamentos.php#oferta-<?php echo (int) $oferta['id_compartilhamento']; ?>" class="btn btn-success"><i class="bi bi-gear me-1"></i>Gerenciar este material</a>
+                <a href="conversas.php" class="btn btn-outline-success ms-2"><i class="bi bi-chat-dots me-1"></i>Conversas com interessados</a>
             <?php elseif ($meu_interesse === 'aceito'): ?>
                 <div class="contato-box mb-3">
                     <h2 class="h6 mb-2"><i class="bi bi-check-circle me-1"></i>Seu interesse foi aceito!</h2>
-                    <p class="small mb-2">Entre em contato com o ofertante para combinar a retirada:</p>
+                    <p class="small mb-2">Combine a retirada pelo chat ou entre em contato com o ofertante:</p>
                     <p class="mb-1"><strong><?php echo htmlspecialchars($oferta['ofertante_nome']); ?></strong></p>
                     <p class="mb-2 contato-mail"><?php echo htmlspecialchars($oferta['ofertante_email']); ?></p>
-                    <a href="mailto:<?php echo htmlspecialchars($oferta['ofertante_email'], ENT_QUOTES, 'UTF-8'); ?>" class="btn btn-sm btn-success"><i class="bi bi-envelope me-1"></i>Enviar e-mail</a>
+                    <a href="conversas.php?id=<?php echo (int) $oferta['meu_interesse_id']; ?>" class="btn btn-sm btn-success"><i class="bi bi-chat-dots me-1"></i>Abrir o chat</a>
+                    <a href="mailto:<?php echo htmlspecialchars($oferta['ofertante_email'], ENT_QUOTES, 'UTF-8'); ?>" class="btn btn-sm btn-outline-success"><i class="bi bi-envelope me-1"></i>Enviar e-mail</a>
                 </div>
                 <form method="post" action="compartilhamento.php?id=<?php echo $id; ?>">
                     <?php echo csrf_field(); ?>
@@ -173,6 +189,7 @@ require __DIR__ . '/../includes/header.php';
                 </form>
             <?php elseif ($meu_interesse === 'pendente'): ?>
                 <p class="mb-2"><span class="badge-soft"><i class="bi bi-hourglass-split me-1"></i>Seu interesse está pendente de aceite pelo ofertante.</span></p>
+                <a href="conversas.php?id=<?php echo (int) $oferta['meu_interesse_id']; ?>" class="btn btn-success mb-3 me-2"><i class="bi bi-chat-dots me-1"></i>Conversar com <?php echo htmlspecialchars(strtok(trim($oferta['ofertante_nome']), ' ')); ?></a>
                 <form method="post" action="compartilhamento.php?id=<?php echo $id; ?>">
                     <?php echo csrf_field(); ?>
                     <input type="hidden" name="acao" value="cancelar_interesse">
@@ -184,9 +201,9 @@ require __DIR__ . '/../includes/header.php';
                     <?php echo csrf_field(); ?>
                     <input type="hidden" name="acao" value="demonstrar_interesse">
                     <input type="hidden" name="id_compartilhamento" value="<?php echo $id; ?>">
-                    <button type="submit" class="btn btn-success btn-lg"><i class="bi bi-hand-thumbs-up me-1"></i>Tenho interesse</button>
+                    <button type="submit" class="btn btn-success btn-lg"><i class="bi <?php echo $oferta['tipo_oferta'] === 'venda' ? 'bi-bag-heart' : 'bi-hand-thumbs-up'; ?> me-1"></i><?php echo $oferta['tipo_oferta'] === 'venda' ? 'Quero comprar' : 'Tenho interesse'; ?></button>
                 </form>
-                <p class="small text-muted mt-2 mb-0">Ao demonstrar interesse, o ofertante será avisado e poderá liberar o contato para combinar a retirada.</p>
+                <p class="small text-muted mt-2 mb-0">Ao demonstrar interesse, o ofertante é avisado e vocês já podem conversar pelo chat para combinar a retirada.</p>
             <?php else: ?>
                 <span class="badge text-bg-secondary">Este material não está mais recebendo interesses.</span>
             <?php endif; ?>
@@ -196,6 +213,7 @@ require __DIR__ . '/../includes/header.php';
         <div class="info-card"><div class="card-body p-4">
             <h5 class="card-title"><span class="icon-chip-sm"><i class="bi bi-info-circle"></i></span>Informações</h5>
             <ul class="list-unstyled mb-0 oferta-info">
+                <li><i class="bi <?php echo $oferta['tipo_oferta'] === 'venda' ? 'bi-tag' : 'bi-gift'; ?>"></i><span><strong><?php echo $oferta['tipo_oferta'] === 'venda' ? 'Venda:' : 'Doação:'; ?></strong> <?php echo htmlspecialchars(rotulo_preco_oferta($oferta)); ?><?php echo $oferta['tipo_oferta'] === 'venda' && $oferta['preco_negociavel'] ? ' (negociável)' : ''; ?></span></li>
                 <li><i class="bi bi-box-seam"></i><span><strong>Quantidade:</strong> <?php echo htmlspecialchars($oferta['quantidade'] !== null && $oferta['quantidade'] !== '' ? $oferta['quantidade'] : '—'); ?></span></li>
                 <li><i class="bi bi-geo-alt"></i><span><strong>Retirada:</strong> <?php echo htmlspecialchars($oferta['localizacao'] !== null && $oferta['localizacao'] !== '' ? $oferta['localizacao'] : '—'); ?></span></li>
                 <li><i class="bi bi-tag"></i><span><strong>Categoria:</strong> <?php echo htmlspecialchars($categoria_rotulo); ?></span></li>

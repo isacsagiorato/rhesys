@@ -14,6 +14,7 @@ require_once __DIR__ . '/../config/conexao.php';
 require_once __DIR__ . '/../config/seguranca.php';
 require_once __DIR__ . '/../config/validacao_email.php';
 require_once __DIR__ . '/../config/google.php';
+require_once __DIR__ . '/../config/notificacoes.php';
 
 $titulo_pagina = 'Criar conta';
 
@@ -75,6 +76,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // Já deixa o usuário autenticado
         session_regenerate_id(true);
         $_SESSION['id_usuario']   = (int)$pdo->lastInsertId();
+        notif_boas_vindas($pdo, $_SESSION['id_usuario']);
         $_SESSION['nome_usuario'] = $nome;
         $_SESSION['tipo_usuario'] = 'comum';
         // Controle de sessão: marcas de expiração (ver config/config.php)

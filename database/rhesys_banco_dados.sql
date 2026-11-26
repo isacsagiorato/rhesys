@@ -146,7 +146,12 @@ CREATE TABLE compartilhamento_residuo (
     descricao TEXT,
     data_publicacao DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     status VARCHAR(50) NOT NULL DEFAULT 'disponivel',
+    -- Doação (grátis) ou venda; na venda, preço e se aceita negociar
+    tipo_oferta VARCHAR(20) NOT NULL DEFAULT 'doacao',
+    preco DECIMAL(10,2) NULL,
+    preco_negociavel BOOLEAN NOT NULL DEFAULT FALSE,
     INDEX idx_compartilhamento_usuario (id_usuario_ofertante),
+    INDEX idx_compartilhamento_tipo (tipo_oferta),
     INDEX idx_compartilhamento_residuo (id_residuo),
     INDEX idx_compartilhamento_status (status),
     INDEX idx_compartilhamento_categoria (categoria),
@@ -159,7 +164,11 @@ CREATE TABLE compartilhamento_residuo (
         FOREIGN KEY (id_residuo) REFERENCES residuo(id_residuo)
         ON DELETE RESTRICT ON UPDATE CASCADE,
     CONSTRAINT chk_compartilhamento_status
-        CHECK (status IN ('disponivel', 'reservado', 'concluido', 'cancelado'))
+        CHECK (status IN ('disponivel', 'reservado', 'concluido', 'cancelado')),
+    CONSTRAINT chk_compartilhamento_tipo
+        CHECK (tipo_oferta IN ('doacao', 'venda')),
+    CONSTRAINT chk_compartilhamento_preco
+        CHECK (preco IS NULL OR preco > 0)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ------------------------------------------------------------
@@ -184,6 +193,30 @@ CREATE TABLE interesse_compartilhamento (
         ON DELETE CASCADE ON UPDATE CASCADE,
     CONSTRAINT chk_interesse_status
         CHECK (status IN ('pendente', 'aceito', 'recusado', 'cancelado'))
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- ------------------------------------------------------------
+-- Tabela: MENSAGEM
+-- Chat entre quem ofereceu o material e cada interessado.
+-- Cada conversa pertence a um interesse (oferta + interessado).
+-- ------------------------------------------------------------
+CREATE TABLE mensagem (
+    id_mensagem INT AUTO_INCREMENT PRIMARY KEY,
+    id_interesse INT NOT NULL,
+    id_remetente INT NOT NULL,
+    texto TEXT NOT NULL,
+    imagem VARCHAR(255) DEFAULT NULL,
+    apagada BOOLEAN NOT NULL DEFAULT FALSE,
+    lida BOOLEAN NOT NULL DEFAULT FALSE,
+    data_envio DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    INDEX idx_mensagem_conversa (id_interesse, id_mensagem),
+    INDEX idx_mensagem_nao_lidas (id_interesse, lida, id_remetente),
+    CONSTRAINT fk_mensagem_interesse
+        FOREIGN KEY (id_interesse) REFERENCES interesse_compartilhamento(id_interesse)
+        ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT fk_mensagem_remetente
+        FOREIGN KEY (id_remetente) REFERENCES usuario(id_usuario)
+        ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ------------------------------------------------------------
@@ -264,6 +297,29 @@ CREATE TABLE tentativa_login (
     tentativas INT NOT NULL DEFAULT 0,
     bloqueado_ate DATETIME DEFAULT NULL,
     atualizado_em DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- ------------------------------------------------------------
+-- Tabela: NOTIFICACAO
+-- Avisos do sistema para cada usuário (sino no topo do site).
+-- As notificações importantes também são enviadas por e-mail;
+-- email_enviado guarda se o envio já foi feito.
+-- ------------------------------------------------------------
+CREATE TABLE notificacao (
+    id_notificacao INT AUTO_INCREMENT PRIMARY KEY,
+    id_usuario INT NOT NULL,
+    tipo VARCHAR(50) NOT NULL,
+    titulo VARCHAR(150) NOT NULL,
+    mensagem TEXT NOT NULL,
+    link VARCHAR(255) DEFAULT NULL,
+    lida BOOLEAN NOT NULL DEFAULT FALSE,
+    enviar_email BOOLEAN NOT NULL DEFAULT FALSE,
+    email_enviado BOOLEAN NOT NULL DEFAULT FALSE,
+    data_criacao DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    INDEX idx_notificacao_usuario (id_usuario, lida, data_criacao),
+    CONSTRAINT fk_notificacao_usuario
+        FOREIGN KEY (id_usuario) REFERENCES usuario(id_usuario)
+        ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ============================================================

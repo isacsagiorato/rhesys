@@ -3,6 +3,8 @@ require_once __DIR__ . '/../config/config.php';
 require_once __DIR__ . '/../config/conexao.php';
 require_once __DIR__ . '/../config/seguranca.php';
 require_once __DIR__ . '/../config/compartilhamento.php';
+require_once __DIR__ . '/../config/notificacoes.php';
+require_once __DIR__ . '/../config/chat.php';
 exige_login();
 
 $titulo_pagina = 'Meus compartilhamentos';
@@ -36,11 +38,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
 
             if ($acao === 'excluir') {
+                notif_oferta_excluida($pdo, $id);
+                $fotos_chat = chat_fotos_da_oferta($pdo, $id);
                 $stmt = $pdo->prepare('DELETE FROM compartilhamento_residuo WHERE id_compartilhamento = :id');
                 $stmt->bindValue(':id', $id, PDO::PARAM_INT);
                 $stmt->execute();
                 $pdo->commit();
                 compartilhamento_remover_imagem($oferta['imagem']);
+                chat_apagar_fotos($fotos_chat);
                 header('Location: meus_compartilhamentos.php?sucesso=excluido');
                 exit;
             }
@@ -48,6 +53,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 if (in_array($oferta['status'], ['concluido', 'cancelado'], true)) {
                     throw new RuntimeException('Esta oferta já está encerrada.');
                 }
+                notif_oferta_retirada($pdo, $id);
                 $stmt = $pdo->prepare("UPDATE compartilhamento_residuo SET status = 'concluido' WHERE id_compartilhamento = :id");
                 $stmt->bindValue(':id', $id, PDO::PARAM_INT);
                 $stmt->execute();
@@ -69,6 +75,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 if (!$stmt->fetch()) {
                     throw new RuntimeException('O interesse selecionado não está pendente.');
                 }
+                notif_interesse_aceito($pdo, $id, $id_interesse);
                 $stmt = $pdo->prepare("UPDATE interesse_compartilhamento SET status = 'aceito' WHERE id_interesse = :id");
                 $stmt->bindValue(':id', $id_interesse, PDO::PARAM_INT);
                 $stmt->execute();
@@ -93,6 +100,7 @@ if ($acao === 'concluir_oferta') {
                 if (!$stmt->fetch()) {
                     throw new RuntimeException('Não há um interessado aceito para esta oferta.');
                 }
+                notif_oferta_retirada($pdo, $id);
                 $stmt = $pdo->prepare("UPDATE compartilhamento_residuo SET status = 'concluido' WHERE id_compartilhamento = :id");
                 $stmt->bindValue(':id', $id, PDO::PARAM_INT);
                 $stmt->execute();
@@ -104,6 +112,7 @@ if ($acao === 'concluir_oferta') {
                 if (in_array($oferta['status'], ['concluido', 'cancelado'], true)) {
                     throw new RuntimeException('Esta oferta já está encerrada.');
                 }
+                notif_oferta_indisponivel($pdo, $id);
                 $stmt = $pdo->prepare("UPDATE compartilhamento_residuo SET status = 'cancelado' WHERE id_compartilhamento = :id");
                 $stmt->bindValue(':id', $id, PDO::PARAM_INT);
                 $stmt->execute();
@@ -138,6 +147,12 @@ $stmt->execute();
 foreach ($stmt->fetchAll() as $interesse) {
     $interesses[$interesse['id_compartilhamento']][] = $interesse;
 }
+
+// Mensagens não lidas de cada interessado (botão Conversar)
+$chat_nao_lidas = [];
+$stmt = $pdo->prepare('SELECT m.id_interesse, COUNT(*) AS total FROM mensagem m INNER JOIN interesse_compartilhamento i ON i.id_interesse = m.id_interesse INNER JOIN compartilhamento_residuo c ON c.id_compartilhamento = i.id_compartilhamento WHERE c.id_usuario_ofertante = :u1 AND m.id_remetente <> :u2 AND m.lida = 0 GROUP BY m.id_interesse');
+$stmt->execute([':u1' => $_SESSION['id_usuario'], ':u2' => $_SESSION['id_usuario']]);
+foreach ($stmt->fetchAll() as $linha) $chat_nao_lidas[(int) $linha['id_interesse']] = (int) $linha['total'];
 
 require __DIR__ . '/../includes/header.php';
 ?>
@@ -180,7 +195,8 @@ require __DIR__ . '/../includes/header.php';
                         <h2 class="h4 mb-1"><?php echo htmlspecialchars($oferta['material_nome']); ?></h2>
                         <p class="small text-muted mb-0">Publicado em <?php echo date('d/m/Y H:i', strtotime($oferta['data_publicacao'])); ?></p>
                     </div>
-                    <span class="badge text-bg-<?php echo classe_status_compartilhamento($oferta['status']); ?>"><?php echo rotulo_status_compartilhamento($oferta['status']); ?></span>
+                    <span class="badge text-bg-<?php echo classe_status_compartilhamento($oferta['status']); ?>"><?php echo rotulo_status_oferta($oferta['status'], $oferta['tipo_oferta']); ?></span>
+                    <span class="comp-preco-inline <?php echo $oferta['tipo_oferta'] === 'venda' ? 'venda' : 'doacao'; ?>"><i class="bi <?php echo $oferta['tipo_oferta'] === 'venda' ? 'bi-tag' : 'bi-gift'; ?>"></i><?php echo htmlspecialchars(rotulo_preco_oferta($oferta)); ?><?php echo $oferta['tipo_oferta'] === 'venda' && $oferta['preco_negociavel'] ? ' · negociável' : ''; ?></span>
                 </div>
                 <div class="oferta-meta mb-2">
                     <span class="badge-soft"><i class="bi bi-tag"></i> <?php echo htmlspecialchars($categoria_rotulo); ?></span>
@@ -240,6 +256,9 @@ require __DIR__ . '/../includes/header.php';
                                         <p class="small mb-1 mt-2"><a href="mailto:<?php echo htmlspecialchars($interesse['email'], ENT_QUOTES, 'UTF-8'); ?>"><?php echo htmlspecialchars($interesse['email']); ?></a></p>
                                         <p class="small text-muted mb-0">Interesse em <?php echo date('d/m/Y H:i', strtotime($interesse['data_interesse'])); ?></p>
                                     </div>
+                                    <div class="d-flex flex-wrap gap-2">
+                                    <?php $qtd_chat = $chat_nao_lidas[(int) $interesse['id_interesse']] ?? 0; ?>
+                                    <a href="conversas.php?id=<?php echo (int) $interesse['id_interesse']; ?>" class="btn btn-sm btn-outline-success position-relative"><i class="bi bi-chat-dots me-1"></i>Conversar<?php if ($qtd_chat): ?><span class="chat-badge ms-1"><?php echo $qtd_chat; ?></span><?php endif; ?></a>
                                     <?php if ($oferta['status'] === 'disponivel' && $interesse['status'] === 'pendente'): ?>
                                         <form method="post" action="meus_compartilhamentos.php">
                                             <?php echo csrf_field(); ?>
@@ -249,6 +268,7 @@ require __DIR__ . '/../includes/header.php';
                                             <button type="submit" class="btn btn-sm btn-success">Aceitar interesse</button>
                                         </form>
                                     <?php endif; ?>
+                                    </div>
                                 </div>
                             </div>
                         <?php endforeach; ?>

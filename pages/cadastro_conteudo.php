@@ -2,6 +2,7 @@
 require_once __DIR__ . '/../config/config.php';
 require_once __DIR__ . '/../config/conexao.php';
 require_once __DIR__ . '/../config/seguranca.php';
+require_once __DIR__ . '/../config/notificacoes.php';
 exige_login();
 
 $titulo_pagina = 'Cadastrar conteúdo educativo';
@@ -65,7 +66,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $stmt->bindValue(':url', $url !== '' ? $url : null, $url === '' ? PDO::PARAM_NULL : PDO::PARAM_STR);
             $stmt->bindValue(':data', $data->format('Y-m-d H:i:s'));
             $stmt->execute();
-            header('Location: conteudos.php?id=' . (int) $pdo->lastInsertId() . '&sucesso=1');
+            $id_conteudo = (int) $pdo->lastInsertId();
+            notif_conteudo_novo($pdo, $id_conteudo, $titulo, $_SESSION['id_usuario']);
+            header('Location: conteudos.php?id=' . $id_conteudo . '&sucesso=1');
             exit;
         } catch (Throwable $e) {
             if ($caminho_imagem && is_file(dirname(__DIR__) . '/' . $caminho_imagem)) unlink(dirname(__DIR__) . '/' . $caminho_imagem);

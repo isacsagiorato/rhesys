@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" role="img" aria-label="Material sem foto">
+  <defs>
+    <linearGradient id="fundo" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#ecfdf5"/>
+      <stop offset="1" stop-color="#d1fae5"/>
+    </linearGradient>
+    <pattern id="pontos" width="22" height="22" patternUnits="userSpaceOnUse">
+      <circle cx="2" cy="2" r="1.6" fill="#10b981" fill-opacity=".12"/>
+    </pattern>
+  </defs>
+  <rect width="800" height="500" fill="url(#fundo)"/>
+  <rect width="800" height="500" fill="url(#pontos)"/>
+  <circle cx="400" cy="215" r="112" fill="#ffffff" fill-opacity=".75"/>
+  <!-- caixa -->
+  <g transform="translate(400 222)" stroke="#047857" stroke-width="9" stroke-linejoin="round" stroke-linecap="round" fill="none">
+    <path d="M-62 -22 L0 -52 L62 -22 L0 8 Z" fill="#a7f3d0"/>
+    <path d="M-62 -22 L-62 46 L0 76 L0 8" fill="#6ee7b7"/>
+    <path d="M62 -22 L62 46 L0 76 L0 8" fill="#34d399"/>
+    <path d="M-31 -37 L31 -7"/>
+  </g>
+  <!-- setas de reaproveitamento -->
+  <g fill="none" stroke="#a3e635" stroke-width="10" stroke-linecap="round">
+    <path d="M300 150 A120 120 0 0 1 370 102"/>
+    <path d="M500 280 A120 120 0 0 1 430 328"/>
+  </g>
+  <text x="400" y="400" text-anchor="middle" font-family="Outfit, Inter, Segoe UI, Arial, sans-serif" font-size="34" font-weight="700" fill="#065f46">Sem foto do material</text>
+  <text x="400" y="438" text-anchor="middle" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="21" fill="#047857" fill-opacity=".8">Converse pelo chat para ver mais detalhes</text>
+</svg>

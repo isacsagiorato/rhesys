@@ -20,7 +20,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
 
     <!-- CSS próprio (?v=14 força o navegador a baixar a versão nova e não usar cache) -->
-    <link rel="stylesheet" href="<?php echo BASE_URL; ?>css/style.css?v=40">
+    <link rel="stylesheet" href="<?php echo BASE_URL; ?>css/style.css?v=51">
     <?php foreach (($estilos_extras ?? []) as $stylesheet): ?>
     <link rel="stylesheet" href="<?php echo htmlspecialchars($stylesheet, ENT_QUOTES, 'UTF-8'); ?>">
     <?php endforeach; ?>
@@ -35,6 +35,55 @@
             <img src="<?php echo BASE_URL; ?>img/logo-icon.svg" alt="Logotipo Rhesys" width="38" height="38">
             <span>Rhe<span class="brand-sys">sys</span></span>
         </a>
+
+        <?php if (usuario_logado()):
+            // Sino de notificações (fica fora do menu recolhível para aparecer também no celular)
+            if (!isset($pdo)) require_once __DIR__ . '/../config/conexao.php';
+            require_once __DIR__ . '/../config/seguranca.php';
+            require_once __DIR__ . '/../config/notificacoes.php';
+            require_once __DIR__ . '/../config/chat.php';
+            $chat_nao_lidas = chat_nao_lidas_total($pdo, $_SESSION['id_usuario']);
+            $sino_nao_lidas = notificacoes_nao_lidas($pdo, $_SESSION['id_usuario']);
+            $sino_dados = [
+                'nao_lidas' => $sino_nao_lidas,
+                'filtro' => 'todas',
+                'itens' => array_map('notificacao_para_array', notificacoes_listar($pdo, $_SESSION['id_usuario'], 8, 'todas')),
+            ];
+        ?>
+        <div class="topo-icones ms-auto me-2 me-xl-0 ms-xl-2 order-xl-last">
+        <a class="chat-topo" href="<?php echo BASE_URL; ?>pages/conversas.php" title="Conversas" aria-label="Conversas<?php echo $chat_nao_lidas ? " ($chat_nao_lidas mensagens não lidas)" : ''; ?>">
+            <i class="bi bi-chat-dots" aria-hidden="true"></i>
+            <span class="chat-topo-num" <?php echo $chat_nao_lidas ? '' : 'hidden'; ?>><?php echo $chat_nao_lidas > 9 ? '9+' : $chat_nao_lidas; ?></span>
+        </a>
+        <div class="dropdown notif-sino"
+             data-api="<?php echo BASE_URL; ?>pages/notificacoes_api.php"
+             data-acao="<?php echo BASE_URL; ?>pages/notificacoes.php"
+             data-csrf="<?php echo htmlspecialchars(csrf_token(), ENT_QUOTES, 'UTF-8'); ?>">
+            <button class="notif-sino-btn<?php echo $sino_nao_lidas ? ' tem' : ''; ?>" type="button" data-bs-toggle="dropdown" data-bs-auto-close="outside" data-bs-display="static" aria-expanded="false"
+                    aria-label="Notificações<?php echo $sino_nao_lidas ? " ($sino_nao_lidas não lidas)" : ''; ?>">
+                <i class="bi bi-bell<?php echo $sino_nao_lidas ? '-fill' : ''; ?>" aria-hidden="true"></i>
+                <span class="notif-sino-num" <?php echo $sino_nao_lidas ? '' : 'hidden'; ?>><?php echo $sino_nao_lidas > 9 ? '9+' : $sino_nao_lidas; ?></span>
+            </button>
+            <div class="dropdown-menu dropdown-menu-end notif-painel">
+                <div class="notif-painel-topo">
+                    <strong>Notificações</strong>
+                    <div class="notif-painel-botoes">
+                        <button type="button" class="notif-marcar-todas" title="Marcar todas como lidas" <?php echo $sino_nao_lidas ? '' : 'hidden'; ?>><i class="bi bi-check2-all"></i><span>Marcar todas</span></button>
+                        <a class="notif-expandir" href="<?php echo BASE_URL; ?>pages/notificacoes.php" title="Abrir em tela cheia" aria-label="Abrir notificações em tela cheia"><i class="bi bi-arrows-angle-expand"></i></a>
+                    </div>
+                </div>
+                <div class="notif-painel-abas" role="tablist" aria-label="Filtrar notificações">
+                    <button type="button" role="tab" class="ativo" data-filtro="todas" aria-selected="true">Todas</button>
+                    <button type="button" role="tab" data-filtro="nao_lidas" aria-selected="false">Não lidas <span class="notif-aba-num" data-conta="nao_lidas"><?php echo $sino_nao_lidas; ?></span></button>
+                    <button type="button" role="tab" data-filtro="lidas" aria-selected="false">Lidas</button>
+                </div>
+                <ul class="notif-painel-lista" aria-live="polite"></ul>
+                <a class="notif-painel-rodape" href="<?php echo BASE_URL; ?>pages/notificacoes.php"><i class="bi bi-arrows-angle-expand"></i>Ver todas em tela cheia</a>
+                <script type="application/json" class="notif-dados"><?php echo json_encode($sino_dados, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_HEX_TAG | JSON_HEX_AMP); ?></script>
+            </div>
+        </div>
+        </div>
+        <?php endif; ?>
 
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#menuPrincipal" aria-controls="menuPrincipal" aria-expanded="false" aria-label="Abrir menu">
             <span class="navbar-toggler-icon"></span>

@@ -17,6 +17,7 @@ require_once __DIR__ . '/../config/config.php';
 require_once __DIR__ . '/../config/conexao.php';
 require_once __DIR__ . '/../config/seguranca.php';
 require_once __DIR__ . '/../config/google.php';
+require_once __DIR__ . '/../config/notificacoes.php';
 
 $erro = '';
 
@@ -95,6 +96,7 @@ if (isset($_GET['error'])) {
                 $stmt->execute();
 
                 $idUsuario = (int) $pdo->lastInsertId();
+                notif_boas_vindas($pdo, $idUsuario);
                 $tipo      = 'comum';
             } else {
                 // Atualiza avatar/nome com o retorno mais recente do Google

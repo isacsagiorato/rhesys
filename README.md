@@ -170,6 +170,45 @@ rhesys/
 - `pages/meus_compartilhamentos.php`: mostra os interessados ao ofertante e permite aceitar, concluir ou tornar a oferta indisponível.
 - Aceitar um interesse reserva a oferta e recusa os demais pendentes; concluir exige um interessado aceito. As alterações usam transações e `FOR UPDATE`.
 
+## Notificações (sino + e-mail)
+
+- O sino no topo mostra as notificações não lidas e se atualiza sozinho a cada 30 segundos;
+  a lista completa fica em `pages/notificacoes.php` (marcar como lida, excluir, limpar lidas).
+- Avisos dos compartilhamentos chegam no site **e no e-mail cadastrado**: novo interesse,
+  interesse cancelado, aceito, recusado, material retirado, indisponível ou excluído, além das
+  boas-vindas no cadastro. Novidades do site (conteúdo, quiz e ponto de coleta novos) e edições
+  de material aparecem só no sino, para não lotar a caixa de entrada.
+- Os textos de todas as notificações ficam em `config/notificacoes.php` (uma função por evento).
+- Banco existente: execute `database/notificacoes.sql` para criar a tabela `notificacao`.
+- **Envio de e-mail:** copie `config/email_local.exemplo.php` para `config/email_local.php` e
+  preencha os dados SMTP (no Gmail, use uma *senha de app*). Sem esse arquivo, os e-mails não
+  são enviados: ficam salvos em `storage/emails/` (arquivos .eml) para conferência.
+
+## Doação ou venda
+
+- Ao oferecer um material, a pessoa escolhe **Doação** (grátis) ou **Venda** (com preço e a opção "aceito negociar").
+- Etiqueta "Grátis" ou o preço nos cards, no detalhe, em "Meus compartilhamentos" e no chat; filtro Tudo / Doações / À venda.
+- Material vendido aparece como "Vendido"; o chat de venda traz sugestões de negociação e um aviso de segurança.
+- O Rhesys **não intermedeia pagamentos**: valor e forma de pagamento são combinados pelo chat.
+- Banco existente: execute `database/venda.sql` (os materiais já cadastrados ficam como doação).
+
+## Chat entre quem oferece e o interessado
+
+- Cada interesse em um material abre uma conversa entre a pessoa interessada e quem ofereceu
+  (`pages/conversas.php`): lista de conversas à esquerda e mensagens à direita (no celular, uma tela por vez).
+- Dá para conversar enquanto o interesse está pendente ou aceito (e depois da retirada, para quem foi
+  aceito); interesse recusado/cancelado ou material indisponível deixa a conversa só para leitura.
+- As mensagens chegam sozinhas (consulta a cada 3,5 s), com "visto", sugestões de mensagem, Enter para
+  enviar e Shift+Enter para quebrar linha. Quem ofereceu pode aceitar o interesse direto pelo chat.
+- Ícone de balão no topo com as mensagens não lidas; cada nova mensagem gera um aviso no sino e no
+  e-mail, agrupado por conversa (várias mensagens seguidas = um aviso só).
+- **Fotos no chat:** botão de anexo com *Galeria* (foto salva) e *Câmera* (no celular abre a câmera do aparelho;
+  no computador usa a webcam e, se não houver webcam, avisa e sugere a Galeria). Também dá para colar (Ctrl+V)
+  ou arrastar uma imagem. O navegador reduz a foto para até 1600 px antes de enviar e o servidor remove os
+  dados EXIF (como a localização GPS). As fotos ficam em `storage/chat/` (sem acesso direto) e só são entregues
+  por `pages/chat_imagem.php` para os dois participantes da conversa.
+- Banco existente: execute `database/chat.sql` para criar a tabela `mensagem` (e a coluna da foto).
+
 ## Pontos de coleta (Sprint 4)
 
 - `pages/cadastro_ponto_coleta.php`: cadastra/edita endereço, coordenadas, contato, horário e resíduos aceitos em uma única transação.

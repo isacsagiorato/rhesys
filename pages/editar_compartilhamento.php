@@ -3,6 +3,7 @@ require_once __DIR__ . '/../config/config.php';
 require_once __DIR__ . '/../config/conexao.php';
 require_once __DIR__ . '/../config/seguranca.php';
 require_once __DIR__ . '/../config/compartilhamento.php';
+require_once __DIR__ . '/../config/notificacoes.php';
 exige_login();
 
 $titulo_pagina = 'Editar material';
@@ -17,6 +18,7 @@ if ($id <= 0) {
 $valores = [
     'nome' => '', 'descricao' => '', 'categoria' => '', 'quantidade' => '',
     'estado_conservacao' => 'usado', 'localizacao' => '', 'condicoes_retirada' => '',
+    'tipo_oferta' => 'doacao', 'preco' => '', 'preco_negociavel' => false, 'preco_valor' => null,
 ];
 $imagem_atual = null;
 
@@ -59,6 +61,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (mb_strlen($valores['condicoes_retirada']) > 1000) {
         $erros[] = 'As condições de retirada devem ter no máximo 1000 caracteres.';
     }
+    compartilhamento_ler_venda($_POST, $valores, $erros);
 
     $upload = compartilhamento_validar_imagem($_FILES['imagem'] ?? null, $erros);
 
@@ -85,7 +88,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     SET nome = :nome, categoria = :categoria, quantidade = :quantidade,
                         estado_conservacao = :estado, localizacao = :localizacao,
                         condicoes_retirada = :condicoes, descricao = :descricao,
-                        imagem = :imagem, id_residuo = NULL
+                        imagem = :imagem, id_residuo = NULL,
+                        tipo_oferta = :tipo, preco = :preco, preco_negociavel = :negociavel
                   WHERE id_compartilhamento = :id AND id_usuario_ofertante = :usuario'
             );
             $stmt->bindValue(':nome', $valores['nome']);
@@ -97,9 +101,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $valores['condicoes_retirada'] === '' ? PDO::PARAM_NULL : PDO::PARAM_STR);
             $stmt->bindValue(':descricao', $valores['descricao']);
             $stmt->bindValue(':imagem', $nova_imagem, $nova_imagem === null ? PDO::PARAM_NULL : PDO::PARAM_STR);
+            $stmt->bindValue(':tipo', $valores['tipo_oferta']);
+            $stmt->bindValue(':preco', $valores['preco_valor'] === null ? null : number_format($valores['preco_valor'], 2, '.', ''), $valores['preco_valor'] === null ? PDO::PARAM_NULL : PDO::PARAM_STR);
+            $stmt->bindValue(':negociavel', $valores['preco_negociavel'] ? 1 : 0, PDO::PARAM_INT);
             $stmt->bindValue(':id', $id, PDO::PARAM_INT);
             $stmt->bindValue(':usuario', $_SESSION['id_usuario'], PDO::PARAM_INT);
             $stmt->execute();
+            notif_oferta_editada($pdo, $id);
             $pdo->commit();
 
             if ($caminho_novo !== null && $atual['imagem'] !== null && $atual['imagem'] !== $caminho_novo) {
@@ -133,6 +141,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         'estado_conservacao' => (string) ($registro['estado_conservacao'] ?? 'usado'),
         'localizacao' => (string) $registro['localizacao'],
         'condicoes_retirada' => (string) $registro['condicoes_retirada'],
+        'tipo_oferta' => (string) ($registro['tipo_oferta'] ?? 'doacao'),
+        'preco' => $registro['preco'] !== null ? number_format((float) $registro['preco'], 2, ',', '.') : '',
+        'preco_negociavel' => (bool) ($registro['preco_negociavel'] ?? false),
+        'preco_valor' => $registro['preco'] !== null ? (float) $registro['preco'] : null,
     ];
     $imagem_atual = $registro['imagem'];
 }

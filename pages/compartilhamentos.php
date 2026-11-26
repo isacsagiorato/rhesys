@@ -3,6 +3,7 @@ require_once __DIR__ . '/../config/config.php';
 require_once __DIR__ . '/../config/conexao.php';
 require_once __DIR__ . '/../config/seguranca.php';
 require_once __DIR__ . '/../config/compartilhamento.php';
+require_once __DIR__ . '/../config/notificacoes.php';
 exige_login();
 
 $titulo_pagina = 'Compartilhamentos';
@@ -19,6 +20,8 @@ $sucesso = is_string($codigo_sucesso) ? ($mensagens[$codigo_sucesso] ?? '') : ''
 $busca = trim((string) ($_GET['busca'] ?? ''));
 $categoria = (string) ($_GET['categoria'] ?? 'todas');
 $estado = (string) ($_GET['estado'] ?? 'todos');
+$tipo = (string) ($_GET['tipo'] ?? 'todos');
+if ($tipo !== 'todos' && !isset(TIPOS_OFERTA[$tipo])) $tipo = 'todos';
 $localizacao = trim((string) ($_GET['localizacao'] ?? ''));
 $status = (string) ($_GET['status'] ?? 'todos');
 if (!isset($status_validos[$status])) $status = 'todos';
@@ -61,6 +64,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $stmt->bindValue(':usuario', $_SESSION['id_usuario'], PDO::PARAM_INT);
                 }
                 $stmt->execute();
+                notif_interesse_novo($pdo, $id, $_SESSION['id_usuario']);
                 $pdo->commit();
                 header('Location: compartilhamentos.php?status=todos&sucesso=interesse#oferta-' . $id);
                 exit;
@@ -83,6 +87,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $stmt->bindValue(':id', $interesse['id_compartilhamento'], PDO::PARAM_INT);
                     $stmt->execute();
                 }
+                notif_interesse_cancelado($pdo, $interesse['id_compartilhamento'], $_SESSION['id_usuario'], $interesse['status'] === 'aceito');
                 $pdo->commit();
                 header('Location: compartilhamentos.php?status=todos&sucesso=interesse_cancelado#oferta-' . $interesse['id_compartilhamento']);
                 exit;
@@ -104,6 +109,7 @@ if ($status !== 'todos') { $condicoes[] = 'c.status = :status'; $params[':status
 if ($busca !== '') { $condicoes[] = '(c.nome LIKE :busca OR r.nome LIKE :busca2)'; $params[':busca'] = $params[':busca2'] = '%' . $busca . '%'; }
 if ($categoria !== 'todas') { $condicoes[] = 'c.categoria = :categoria'; $params[':categoria'] = $categoria; }
 if ($estado !== 'todos') { $condicoes[] = 'c.estado_conservacao = :estado'; $params[':estado'] = $estado; }
+if ($tipo !== 'todos') { $condicoes[] = 'c.tipo_oferta = :tipo'; $params[':tipo'] = $tipo; }
 if ($localizacao !== '') { $condicoes[] = 'c.localizacao LIKE :localizacao'; $params[':localizacao'] = '%' . $localizacao . '%'; }
 $where = $condicoes ? 'WHERE ' . implode(' AND ', $condicoes) : '';
 
@@ -153,9 +159,9 @@ $icones_status = ['todos' => 'bi-grid', 'disponivel' => 'bi-check2-circle', 'res
 /** Monta a URL da listagem mantendo os filtros atuais e trocando só o que for passado. */
 function url_compartilhamentos(array $troca)
 {
-    global $busca, $categoria, $estado, $localizacao, $status;
-    $q = array_merge(['busca' => $busca, 'categoria' => $categoria, 'estado' => $estado, 'localizacao' => $localizacao, 'status' => $status], $troca);
-    $q = array_filter($q, fn($v, $k) => $v !== '' && !($k === 'categoria' && $v === 'todas') && !($k === 'estado' && $v === 'todos'), ARRAY_FILTER_USE_BOTH);
+    global $busca, $categoria, $estado, $localizacao, $status, $tipo;
+    $q = array_merge(['busca' => $busca, 'tipo' => $tipo, 'categoria' => $categoria, 'estado' => $estado, 'localizacao' => $localizacao, 'status' => $status], $troca);
+    $q = array_filter($q, fn($v, $k) => $v !== '' && !($k === 'categoria' && $v === 'todas') && !(in_array($k, ['estado', 'tipo'], true) && $v === 'todos'), ARRAY_FILTER_USE_BOTH);
     return 'compartilhamentos.php' . ($q ? '?' . http_build_query($q) : '') . '#materiais';
 }
 
@@ -171,7 +177,14 @@ function tempo_publicacao($data)
 }
 
 $filtros_avancados = $estado !== 'todos' || $localizacao !== '';
-$tem_filtro = $busca !== '' || $categoria !== 'todas' || $filtros_avancados || $status !== 'todos';
+$tem_filtro = $busca !== '' || $categoria !== 'todas' || $filtros_avancados || $status !== 'todos' || $tipo !== 'todos';
+
+// Quantos materiais de cada tipo (para o filtro Doação / Venda)
+$contagem_tipo = ['todos' => 0, 'doacao' => 0, 'venda' => 0];
+foreach ($pdo->query("SELECT tipo_oferta, COUNT(*) AS total FROM compartilhamento_residuo WHERE status <> 'cancelado' GROUP BY tipo_oferta") as $linha) {
+    $contagem_tipo[$linha['tipo_oferta']] = (int) $linha['total'];
+    $contagem_tipo['todos'] += (int) $linha['total'];
+}
 
 require __DIR__ . '/../includes/header.php';
 ?>
@@ -179,7 +192,7 @@ require __DIR__ . '/../includes/header.php';
     <div class="comp-hero-texto">
         <span class="comp-eyebrow"><i class="bi bi-arrow-repeat"></i> Economia circular</span>
         <h1>Dê uma nova vida ao que você <span class="comp-destaque">não usa mais</span></h1>
-        <p>Ofereça materiais que iriam para o lixo e encontre o que outras pessoas estão doando perto de você.</p>
+        <p>Doe ou venda materiais que iriam para o lixo e encontre o que outras pessoas estão oferecendo perto de você.</p>
         <div class="comp-hero-acoes">
             <a href="cadastro_compartilhamento.php" class="btn btn-light btn-lg comp-btn-oferecer"><i class="bi bi-plus-circle me-2"></i>Oferecer material</a>
             <a href="meus_compartilhamentos.php" class="btn btn-outline-light btn-lg"><i class="bi bi-person-lines-fill me-2"></i>Meus compartilhamentos</a>
@@ -211,7 +224,7 @@ require __DIR__ . '/../includes/header.php';
 </section>
 
 <ol class="comp-passos reveal">
-    <li><span class="comp-passo-icone"><i class="bi bi-camera"></i></span><div><strong>Ofereça</strong><span>Publique o material com foto e onde retirar.</span></div></li>
+    <li><span class="comp-passo-icone"><i class="bi bi-camera"></i></span><div><strong>Ofereça</strong><span>Publique o material com foto, para doar ou vender.</span></div></li>
     <li><span class="comp-passo-icone"><i class="bi bi-chat-heart"></i></span><div><strong>Combine</strong><span>Quem precisa registra interesse e vocês conversam.</span></div></li>
     <li><span class="comp-passo-icone"><i class="bi bi-recycle"></i></span><div><strong>Reaproveite</strong><span>O material é retirado e ganha uma nova vida.</span></div></li>
 </ol>
@@ -235,6 +248,7 @@ require __DIR__ . '/../includes/header.php';
     <form method="get" action="compartilhamentos.php#materiais" class="comp-busca">
         <input type="hidden" name="categoria" value="<?php echo htmlspecialchars($categoria); ?>">
         <input type="hidden" name="status" value="<?php echo htmlspecialchars($status); ?>">
+        <input type="hidden" name="tipo" value="<?php echo htmlspecialchars($tipo); ?>">
         <div class="comp-busca-linha">
             <label for="busca" class="visually-hidden">Pesquisar por nome</label>
             <div class="comp-busca-campo">
@@ -264,6 +278,14 @@ require __DIR__ . '/../includes/header.php';
             </div>
         </div>
     </form>
+
+    <nav class="comp-tipos" aria-label="Doação ou venda">
+        <?php foreach (['todos' => ['bi-collection', 'Tudo'], 'doacao' => ['bi-gift', 'Doações'], 'venda' => ['bi-tag', 'À venda']] as $v => [$icone, $rot]): ?>
+            <a href="<?php echo htmlspecialchars(url_compartilhamentos(['tipo' => $v])); ?>" class="comp-tipo tipo-<?php echo $v; ?> <?php echo $tipo === $v ? 'ativo' : ''; ?>" <?php echo $tipo === $v ? 'aria-current="page"' : ''; ?>>
+                <i class="bi <?php echo $icone; ?>"></i><?php echo $rot; ?><span><?php echo $contagem_tipo[$v]; ?></span>
+            </a>
+        <?php endforeach; ?>
+    </nav>
 
     <div class="comp-chips" role="list" aria-label="Filtrar por categoria">
         <a role="listitem" href="<?php echo htmlspecialchars(url_compartilhamentos(['categoria' => 'todas'])); ?>" class="comp-chip <?php echo $categoria === 'todas' ? 'ativo' : ''; ?>"><i class="bi bi-grid-3x3-gap"></i>Todas</a>
@@ -305,7 +327,8 @@ require __DIR__ . '/../includes/header.php';
         <article class="comp-card status-<?php echo htmlspecialchars($oferta['status']); ?>" id="oferta-<?php echo $id_oferta; ?>" style="--i: <?php echo min($i, 11); ?>">
             <a class="comp-card-foto" href="compartilhamento.php?id=<?php echo $id_oferta; ?>">
                 <img src="<?php echo imagem_material($oferta['imagem']); ?>" alt="<?php echo htmlspecialchars($oferta['material_nome']); ?>" loading="lazy">
-                <span class="comp-status"><span class="ponto"></span><?php echo rotulo_status_compartilhamento($oferta['status']); ?></span>
+                <span class="comp-status"><span class="ponto"></span><?php echo rotulo_status_oferta($oferta['status'], $oferta['tipo_oferta']); ?></span>
+                <span class="comp-preco <?php echo $oferta['tipo_oferta'] === 'venda' ? 'venda' : 'doacao'; ?>"><?php if ($oferta['tipo_oferta'] === 'venda'): ?><?php echo htmlspecialchars(rotulo_preco_oferta($oferta)); ?><?php if ($oferta['preco_negociavel']): ?><small>negociável</small><?php endif; ?><?php else: ?><i class="bi bi-gift"></i>Grátis<?php endif; ?></span>
                 <span class="comp-quando"><i class="bi bi-clock"></i><?php echo tempo_publicacao($oferta['data_publicacao']); ?></span>
                 <span class="comp-cat"><i class="bi <?php echo $icones_categoria[$oferta['categoria']] ?? 'bi-box-seam'; ?>"></i><?php echo htmlspecialchars($categoria_rotulo); ?></span>
             </a>
@@ -335,6 +358,7 @@ require __DIR__ . '/../includes/header.php';
                             <input type="hidden" name="id_interesse" value="<?php echo (int) $oferta['meu_interesse_id']; ?>">
                             <button type="submit" class="btn btn-sm btn-outline-danger" title="Seu interesse está <?php echo $oferta['meu_interesse_status'] === 'aceito' ? 'aceito' : 'pendente'; ?>">Cancelar interesse</button>
                         </form>
+                        <a href="conversas.php?id=<?php echo (int) $oferta['meu_interesse_id']; ?>" class="btn btn-sm btn-success"><i class="bi bi-chat-dots me-1"></i>Conversar</a>
                         <span class="comp-meu-interesse"><i class="bi bi-<?php echo $oferta['meu_interesse_status'] === 'aceito' ? 'check2-circle' : 'hourglass-split'; ?>"></i>Interesse <?php echo $oferta['meu_interesse_status'] === 'aceito' ? 'aceito' : 'pendente'; ?></span>
                     <?php elseif ($oferta['status'] === 'disponivel'): ?>
                         <form method="post" action="compartilhamentos.php?status=<?php echo htmlspecialchars($status); ?>">

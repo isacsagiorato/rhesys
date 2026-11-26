@@ -3,6 +3,7 @@ require_once __DIR__ . '/../config/config.php';
 require_once __DIR__ . '/../config/conexao.php';
 require_once __DIR__ . '/../config/seguranca.php';
 require_once __DIR__ . '/../config/compartilhamento.php';
+require_once __DIR__ . '/../config/notificacoes.php';
 exige_login();
 
 $titulo_pagina = 'Oferecer material';
@@ -10,6 +11,7 @@ $erros = [];
 $valores = [
     'nome' => '', 'descricao' => '', 'categoria' => '', 'quantidade' => '',
     'estado_conservacao' => 'usado', 'localizacao' => '', 'condicoes_retirada' => '',
+    'tipo_oferta' => 'doacao', 'preco' => '', 'preco_negociavel' => false, 'preco_valor' => null,
 ];
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -57,6 +59,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if (mb_strlen($valores['descricao']) < 10 || mb_strlen($valores['descricao']) > 2000) {
             $erros[] = 'Descreva o material usando entre 10 e 2000 caracteres.';
         }
+        compartilhamento_ler_venda($_POST, $valores, $erros);
         if (mb_strlen($valores['condicoes_retirada']) > 1000) {
             $erros[] = 'As condições de retirada devem ter no máximo 1000 caracteres.';
         }
@@ -80,10 +83,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $stmt = $pdo->prepare(
                     'INSERT INTO compartilhamento_residuo
                         (id_usuario_ofertante, id_residuo, nome, categoria, quantidade,
-                         estado_conservacao, localizacao, condicoes_retirada, descricao, imagem)
+                         estado_conservacao, localizacao, condicoes_retirada, descricao, imagem,
+                         tipo_oferta, preco, preco_negociavel)
                      VALUES
                         (:usuario, NULL, :nome, :categoria, :quantidade,
-                         :estado, :localizacao, :condicoes, :descricao, :imagem)'
+                         :estado, :localizacao, :condicoes, :descricao, :imagem,
+                         :tipo, :preco, :negociavel)'
                 );
                 $stmt->bindValue(':nome', $valores['nome']);
                 $stmt->bindValue(':categoria', $valores['categoria']);
@@ -93,11 +98,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $stmt->bindValue(':condicoes', $valores['condicoes_retirada'] !== '' ? $valores['condicoes_retirada'] : null,
                     $valores['condicoes_retirada'] === '' ? PDO::PARAM_NULL : PDO::PARAM_STR);
                 $stmt->bindValue(':imagem', $caminho_imagem, $caminho_imagem === null ? PDO::PARAM_NULL : PDO::PARAM_STR);
+                $stmt->bindValue(':tipo', $valores['tipo_oferta']);
+                $stmt->bindValue(':preco', $valores['preco_valor'] === null ? null : number_format($valores['preco_valor'], 2, '.', ''), $valores['preco_valor'] === null ? PDO::PARAM_NULL : PDO::PARAM_STR);
+                $stmt->bindValue(':negociavel', $valores['preco_negociavel'] ? 1 : 0, PDO::PARAM_INT);
             }
             $stmt->bindValue(':usuario', $_SESSION['id_usuario'], PDO::PARAM_INT);
             $stmt->bindValue(':descricao', $valores['descricao']);
             $stmt->execute();
             $id = (int) $pdo->lastInsertId();
+            notif_oferta_publicada($pdo, $id);
             header('Location: compartilhamentos.php?status=todos&sucesso=oferta#oferta-' . $id);
             exit;
         } catch (Throwable $e) {
