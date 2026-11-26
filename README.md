@@ -19,7 +19,7 @@ rhesys/
 
 ### Módulos implementados
 
-- Cadastro/login tradicional e Google, sessão, logout e proteção de rotas.
+- Cadastro/login com e-mail e senha, sessão, logout e proteção de rotas.
 - Resíduos e classificações: cadastro, listagem, busca e detalhes (RF03–RF08/RF13).
 - Compartilhamentos: oferta, filtro, interesse, painel do ofertante, aceite, conclusão e cancelamentos.
 - Conteúdos educativos: cadastro com imagem, listagem e detalhe (RF09).
@@ -48,27 +48,6 @@ rhesys/
   mas não que a **caixa** específica existe — para isso seria necessário
   enviar um e-mail de confirmação (SMTP), o que exige um servidor de e-mail.
 
-## Login com Google (OAuth 2.0)
-
-- Botões **"Entrar com Google"** / **"Criar conta com Google"** em
-  `pages/login.php` e `pages/cadastro.php` (fluxo em PHP puro, sem
-  bibliotecas — `config/google.php`, `pages/google_login.php`,
-  `pages/google_callback.php`).
-- Contas Google têm o **e-mail sempre verificado** pelo Google, o que
-  complementa a validação de e-mail existente acima: a conta é criada
-  automaticamente (tipo `comum`) na primeira vez que o usuário entra.
-- Se o e-mail já foi cadastrado pelo fluxo tradicional, a conta Google é
-  **vinculada** ao usuário existente (coluna `google_id`).
-- Segurança do fluxo: `state` (CSRF do OAuth) gerado por sessão e conferido
-  com `hash_equals()` no callback + `session_regenerate_id(true)` ao entrar.
-- **Como ativar**: criar credenciais OAuth no
-  [Google Cloud Console](https://console.cloud.google.com/apis/credentials)
-  (tipo "Aplicativo da Web", URI de redirecionamento
-  `http://localhost:8000/pages/google_callback.php`) e preencher
-  `GOOGLE_CLIENT_ID` e `GOOGLE_CLIENT_SECRET` em `config/google.php`.
-  Instruções detalhadas estão no comentário do próprio arquivo.
-- Bancos já existentes: executar `database/migracao_google.sql` **uma vez**
-  (adiciona `google_id`, `email_verificado` e `avatar` à tabela `usuario`).
 
 ## Segurança (config/seguranca.php)
 
@@ -235,7 +214,7 @@ Conta de administrador já criada: `admin@rhesys.com`.
 
 1. Instale XAMPP/Laragon com PHP 8+ e MySQL/MariaDB, ou use `php -S localhost:8000` na raiz.
 2. Crie o banco executando `database/rhesys_banco_dados.sql`. **Atenção:** esse script recria as tabelas e deve ser usado em uma instalação nova.
-3. Em um banco antigo, preserve os dados e execute apenas as migrações necessárias: `database/migracao_google.sql` (uma vez, se ainda não tiver as colunas do Google) e `database/migracao_sprints_3_a_6.sql` (idempotente).
+3. Em um banco antigo, preserve os dados e execute apenas as migrações necessárias: `database/migracao_sprints_3_a_6.sql` (idempotente).
 4. Execute `database/residuos_organicos.sql` para incluir os 10 orgânicos (script idempotente, também indicado para bancos existentes) e, opcionalmente, `database/residuos_lote2.sql` para acrescentar mais 35 itens `database/residuos_lote3.sql` (tipo de material + 36 itens) `database/residuos_lote4.sql` (mais 36 itens) , `database/palavras_chave_ampliadas.sql` (termos de busca) , `database/residuos_lote5.sql` (mais 90 itens) e, por fim, `database/residuos_lote6.sql` (mais 288 itens). Com todos os lotes, a base fica com 500 resíduos (50 por tipo de material).
 5. A conexão usa `root` sem senha e banco `rhesys` por padrão. Ajuste `config/conexao.php` ou defina `RHESYS_DB_HOST`, `RHESYS_DB_PORT`, `RHESYS_DB_NAME`, `RHESYS_DB_USER` e `RHESYS_DB_PASSWORD`.
 6. `BASE_URL` é detectada automaticamente. Acesse `index.php`; com o comando acima, use `http://localhost:8000`.

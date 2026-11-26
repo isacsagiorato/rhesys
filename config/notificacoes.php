@@ -384,7 +384,7 @@ function notif_oferta_publicada(PDO $pdo, $id_oferta)
         'pages/compartilhamento.php?id=' . (int) $id_oferta);
 }
 
-/** Conta criada (cadastro normal ou com Google). */
+/** Conta criada. */
 function notif_boas_vindas(PDO $pdo, $id_usuario)
 {
     notificar($pdo, $id_usuario, 'boas_vindas', 'Bem-vindo(a) ao Rhesys!',

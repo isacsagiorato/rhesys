@@ -50,8 +50,8 @@ CREATE TABLE usuario (
     nome VARCHAR(150) NOT NULL,
     email VARCHAR(150) NOT NULL UNIQUE,
     senha VARCHAR(255) NOT NULL,
-    -- Login com Google (OAuth 2.0): id da conta Google, e-mail já
-    -- confirmado pelo Google e foto de perfil (nullable p/ conta local)
+    -- Colunas do antigo login com Google (removido). Ficam no banco por
+    -- compatibilidade com bancos já existentes, mas não são mais usadas.
     google_id VARCHAR(255) NULL UNIQUE,
     email_verificado TINYINT(1) NOT NULL DEFAULT 0,
     avatar VARCHAR(500) NULL,
